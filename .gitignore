@@ -5,9 +5,11 @@ backend/**/__pycache__/
 backend/.env
 backend/*.db
 
-# ML data/model artifacts (large, regenerable via training scripts)
+# Raw training datasets (large, downloadable via training scripts)
 backend/app/ml/data/
-backend/app/ml/models/
+
+# Trained model artifacts ARE committed so the app runs without retraining.
+# (url_only_model.joblib ~42MB, text_model + vectorizer, TLD probs, manifests)
 
 # Frontend
 frontend/node_modules/

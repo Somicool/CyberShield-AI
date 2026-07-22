@@ -1,0 +1,30 @@
+{
+  "metrics": {
+    "accuracy": 0.976,
+    "precision": 0.9104,
+    "recall": 0.9037,
+    "f1": 0.9071
+  },
+  "top_scam_terms": [
+    "txt",
+    "mobile",
+    "uk",
+    "free",
+    "claim",
+    "www",
+    "text",
+    "reply",
+    "http",
+    "com",
+    "new",
+    "150p",
+    "prize",
+    "stop",
+    "50"
+  ],
+  "training_rows": 5199,
+  "sources": [
+    "SMS Spam Collection (UCI)",
+    "supplementary_scam_texts.csv"
+  ]
+}
