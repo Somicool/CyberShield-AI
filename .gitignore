@@ -1,0 +1,18 @@
+# Backend
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/.env
+backend/*.db
+
+# ML data/model artifacts (large, regenerable via training scripts)
+backend/app/ml/data/
+backend/app/ml/models/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# OS/editor
+.DS_Store
+*.log

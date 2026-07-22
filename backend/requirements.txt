@@ -1,0 +1,27 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+sqlalchemy==2.0.36
+psycopg2-binary==2.9.10
+pydantic>=2.12.5
+pydantic[email]>=2.12.5
+pydantic-settings==2.7.1
+python-jose[cryptography]==3.3.0
+passlib==1.7.4
+bcrypt==4.0.1
+python-multipart==0.0.20
+python-dotenv==1.0.1
+
+
+# ML / detection (Day 2-3)
+scikit-learn==1.9.0
+pandas==3.0.3
+joblib==1.5.3
+pyarrow==25.0.0
+ucimlrepo==0.0.7
+tldextract==5.3.1
+beautifulsoup4==4.15.0
+requests==2.34.2
+google-genai==2.11.0
+python-whois==0.9.6
+dnspython==2.8.0
+neo4j==6.2.0

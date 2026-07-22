@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/* Markdown rendering for the AI Investigation Copilot                 */
+/* Tailwind's preflight strips default element styling, so we restore  */
+/* just what the chat responses need (headings, lists, tables, code).  */
+/* ------------------------------------------------------------------ */
+.md {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  word-break: break-word;
+}
+.md h1,
+.md h2,
+.md h3 {
+  color: #e2e8f0;
+  font-weight: 600;
+  margin: 0.9rem 0 0.4rem;
+}
+.md h1 { font-size: 1.05rem; }
+.md h2 { font-size: 1rem; }
+.md h3 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #a78bfa;
+}
+.md p { margin: 0.4rem 0; }
+.md ul,
+.md ol { margin: 0.4rem 0; padding-left: 1.25rem; }
+.md ul { list-style: disc; }
+.md ol { list-style: decimal; }
+.md li { margin: 0.15rem 0; }
+.md a { color: #c4b5fd; text-decoration: underline; }
+.md strong { color: #f1f5f9; font-weight: 600; }
+.md blockquote {
+  border-left: 3px solid #334155;
+  padding-left: 0.75rem;
+  color: #94a3b8;
+  margin: 0.5rem 0;
+}
+.md code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8125rem;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 0.25rem;
+  padding: 0.05rem 0.3rem;
+}
+.md pre {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  overflow-x: auto;
+  margin: 0.6rem 0;
+}
+.md pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+.md table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.6rem 0;
+  font-size: 0.8125rem;
+}
+.md th,
+.md td {
+  border: 1px solid #1e293b;
+  padding: 0.35rem 0.5rem;
+  text-align: left;
+}
+.md th { background: #111827; color: #94a3b8; }
+
+/* Minimal highlight.js token colours (dark) for code blocks */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in { color: #c792ea; }
+.hljs-string,
+.hljs-attr { color: #c3e88d; }
+.hljs-number,
+.hljs-literal { color: #f78c6c; }
+.hljs-comment { color: #64748b; font-style: italic; }
+.hljs-title,
+.hljs-function .hljs-title { color: #82aaff; }
+.hljs-attribute,
+.hljs-name { color: #ffcb6b; }

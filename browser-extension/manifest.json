@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "CyberShield Guardian",
+  "version": "1.0.0",
+  "description": "Real-time phishing & scam protection for citizens, powered by the CyberShield AI backend.",
+  "permissions": ["tabs", "activeTab", "contextMenus", "storage", "notifications"],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*",
+    "http://localhost:5173/*",
+    "http://127.0.0.1:5173/*",
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "CyberShield Guardian",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
