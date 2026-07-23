@@ -21,7 +21,6 @@ assessment.
 import logging
 
 from google import genai
-from google.genai import errors as genai_errors
 
 from app.core.config import settings
 
@@ -29,8 +28,11 @@ logger = logging.getLogger(__name__)
 
 _client = genai.Client(api_key=settings.GEMINI_API_KEY) if settings.GEMINI_API_KEY else None
 
-PRIMARY_MODEL = "gemini-flash-latest"
-FALLBACK_MODEL = "gemini-flash-lite-latest"
+# flash-lite is consistently ~1s (vs flash-latest which occasionally spikes to
+# 10s+), so it's the primary for fast, snappy detection responses. flash-latest
+# is the fallback if lite is ever unavailable.
+PRIMARY_MODEL = "gemini-flash-lite-latest"
+FALLBACK_MODEL = "gemini-flash-latest"
 
 FALLBACK_EXPLANATION = (
     "We couldn't generate a detailed explanation right now, but the risk score "
@@ -75,7 +77,9 @@ def generate_explanation(
         try:
             response = _client.models.generate_content(model=model_name, contents=prompt)
             return response.text.strip()
-        except genai_errors.APIError as e:
+        except Exception as e:
+            # Catch ALL failures (API errors, timeouts, network) so a slow or
+            # unavailable Gemini never blocks or breaks detection.
             logger.warning(f"Gemini model {model_name} failed: {e}")
             continue
 

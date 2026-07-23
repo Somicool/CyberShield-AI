@@ -9,7 +9,7 @@ returning a wrong/fake score, so we return a clear 501 instead.
 import logging
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user_optional
@@ -24,9 +24,20 @@ from app.services.graph import push_incident_to_graph, get_connected_entities
 router = APIRouter(prefix="/api/detect", tags=["detection"])
 
 
+def _graph_push_safe(incident_id: str, incident_type: str, domain: str | None, content: str):
+    """Push an incident to the threat graph, swallowing any Neo4j errors.
+    Runs as a background task so a slow/unreachable Neo4j never delays the
+    user-facing detection response."""
+    try:
+        push_incident_to_graph(incident_id, incident_type, domain, content)
+    except Exception:
+        logging.getLogger(__name__).exception("Failed to push incident to graph")
+
+
 @router.post("", response_model=DetectResponse)
 def detect(
     payload: DetectRequest,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: User | None = Depends(get_current_user_optional),
 ):
@@ -70,12 +81,9 @@ def detect(
         from urllib.parse import urlparse
         domain = urlparse(payload.content if "://" in payload.content else f"http://{payload.content}").netloc
 
-    try:
-        push_incident_to_graph(str(incident.id), payload.type.value, domain, payload.content)
-    except Exception:
-        # Graph push is supporting infrastructure, not core detection — a
-        # Neo4j hiccup should never fail the user-facing detection response.
-        logging.getLogger(__name__).exception("Failed to push incident to graph")
+    # Push to the threat graph in the background — never block the response on
+    # Neo4j (supporting infrastructure, not core detection).
+    background_tasks.add_task(_graph_push_safe, str(incident.id), payload.type.value, domain, payload.content)
 
     return DetectResponse(
         incident_id=incident.id,

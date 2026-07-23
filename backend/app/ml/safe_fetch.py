@@ -24,8 +24,10 @@ from urllib.parse import urlparse
 
 import requests
 
-MAX_REDIRECTS = 3
-TIMEOUT_SECONDS = 5
+MAX_REDIRECTS = 2
+# (connect, read) timeouts in seconds. A short connect timeout means dead /
+# unreachable phishing domains fail fast instead of hanging the whole request.
+TIMEOUT_SECONDS = (3, 3)
 MAX_RESPONSE_BYTES = 2 * 1024 * 1024  # 2 MB is plenty for phishing page HTML
 USER_AGENT = "CyberShieldAI-Detector/1.0 (+security research; automated scan)"
 

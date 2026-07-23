@@ -183,8 +183,12 @@ def detect_text(text: str) -> dict:
     embedded_urls = extract_urls_from_text(text)
     embedded_url_results = []
     max_embedded_url_score = 0
+    # Score embedded links with the FAST path (compute_url_risk): ML + URL
+    # heuristics only — NO live page fetch and NO per-URL Gemini call. Using
+    # the full detect_url() here previously triggered one network fetch AND one
+    # Gemini call per link, making a multi-link email take 30-60s.
     for url in embedded_urls[:5]:  # cap to avoid pathological messages with dozens of links
-        url_result = detect_url(url)
+        url_result = compute_url_risk(url)
         embedded_url_results.append({"url": url, "risk_score": url_result["risk_score"]})
         max_embedded_url_score = max(max_embedded_url_score, url_result["risk_score"])
 
