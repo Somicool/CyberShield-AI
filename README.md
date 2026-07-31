@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ CyberShield AI
+# CyberShield AI
 
 ### AI-powered cybercrime intelligence platform — detect phishing & scams in real time, and turn scattered complaints into actionable investigation intelligence.
 
@@ -23,13 +23,13 @@
 
 ---
 
-## 📖 Overview
+## Overview
 
 **CyberShield AI** is an end-to-end platform that protects citizens from phishing/scam attacks and equips **Cyber Crime police** with AI-assisted investigation tooling. It fuses a **machine-learning detection engine**, a **transparent rule-based heuristic layer**, and **Google Gemini** for plain-language explanations — then links every detected entity (domains, emails, phones, crypto wallets, Telegram handles) into a **Neo4j threat-intelligence graph** to expose organised campaigns hiding behind unrelated-looking complaints.
 
 One backend powers **three surfaces**:
 
-| 👥 Citizen Portal | 👮 Police Command Center | 🧩 Browser Extension |
+| Citizen Portal | Police Command Center | Browser Extension |
 |---|---|---|
 | Check links/emails/SMS/QR, file complaints, learn cyber-safety | Live threat feed, case management, AI investigation workspace, threat graph, analytics | Real-time site protection & one-click reporting |
 
@@ -37,20 +37,20 @@ One backend powers **three surfaces**:
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-- 🔍 **Hybrid Detection Engine** — ML model + transparent heuristics + Gemini AI explanation for URLs, emails, SMS, and QR codes.
-- 🕸️ **Threat Intelligence Graph (Neo4j)** — discovers that different complaints share the same wallet / domain / Telegram handle → surfaces coordinated campaigns via 2-hop network traversal.
-- 🧠 **AI Investigation Copilot** — a context-aware chat assistant grounded strictly in a case's real data (cites its sources, says *"Not Available"* when data is missing).
-- 🗂️ **Investigation Workspace** — one screen: AI briefing, detection breakdown, WHOIS/DNS/SSL/GeoIP, linked entities, related cases, timeline, officer notes, and PDF export.
-- ⚖️ **CrimeGPT** — legal-section suggestions, case-law references, and document drafting for officers, with an audit trail.
-- 🧩 **CyberShield Guardian** — a Manifest V3 browser extension that blocks malicious sites in real time (no AI inside — it reuses the same backend).
-- 📊 **Analytics & Heatmap** — Recharts dashboards + a Leaflet map plotting **real** geolocated hosting IPs (nothing fabricated).
-- 🔐 **Role-Based Access Control** — Citizen · Police · Admin, enforced with JWT on both backend and frontend.
+- **Hybrid Detection Engine** — ML model + transparent heuristics + Gemini AI explanation for URLs, emails, SMS, and QR codes.
+- **Threat Intelligence Graph (Neo4j)** — discovers that different complaints share the same wallet / domain / Telegram handle → surfaces coordinated campaigns via 2-hop network traversal.
+- **AI Investigation Copilot** — a context-aware chat assistant grounded strictly in a case's real data (cites its sources, says *"Not Available"* when data is missing).
+- **Investigation Workspace** — one screen: AI briefing, detection breakdown, WHOIS/DNS/SSL/GeoIP, linked entities, related cases, timeline, officer notes, and PDF export.
+- **CrimeGPT** — legal-section suggestions, case-law references, and document drafting for officers, with an audit trail.
+- **CyberShield Guardian** — a Manifest V3 browser extension that blocks malicious sites in real time (no AI inside — it reuses the same backend).
+- **Analytics & Heatmap** — Recharts dashboards + a Leaflet map plotting **real** geolocated hosting IPs (nothing fabricated).
+- **Role-Based Access Control** — Citizen · Police · Admin, enforced with JWT on both backend and frontend.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
    Citizens · Browser Extension · Police · Admins
@@ -79,7 +79,7 @@ One backend powers **three surfaces**:
 
 ---
 
-## 🧠 How Detection Works
+## How Detection Works
 
 ```
  URL / Email / SMS / QR
@@ -99,7 +99,7 @@ One backend powers **three surfaces**:
 - **Heuristics** — IP-literal domains, suspicious TLDs, brand impersonation, `@`-obfuscation, missing HTTPS, external password forms, and more.
 - **Gemini** — only *explains* a decision the deterministic pipeline already made — keeping results reproducible and audit-friendly.
 
-### 📈 Model Performance
+### Model Performance
 
 | Model | Dataset | Accuracy | Precision | Recall | F1 |
 |---|---|:---:|:---:|:---:|:---:|
@@ -108,10 +108,10 @@ One backend powers **three surfaces**:
 
 ---
 
-## 🖥️ Platform Modules
+## Platform Modules
 
 <details>
-<summary><b>👥 Citizen Portal</b></summary>
+<summary><b>Citizen Portal</b></summary>
 
 - **Check for Scams** — one tabbed tool for Link / Email / SMS / QR
 - **Report Cyber Crime** — files a complaint; auto-attaches an AI risk summary in the background
@@ -121,7 +121,7 @@ One backend powers **three surfaces**:
 </details>
 
 <details>
-<summary><b>👮 Police Command Center</b></summary>
+<summary><b>Police Command Center</b></summary>
 
 - **Dashboard** — KPIs, AI intelligence feed, high-priority cases, live threat feed (auto-refresh, filter, search)
 - **Cases** — filter/sort, status workflow, officer assignment, bulk actions
@@ -132,7 +132,7 @@ One backend powers **three surfaces**:
 </details>
 
 <details>
-<summary><b>🧩 CyberShield Guardian (Browser Extension, MV3)</b></summary>
+<summary><b>CyberShield Guardian (Browser Extension, MV3)</b></summary>
 
 - **Real-time protection** — checks each site's origin; blocks high-confidence malicious sites, warns on uncertain ones
 - **Right-click "Analyze with CyberShield AI"**
@@ -150,7 +150,7 @@ One backend powers **three surfaces**:
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 | Layer | Technologies |
 |---|---|
@@ -163,7 +163,7 @@ One backend powers **three surfaces**:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 CyberShield-AI/
@@ -182,7 +182,7 @@ CyberShield-AI/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Python 3.13, Node.js 18+
@@ -202,7 +202,7 @@ copy .env.example .env          # then fill in DATABASE_URL, SECRET_KEY, GEMINI_
 python -m uvicorn app.main:app --reload --port 8000
 ```
 
-> ✅ **Trained ML models are already included** in `backend/app/ml/models/`, so detection works out of the box.
+> **Trained ML models are already included** in `backend/app/ml/models/`, so detection works out of the box.
 > To retrain from scratch (optional):
 > ```bash
 > python -m app.ml.training.fetch_dataset
@@ -222,11 +222,11 @@ npm run dev          # http://localhost:5173
 2. **Load unpacked** → select the `browser-extension/` folder
 3. Sign in to the citizen portal once so the extension can report on your behalf
 
-> 💡 On Windows, `run.bat` starts the backend and frontend together.
+> On Windows, `run.bat` starts the backend and frontend together.
 
 ---
 
-## 🔌 API Highlights
+## API Highlights
 
 | Method & Path | Purpose |
 |---|---|
@@ -241,7 +241,7 @@ npm run dev          # http://localhost:5173
 
 ---
 
-## 📚 Datasets
+## Datasets
 
 | Dataset | Use | Size | License |
 |---|---|---|---|
@@ -252,7 +252,7 @@ npm run dev          # http://localhost:5173
 
 ---
 
-## 🔒 Security & Privacy
+## Security & Privacy
 
 - **JWT authentication** with three roles (Citizen / Police / Admin), enforced backend + frontend.
 - **bcrypt** password hashing; disabled accounts cannot log in.
@@ -262,7 +262,7 @@ npm run dev          # http://localhost:5173
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [ ] External threat feeds (Google Safe Browsing / URLhaus)
 - [ ] Continuous live health monitoring & alerting
