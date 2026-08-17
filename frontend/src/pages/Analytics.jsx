@@ -1,97 +1,140 @@
-import { useEffect, useState } from 'react'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  LineChart,
-  Line,
-  CartesianGrid,
-} from 'recharts'
-import { getStats } from '../api/incidents'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { BarChart3, RefreshCw, AlertCircle, Loader2 } from 'lucide-react'
+import { getStats, listIncidents } from '../api/incidents'
+import { summarize, deriveKeyIntel } from '../lib/analytics'
+import SummaryStrip from '../components/analytics/SummaryStrip'
+import ThreatLandscape from '../components/analytics/ThreatLandscape'
+import ThreatActivity from '../components/analytics/ThreatActivity'
+import { RiskIntelligence, KeyIntelligence } from '../components/analytics/IntelPanels'
 
-const THREAT_COLORS = {
-  critical: '#f87171',
-  high: '#fb923c',
-  medium: '#facc15',
-  low: '#34d399',
-}
+const RANGES = [
+  { days: 7, label: '7 days' },
+  { days: 14, label: '14 days' },
+  { days: 30, label: '30 days' },
+  { days: 90, label: '90 days' },
+]
 
-const TYPE_COLORS = ['#a855f7', '#60a5fa', '#f472b6', '#fbbf24']
+const INCIDENT_WINDOW = 100
 
+/**
+ * Cyber Intelligence & Analytics.
+ *
+ * Reuses the existing /api/incidents/stats endpoint (including its `days`
+ * parameter for the date range) plus the incident list for the highest
+ * observed risk score. All figures and observations are computed from that
+ * real data — see lib/analytics.js. Nothing is estimated or invented.
+ */
 export default function Analytics() {
+  const [days, setDays] = useState(14)
   const [stats, setStats] = useState(null)
+  const [incidents, setIncidents] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
+  const [error, setError] = useState('')
+
+  const load = useCallback(
+    async (period, manual = false) => {
+      if (manual) setRefreshing(true)
+      setError('')
+      try {
+        const [statsData, list] = await Promise.all([
+          getStats(period),
+          listIncidents({ page: 1, pageSize: INCIDENT_WINDOW }),
+        ])
+        setStats(statsData)
+        setIncidents(list.items || [])
+      } catch {
+        setError('Could not load analytics. The detection service may be offline.')
+      } finally {
+        setLoading(false)
+        if (manual) setRefreshing(false)
+      }
+    },
+    []
+  )
 
   useEffect(() => {
-    getStats(14).then(setStats)
-  }, [])
+    load(days)
+  }, [days, load])
 
-  if (!stats) return <div className="p-8 text-slate-500">Loading...</div>
+  const summary = useMemo(() => summarize(stats, incidents), [stats, incidents])
+  const keyIntel = useMemo(() => deriveKeyIntel(summary), [summary])
 
   return (
-    <div className="p-8">
-      <h2 className="text-xl font-semibold mb-1">Threat Analytics</h2>
-      <p className="text-sm text-slate-500 mb-6">
-        {stats.total_incidents} total incidents · average risk score {stats.average_risk_score}
-      </p>
+    <div className="min-h-full bg-[#16181c]">
+      <div className="mx-auto max-w-375 space-y-4 p-6">
+        {/* header */}
+        <header className="flex flex-wrap items-end justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-amber-400/25 bg-amber-400/10 text-amber-300">
+              <BarChart3 size={18} />
+            </span>
+            <div>
+              <h1 className="text-[19px] font-semibold tracking-tight text-zinc-50">
+                Cyber Intelligence &amp; Analytics
+              </h1>
+              <p className="mt-0.5 text-[12.5px] text-zinc-500">
+                Threat patterns, investigation activity, and cybercrime trends.
+              </p>
+            </div>
+          </div>
 
-      <div className="grid grid-cols-2 gap-5 mb-5">
-        <div className="bg-slate-900 border border-slate-800 rounded-lg p-5">
-          <h3 className="text-sm font-semibold text-slate-300 mb-4">Incidents by Threat Level</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={stats.by_threat_level}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="threat_level" stroke="#64748b" fontSize={12} />
-              <YAxis stroke="#64748b" fontSize={12} allowDecimals={false} />
-              <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid #1e293b' }} />
-              <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                {stats.by_threat_level.map((entry, i) => (
-                  <Cell key={i} fill={THREAT_COLORS[entry.threat_level] || '#94a3b8'} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+          <div className="flex items-center gap-2">
+            {/* date range */}
+            <div className="flex rounded-md border border-white/8 bg-white/2 p-0.5">
+              {RANGES.map((r) => (
+                <button
+                  key={r.days}
+                  onClick={() => setDays(r.days)}
+                  className={`rounded px-2.5 py-1.5 text-[11.5px] font-medium transition ${
+                    days === r.days
+                      ? 'bg-amber-400/12 text-amber-200'
+                      : 'text-zinc-500 hover:text-zinc-300'
+                  }`}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-lg p-5">
-          <h3 className="text-sm font-semibold text-slate-300 mb-4">Incidents by Type</h3>
-          <ResponsiveContainer width="100%" height={220}>
-            <PieChart>
-              <Pie
-                data={stats.by_type}
-                dataKey="count"
-                nameKey="incident_type"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                label={(entry) => entry.incident_type}
-              >
-                {stats.by_type.map((_, i) => (
-                  <Cell key={i} fill={TYPE_COLORS[i % TYPE_COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid #1e293b' }} />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+            <button
+              onClick={() => load(days, true)}
+              disabled={refreshing}
+              className="inline-flex items-center gap-1.5 rounded-md border border-white/8 bg-white/3 px-2.5 py-1.5 text-[12px] text-zinc-300 transition hover:bg-white/6 disabled:opacity-50"
+            >
+              <RefreshCw size={13} className={refreshing ? 'animate-spin' : ''} /> Refresh
+            </button>
+          </div>
+        </header>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-lg p-5">
-        <h3 className="text-sm font-semibold text-slate-300 mb-4">Daily Trend (last 14 days)</h3>
-        <ResponsiveContainer width="100%" height={220}>
-          <LineChart data={stats.daily_counts}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-            <XAxis dataKey="date" stroke="#64748b" fontSize={12} />
-            <YAxis stroke="#64748b" fontSize={12} allowDecimals={false} />
-            <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid #1e293b' }} />
-            <Line type="monotone" dataKey="count" stroke="#a855f7" strokeWidth={2} dot={{ r: 3 }} />
-          </LineChart>
-        </ResponsiveContainer>
+        {error && (
+          <div className="flex items-center gap-2 rounded-lg border border-red-900/60 bg-red-950/30 px-4 py-3 text-[12.5px] text-red-300">
+            <AlertCircle size={15} /> {error}
+          </div>
+        )}
+
+        {loading ? (
+          <div className="flex items-center gap-2 rounded-lg border border-white/7 bg-white/2 px-4 py-16 text-[13px] text-zinc-500">
+            <Loader2 size={15} className="animate-spin" /> Loading analytics…
+          </div>
+        ) : (
+          <>
+            {/* operational summary */}
+            <SummaryStrip summary={summary} />
+
+            {/* threat landscape */}
+            <ThreatLandscape stats={stats} />
+
+            {/* trend */}
+            <ThreatActivity dailyCounts={stats?.daily_counts || []} trend={summary?.trend} days={days} />
+
+            {/* risk + key intelligence */}
+            <div className="grid gap-4 xl:grid-cols-2">
+              <RiskIntelligence summary={summary} />
+              <KeyIntelligence items={keyIntel} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
