@@ -1,16 +1,16 @@
 import { NavLink, Outlet, Link } from 'react-router-dom'
 import {
-  ShieldAlert, FolderKanban, ScanSearch, BarChart3, Share2, Brain, Bot, Scale, Map, Settings,
+  ShieldAlert, Activity, FolderKanban, ScanSearch, BarChart3, Share2, Bot, Scale, Map, Settings,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', icon: ShieldAlert },
+  { to: '/dashboard/feed', label: 'Live Feed', icon: Activity },
   { to: '/dashboard/cases', label: 'Cases', icon: FolderKanban },
   { to: '/dashboard/check', label: 'Check Threat', icon: ScanSearch },
   { to: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
   { to: '/dashboard/graph', label: 'Threat Graph', icon: Share2 },
-  { to: '/dashboard/intel-graph', label: 'Intelligence Graph', icon: Brain },
   { to: '/dashboard/copilot', label: 'AI Copilot', icon: Bot },
   { to: '/dashboard/map', label: 'Heatmap', icon: Map },
 ]

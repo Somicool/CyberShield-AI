@@ -20,11 +20,11 @@ import GuardianGuide from './pages/citizen/GuardianGuide'
 import CitizenProfile from './pages/citizen/CitizenProfile'
 import CheckThreat from './pages/CheckThreat'
 import LiveFeed from './pages/LiveFeed'
+import ThreatFeed from './pages/ThreatFeed'
 import Cases from './pages/Cases'
 import InvestigationWorkspace from './pages/InvestigationWorkspace'
 import IncidentDetail from './pages/IncidentDetail'
 import Analytics from './pages/Analytics'
-import ThreatGraph from './pages/ThreatGraph'
 import ThreatIntelligenceGraph from './pages/ThreatIntelligenceGraph'
 import InvestigationCopilot from './pages/InvestigationCopilot'
 import AdminSystem from './pages/AdminSystem'
@@ -71,12 +71,16 @@ function App() {
             }
           >
             <Route index element={<LiveFeed />} />
+            <Route path="feed" element={<ThreatFeed />} />
             <Route path="cases" element={<Cases />} />
             <Route path="investigate/:id" element={<InvestigationWorkspace />} />
             <Route path="check" element={<CheckThreat />} />
             <Route path="incidents/:id" element={<IncidentDetail />} />
             <Route path="analytics" element={<Analytics />} />
-            <Route path="graph" element={<ThreatGraph />} />
+            {/* Single threat-graph page. `intel-graph` is kept as an alias
+                (rendering the same page, so query params survive) for any
+                older deep links. */}
+            <Route path="graph" element={<ThreatIntelligenceGraph />} />
             <Route path="intel-graph" element={<ThreatIntelligenceGraph />} />
             <Route path="copilot" element={<InvestigationCopilot />} />
             <Route
