@@ -191,10 +191,10 @@ export default function InvestigationWorkspace() {
     })
   }, [incident, id, briefing, entities, graph.related])
 
+  /** Threat graph scoped to this specific case. */
   const viewGraph = useCallback(() => {
-    const dom = domainForIncident(incident)
-    navigate(dom ? `/dashboard/graph?type=Domain&value=${encodeURIComponent(dom)}` : '/dashboard/graph')
-  }, [incident, navigate])
+    navigate(`/dashboard/graph?incident=${id}`)
+  }, [id, navigate])
 
   const openEntity = useCallback(
     (type, value) => navigate(`/dashboard/graph?type=${type}&value=${encodeURIComponent(value)}`),

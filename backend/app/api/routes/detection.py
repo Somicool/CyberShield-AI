@@ -173,5 +173,16 @@ def get_graph_connections(entity_type: str, entity_value: str):
             detail=f"entity_type must be one of {sorted(VALID_ENTITY_LABELS)}",
         )
 
-    result = get_connected_entities(entity_type, entity_value)
+    try:
+        result = get_connected_entities(entity_type, entity_value)
+    except Exception:
+        # Neo4j is supporting infrastructure. If it's unreachable (paused Aura
+        # instance, DNS/network failure), report it clearly as a service issue
+        # instead of leaking a 500 — the UI degrades to "no connections".
+        logging.getLogger(__name__).exception("Threat graph lookup failed for %s:%s", entity_type, entity_value)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Threat graph service is unavailable. Entity relationships cannot be loaded right now.",
+        )
+
     return GraphConnectionsResponse(**result)

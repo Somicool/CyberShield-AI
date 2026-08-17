@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Share2, Brain, Radar, Route as RouteIcon, Boxes, AlertCircle } from 'lucide-react'
 import { getGraphConnections, getIncident } from '../api/incidents'
 import {
   createModel,
   mergeConnections,
+  seedIncident,
   toGraphData,
   degreeOf,
   shortestPath,
@@ -13,6 +14,8 @@ import {
   buildCampaignBriefing,
   ENTITY_QUERY_TYPES,
 } from '../lib/graphModel'
+import { extractEntities } from '../lib/entities'
+import { deriveCaseId } from '../lib/caseHelpers'
 import GraphToolbar from '../components/graph/GraphToolbar'
 import GraphCanvas from '../components/graph/GraphCanvas'
 import GraphInsights from '../components/graph/GraphInsights'
@@ -52,6 +55,7 @@ export default function ThreatIntelligenceGraph() {
   const [hasSearched, setHasSearched] = useState(false)
 
   const [filters, setFilters] = useState(DEFAULT_FILTERS)
+  const [caseContext, setCaseContext] = useState(null) // { id, caseId, entityCount }
   const [selectedNode, setSelectedNode] = useState(null)
   const [incidentDetail, setIncidentDetail] = useState(null)
   const [loadingDetail, setLoadingDetail] = useState(false)
@@ -90,6 +94,60 @@ export default function ThreatIntelligenceGraph() {
     }
   }, [])
 
+  /**
+   * Builds the graph for ONE case: seeds the case node with every entity
+   * extracted from its content, then expands each queryable entity through the
+   * real /detect/graph endpoint to reveal links to other investigations.
+   */
+  const loadCaseGraph = useCallback(async (incidentId) => {
+    setLoading(true)
+    setError('')
+    try {
+      const incident = await getIncident(incidentId)
+      const entities = extractEntities(incident)
+      const entityCount = Object.values(entities).reduce((s, a) => s + a.length, 0)
+
+      seedIncident(modelRef.current, incidentId, incident.incident_type, entities)
+
+      // Expand outward from each of the case's own indicators.
+      let queries = 0
+      let graphUnavailable = false
+      for (const [type, values] of Object.entries(entities)) {
+        if (!ENTITY_QUERY_TYPES.includes(type)) continue
+        for (const value of values) {
+          if (queries >= MAX_EXPAND_QUERIES) break
+          queries++
+          try {
+            const data = await getGraphConnections(type, value)
+            mergeConnections(modelRef.current, type, value, data.connections || [])
+          } catch (e) {
+            // One failed lookup must not abort the case graph; remember if the
+            // graph service itself is down so we can explain it.
+            if (e?.response?.status === 503) graphUnavailable = true
+          }
+        }
+      }
+
+      setCaseContext({ id: incidentId, caseId: deriveCaseId(incident), entityCount })
+      setHasSearched(true)
+      setHighlightId(`Incident:${incidentId}`)
+      bump()
+      setTimeout(() => canvasRef.current?.fit(), 400)
+
+      // The case + its own indicators always render; only cross-case links
+      // need the graph service, so say so rather than failing silently.
+      if (graphUnavailable) {
+        setError(
+          'Showing this case and its own indicators. Cross-case relationships are unavailable because the threat graph service could not be reached.'
+        )
+      }
+    } catch {
+      setError('Could not load this case.')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
   const runSearch = useCallback(async () => {
     const value = searchValue.trim()
     if (!value) return
@@ -111,14 +169,23 @@ export default function ThreatIntelligenceGraph() {
     }
   }, [searchType, searchValue, depth, expandBFS])
 
-  // Deep-link support (?type=&value=), e.g. from the Investigation Workspace.
+  /**
+   * Deep links:
+   *   ?incident=<id>          → build the graph for that one case
+   *   ?type=Domain&value=x    → start from a single entity
+   */
   useEffect(() => {
+    const incidentId = searchParams.get('incident')
+    if (incidentId) {
+      loadCaseGraph(incidentId)
+      return
+    }
+
     const t = searchParams.get('type')
     const v = searchParams.get('value')
     if (t && v) {
       setSearchType(t)
       setSearchValue(v)
-      // run once on mount
       ;(async () => {
         setLoading(true)
         try {
@@ -135,7 +202,7 @@ export default function ThreatIntelligenceGraph() {
       })()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [searchParams])
 
   const expandNode = useCallback(async (node) => {
     if (!ENTITY_QUERY_TYPES.includes(node.type)) return
@@ -260,6 +327,7 @@ export default function ThreatIntelligenceGraph() {
     setPath({ computed: false, nodes: [] })
     setFilters(DEFAULT_FILTERS)
     setHasSearched(false)
+    setCaseContext(null)
     bump()
   }
 
@@ -330,6 +398,25 @@ export default function ThreatIntelligenceGraph() {
         </div>
       )}
 
+      {/* Case context — shown when the graph was opened for a specific case */}
+      {caseContext && (
+        <div className="flex flex-wrap items-center gap-3 rounded-lg border border-amber-400/25 bg-amber-400/8 px-4 py-2.5">
+          <span className="inline-flex items-center gap-2 text-[12.5px] text-amber-200">
+            <Boxes size={14} />
+            Case graph · <span className="font-mono">{caseContext.caseId}</span>
+          </span>
+          <span className="text-[11.5px] text-zinc-400">
+            {caseContext.entityCount} indicator{caseContext.entityCount === 1 ? '' : 's'} extracted from this case
+          </span>
+          <Link
+            to={`/dashboard/investigate/${caseContext.id}`}
+            className="ml-auto text-[11.5px] font-medium text-amber-300/90 hover:text-amber-200"
+          >
+            Open Investigation →
+          </Link>
+        </div>
+      )}
+
       {/* Section 6 — insights */}
       {hasSearched && (
         <div className="flex items-center gap-2">
@@ -361,9 +448,9 @@ export default function ThreatIntelligenceGraph() {
               <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
                 <Share2 size={30} className="text-slate-700" />
                 <p className="text-sm text-slate-400">Search an entity to build the intelligence graph.</p>
-                <p className="max-w-sm text-xs text-slate-600">
-                  Start from a domain, wallet, email, phone number or Telegram handle. Increase relationship depth
-                  to expand the network through shared incidents.
+                <p className="max-w-md text-xs text-slate-600">
+                  Start from a domain, wallet, email, phone number or Telegram handle — or open the graph from a
+                  case (Cases → View Threat Graph) to map that investigation and everything connected to it.
                 </p>
               </div>
             )}

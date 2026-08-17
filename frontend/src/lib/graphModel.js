@@ -93,6 +93,33 @@ export function mergeConnections(model, rootType, rootValue, connections) {
   return model
 }
 
+/**
+ * Seeds the model directly from ONE case: creates its Incident node and links
+ * every entity extracted from that case's content.
+ *
+ * This is what makes the graph work per-case — the officer sees the case at the
+ * centre with all of its own indicators, before any expansion reaches out to
+ * other investigations.
+ *
+ * @param {object} entities  { Domain: [], Email: [], Phone: [], Wallet: [], TelegramHandle: [] }
+ */
+export function seedIncident(model, incidentId, incidentType, entities = {}) {
+  const incId = `Incident:${incidentId}`
+  ensureNode(model, incId, 'Incident', incidentId)
+  model.roots.add(incId)
+
+  for (const [type, values] of Object.entries(entities)) {
+    for (const value of values || []) {
+      if (!value) continue
+      const entId = `${type}:${value}`
+      ensureNode(model, entId, type, value)
+      addEdge(model, incId, entId, 'Appears In')
+    }
+  }
+  model.version += 1
+  return model
+}
+
 /** Fresh graphData object for react-force-graph (stable node refs preserved). */
 export function toGraphData(model) {
   return {
