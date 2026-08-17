@@ -7,6 +7,7 @@ incidents (detect/investigate). This file only reads — a clean split
 between "create a threat record" and "browse threat records".
 """
 
+import logging
 import uuid
 from datetime import datetime, timedelta, timezone
 
@@ -14,8 +15,11 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_police
 from app.db.session import get_db
+from app.models.complaint import Complaint
 from app.models.incident import Incident, IncidentType, ThreatLevel
+from app.models.user import User
 from app.schemas.incident import (
     IncidentDetail,
     IncidentListResponse,
@@ -25,6 +29,8 @@ from app.schemas.incident import (
     IncidentTypeCount,
     DailyCount,
 )
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/incidents", tags=["incidents"])
 
@@ -125,6 +131,51 @@ def get_incident(incident_id: uuid.UUID, db: Session = Depends(get_db)):
     if incident is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incident not found")
     return IncidentDetail.model_validate(incident)
+
+
+@router.delete("/{incident_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_incident(
+    incident_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    actor: User = Depends(get_current_police),
+):
+    """
+    Permanently deletes a single case (incident) record.
+
+    Restricted to police officers and administrators — case records are
+    evidence, so deletion must never be available to citizens or anonymous
+    callers. The action is irreversible, which is why the UI confirms first.
+
+    Cleanup performed alongside the row delete:
+    - Any citizen complaint that referenced this incident is detached
+      (incident_id set to NULL) so the complaint itself survives intact
+      rather than pointing at a missing record.
+    - The matching Incident node is removed from the Neo4j threat graph,
+      along with entities left orphaned by its removal. A graph failure is
+      logged but never blocks the delete, since Postgres is the system of
+      record.
+    """
+    incident = db.query(Incident).filter(Incident.id == incident_id).first()
+    if incident is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incident not found")
+
+    db.query(Complaint).filter(Complaint.incident_id == incident_id).update(
+        {"incident_id": None}, synchronize_session=False
+    )
+
+    db.delete(incident)
+    db.commit()
+
+    logger.info("incident %s deleted by %s", incident_id, actor.email)
+
+    try:
+        from app.services.graph import delete_incident_from_graph
+
+        delete_incident_from_graph(str(incident_id))
+    except Exception:
+        logger.exception("Failed to remove incident %s from the threat graph", incident_id)
+
+    return None
 
 
 @router.get("/map/points")

@@ -117,6 +117,13 @@ export function setNotes(id, notes) {
   update(id, { notes })
 }
 
+/** Purge local workflow state for a case that has been deleted server-side. */
+export function removeCase(id) {
+  if (!(id in state)) return
+  delete state[id]
+  emit()
+}
+
 // ---- Evidence vault ------------------------------------------------------
 
 export function getEvidence(id) {

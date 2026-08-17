@@ -93,6 +93,32 @@ def _link_entity(tx, incident_id: str, label: str, key: str, value: str, extra: 
     )
 
 
+def delete_incident_from_graph(incident_id: str) -> None:
+    """
+    Removes an Incident node and its INVOLVES relationships from the graph.
+
+    Shared entities (domains, wallets, handles...) are deliberately kept when
+    other incidents still reference them — only entities left orphaned by this
+    deletion are removed, so the graph never accumulates dangling nodes that
+    belong to no case.
+    """
+    driver = get_driver()
+    with driver.session() as session:
+        session.execute_write(_delete_incident_node, incident_id)
+
+
+def _delete_incident_node(tx, incident_id: str):
+    tx.run("MATCH (i:Incident {id: $incident_id}) DETACH DELETE i", incident_id=incident_id)
+    tx.run(
+        """
+        MATCH (e)
+        WHERE (e:Domain OR e:Email OR e:Phone OR e:Wallet OR e:TelegramHandle)
+          AND NOT (e)<-[:INVOLVES]-(:Incident)
+        DELETE e
+        """
+    )
+
+
 def get_connected_entities(entity_label: str, entity_value: str) -> dict:
     """
     Given an entity (e.g. a domain), finds everything connected to it

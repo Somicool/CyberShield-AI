@@ -23,6 +23,14 @@ export async function getStats(days = 14) {
   return data
 }
 
+/**
+ * Permanently deletes a case. Police/admin only (enforced server-side) and
+ * irreversible — always confirm with the officer before calling this.
+ */
+export async function deleteIncident(id) {
+  await apiClient.delete(`/incidents/${id}`)
+}
+
 export async function investigateIncident(id) {
   const { data } = await apiClient.post(`/detect/${id}/investigate`)
   return data
