@@ -16,14 +16,29 @@ const POLL_INTERVAL_MS = 10000
  * badges. `search` is lifted to the parent so the AI Intelligence feed can
  * pivot the officer straight to relevant incidents.
  */
-export default function ThreatFeedTable({ search, setSearch, onTotal }) {
+export default function ThreatFeedTable({
+  search,
+  setSearch,
+  onTotal,
+  // Optional pre-set filters, used when another page drills through to the
+  // feed (e.g. Analytics → "critical"). Defaults keep the original behaviour.
+  initialThreatLevel = '',
+  initialIncidentType = '',
+}) {
   const [items, setItems] = useState([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
-  const [threatLevel, setThreatLevel] = useState('')
-  const [incidentType, setIncidentType] = useState('')
+  const [threatLevel, setThreatLevel] = useState(initialThreatLevel)
+  const [incidentType, setIncidentType] = useState(initialIncidentType)
   const [loading, setLoading] = useState(true)
   const pageSize = 15
+
+  // Re-apply when a new drill-through arrives while already on this page.
+  useEffect(() => {
+    setThreatLevel(initialThreatLevel)
+    setIncidentType(initialIncidentType)
+    setPage(1)
+  }, [initialThreatLevel, initialIncidentType])
 
   const fetchData = useCallback(async () => {
     try {
