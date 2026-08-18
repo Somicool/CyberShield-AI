@@ -5,6 +5,7 @@ import {
 import { useCrimeGPT, getCase, setEntities, logDiaryOnce } from '../../lib/crimegptStore'
 import { buildCrimeContext, seedEntitiesFromWorkspace } from '../../lib/crimegptContext'
 import { deriveCaseId } from '../../lib/caseHelpers'
+import AiSafetyNote from './AiSafetyNote'
 import CrimeGPTDashboard from './CrimeGPTDashboard'
 import NarrativeEditor from './NarrativeEditor'
 import EntityWorkbench from './EntityWorkbench'
@@ -59,7 +60,7 @@ export default function CrimeGPTModule({ incident, meta, entities, related, case
       logDiaryOnce(
         incidentId,
         'detected',
-        `Threat detected by CyberShield AI — ${incident.incident_type}, risk ${incident.risk_score != null ? Number(incident.risk_score).toFixed(0) : 'N/A'}/100, level ${incident.threat_level || 'N/A'}.`,
+        `Threat detected by CyberAid — ${incident.incident_type}, risk ${incident.risk_score != null ? Number(incident.risk_score).toFixed(0) : 'N/A'}/100, level ${incident.threat_level || 'N/A'}.`,
         incident.created_at,
       )
     }
@@ -82,38 +83,26 @@ export default function CrimeGPTModule({ incident, meta, entities, related, case
   const shared = { incident, incidentId, caseId, meta, context, crimeCase, noteAi }
 
   return (
-    <div className="space-y-4">
-      {/* Module header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-purple-700/40 bg-linear-to-r from-purple-950/40 to-slate-900/40 px-4 py-3">
-        <div className="flex items-center gap-3">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-purple-500/40 bg-purple-500/10 text-purple-300">
-            <Scale size={20} />
-          </span>
-          <div>
-            <h2 className="text-base font-semibold tracking-tight text-slate-100">CrimeGPT</h2>
-            <p className="text-xs text-slate-500">
-              Legal intelligence · document drafting · case diary — grounded in this investigation
-            </p>
-          </div>
+    <div className="flex flex-col gap-3">
+      {/* Sub navigation — sticky so the AI-safety reminder stays visible */}
+      <div className="sticky top-0 z-20 -mx-1 flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-lg border border-white/10 bg-[#111722]/88 px-2 py-1.5 backdrop-blur-md">
+        <div className="flex min-w-0 flex-1 flex-wrap gap-0.5">
+          {TABS.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => setTab(id)}
+              aria-current={tab === id}
+              className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12.5px] font-medium transition ${
+                tab === id
+                  ? 'bg-white/8 text-cyan-200'
+                  : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200'
+              }`}
+            >
+              <Icon size={13} /> {label}
+            </button>
+          ))}
         </div>
-        <span className="rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-1 text-[11px] text-amber-300">
-          AI decision-support — verify before official use
-        </span>
-      </div>
-
-      {/* Sub navigation */}
-      <div className="flex flex-wrap gap-1 rounded-xl border border-slate-800 bg-slate-900/40 p-1.5">
-        {TABS.map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            onClick={() => setTab(id)}
-            className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition ${
-              tab === id ? 'bg-purple-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-            }`}
-          >
-            <Icon size={14} /> {label}
-          </button>
-        ))}
+        <AiSafetyNote className="shrink-0 pr-1" />
       </div>
 
       {/* Active panel */}

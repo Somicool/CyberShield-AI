@@ -1,173 +1,173 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Scale, Search, FileText, AlertCircle, ArrowLeft, FolderKanban } from 'lucide-react'
+import { AlertCircle, ArrowLeft } from 'lucide-react'
 import { listIncidents } from '../api/incidents'
-import { deriveCaseId, threatRank } from '../lib/caseHelpers'
+import { deriveCaseId } from '../lib/caseHelpers'
+import { relativeTime } from '../lib/intel'
 import useCaseData from '../hooks/useCaseData'
 import { Skeleton } from '../components/cases/Skeleton'
-import ThreatBadge from '../components/ThreatBadge'
+import AiSafetyNote from '../components/crimegpt/AiSafetyNote'
+import CaseSelector from '../components/crimegpt/CaseSelector'
 import CrimeGPTModule from '../components/crimegpt/CrimeGPTModule'
 
 const WORKING_SET_SIZE = 100
 
+const THREAT_TEXT = {
+  critical: 'text-red-300',
+  high: 'text-amber-300',
+  medium: 'text-zinc-200',
+  low: 'text-emerald-300',
+}
+
+function HeaderFact({ label, value, className = '' }) {
+  return (
+    <div className="min-w-0">
+      <div className="text-[11px] uppercase tracking-[0.08em] text-zinc-500">{label}</div>
+      <div className={`truncate text-[14px] font-medium ${className || 'text-zinc-100'}`}>{value}</div>
+    </div>
+  )
+}
+
 /**
- * CrimeGPT page — the top-level, police-only entry point. The officer selects
- * a case from the list (or via the header selector / a deep link), and
- * CrimeGPT loads that case's real investigation data (via useCaseData) and
- * renders the integrated legal-intelligence module. No data is re-entered:
- * everything flows from the existing detection/investigation APIs.
+ * CrimeGPT page — the police-only entry point.
+ *
+ * The officer picks a case, then CrimeGPT loads that case's real investigation
+ * data (useCaseData) and renders the legal-intelligence workspace. Nothing is
+ * re-entered: everything flows from the existing detection/investigation APIs.
  */
 export default function CrimeGPT() {
   const { id } = useParams()
   const navigate = useNavigate()
-
   const [incidents, setIncidents] = useState([])
-  const [listLoading, setListLoading] = useState(true)
-  const [query, setQuery] = useState('')
 
   const caseData = useCaseData(id)
 
+  // Case switcher list — only needed once a case is open.
   useEffect(() => {
+    if (!id) return
     listIncidents({ page: 1, pageSize: WORKING_SET_SIZE })
       .then((d) => setIncidents(d.items || []))
       .catch(() => setIncidents([]))
-      .finally(() => setListLoading(false))
-  }, [])
+  }, [id])
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    let list = incidents
-    if (q) {
-      list = list.filter(
-        (i) =>
-          (i.raw_content || '').toLowerCase().includes(q) ||
-          (i.incident_type || '').toLowerCase().includes(q) ||
-          deriveCaseId(i).toLowerCase().includes(q),
-      )
-    }
-    return [...list].sort((a, b) => threatRank(b.threat_level) - threatRank(a.threat_level))
-  }, [incidents, query])
+  const open = (incidentId) => navigate(`/dashboard/crimegpt/${incidentId}`)
 
-  const select = (incidentId) => navigate(`/dashboard/crimegpt/${incidentId}`)
-
-  // ---- case selected: render the module ----------------------------------
-  if (id) {
+  // ---- no case selected: pick one ----------------------------------------
+  if (!id) {
     return (
-      <div className="p-8">
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate('/dashboard/crimegpt')}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800"
-            >
-              <ArrowLeft size={15} /> All cases
-            </button>
-            <div>
-              <h1 className="text-lg font-semibold tracking-tight text-slate-100">CrimeGPT</h1>
-              <p className="text-xs text-slate-500">Legal intelligence for {caseData.caseId || 'selected case'}</p>
+      <div className="min-h-full">
+        <div className="mx-auto flex max-w-375 flex-col gap-3 p-6">
+          <header className="flex flex-wrap items-end justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="text-[19px] font-semibold tracking-tight text-zinc-50">CrimeGPT</h1>
+              <p className="text-[13px] text-zinc-500">
+                AI-assisted legal intelligence, case documentation and investigation support.
+              </p>
             </div>
-          </div>
+            <AiSafetyNote />
+          </header>
 
-          {/* Quick case switcher */}
-          <select
-            aria-label="Switch case"
-            value={id}
-            onChange={(e) => select(e.target.value)}
-            className="max-w-[280px] rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-200 focus:border-purple-600 focus:outline-none"
-          >
-            {incidents.map((i) => (
-              <option key={i.id} value={i.id}>
-                {deriveCaseId(i)} · {i.incident_type} · {(i.raw_content || '').slice(0, 30)}
-              </option>
-            ))}
-          </select>
+          <CaseSelector onOpen={open} />
         </div>
-
-        {caseData.loading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-40 w-full" />
-          </div>
-        ) : caseData.error || !caseData.incident ? (
-          <div className="flex items-center gap-2 rounded-lg border border-red-900 bg-red-950/40 px-4 py-3 text-sm text-red-300">
-            <AlertCircle size={16} /> {caseData.error || 'Case not found.'}
-          </div>
-        ) : (
-          <CrimeGPTModule
-            incident={caseData.incident}
-            meta={caseData.meta}
-            entities={caseData.entities}
-            related={caseData.related}
-            caseId={caseData.caseId}
-            confidence={caseData.confidence}
-          />
-        )}
       </div>
     )
   }
 
-  // ---- no case selected: pick one ----------------------------------------
+  // ---- case selected: compact case header + module ------------------------
+  const { incident, meta, confidence, caseId } = caseData
+  const updated = meta?.updatedAt || incident?.created_at
+
   return (
-    <div className="p-8">
-      <div className="mb-6 flex items-center gap-3">
-        <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-purple-500/40 bg-purple-500/10 text-purple-300">
-          <Scale size={22} />
-        </span>
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-slate-100">CrimeGPT</h1>
-          <p className="text-sm text-slate-500">
-            Select a case to open legal recommendations, case law, AI document drafting, the case diary and the legal assistant.
-          </p>
-        </div>
-      </div>
-
-      <div className="mb-4 flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2">
-        <Search size={16} className="text-slate-500" />
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search cases by case number, type or content…"
-          className="flex-1 bg-transparent text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none"
-        />
-      </div>
-
-      {listLoading ? (
-        <div className="space-y-2">
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 px-4 py-10 text-center text-sm text-slate-500">
-          <FolderKanban size={26} className="mx-auto mb-2 text-slate-700" />
-          No cases match your search.
-        </div>
-      ) : (
-        <div className="grid gap-2">
-          {filtered.map((i) => (
+    <div className="min-h-full">
+      <div className="mx-auto flex max-w-375 flex-col gap-3 p-6">
+        <header className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
             <button
-              key={i.id}
-              onClick={() => select(i.id)}
-              className="group flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/50 px-4 py-3 text-left transition hover:border-purple-500/40 hover:bg-slate-900"
+              onClick={() => navigate('/dashboard/crimegpt')}
+              className="inline-flex h-9 items-center gap-1.5 rounded-md border border-white/10 bg-black/35 px-2.5 text-[13px] text-zinc-300 transition hover:border-cyan-400/40 hover:text-cyan-200"
             >
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-sm text-slate-200">{deriveCaseId(i)}</span>
-                  <ThreatBadge level={i.threat_level} />
-                  <span className="rounded border border-slate-700 bg-slate-800 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-slate-400">
-                    {i.incident_type}
-                  </span>
-                </div>
-                <p className="mt-1 truncate text-xs text-slate-500">{i.raw_content}</p>
-              </div>
-              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-purple-600/90 px-3 py-1.5 text-xs font-medium text-white opacity-0 transition group-hover:opacity-100">
-                <FileText size={13} /> Open CrimeGPT
-              </span>
+              <ArrowLeft size={14} /> All Cases
             </button>
-          ))}
-        </div>
-      )}
+            <h1 className="text-[17px] font-semibold tracking-tight text-zinc-50">CrimeGPT</h1>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {incidents.length > 0 && (
+              <select
+                aria-label="Switch case"
+                value={id}
+                onChange={(e) => open(e.target.value)}
+                className="h-9 max-w-70 rounded-md border border-white/10 bg-black/35 px-2.5 text-[13px] text-zinc-200 outline-none transition focus:border-cyan-400/40"
+              >
+                {incidents.map((i) => (
+                  <option key={i.id} value={i.id}>
+                    {deriveCaseId(i)} · {i.incident_type} · {(i.raw_content || '').slice(0, 30)}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+        </header>
+
+        {caseData.loading ? (
+          <div className="space-y-3">
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-64 w-full" />
+          </div>
+        ) : caseData.error || !incident ? (
+          <div className="flex items-center gap-2 rounded-lg border border-red-500/25 bg-red-500/8 px-3 py-2 text-[13px] text-red-200">
+            <AlertCircle size={14} /> {caseData.error || 'Case not found.'}
+          </div>
+        ) : (
+          <>
+            {/* Section 2 — compact case header */}
+            <section className="overflow-hidden rounded-lg border border-white/10 bg-[#111722]/82 backdrop-blur-md">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3 px-4 py-3 sm:grid-cols-3 lg:grid-cols-6">
+                <HeaderFact label="Case ID" value={<span className="font-mono">{caseId}</span>} />
+                <HeaderFact
+                  label="Threat Level"
+                  value={(incident.threat_level || 'unknown').toUpperCase()}
+                  className={THREAT_TEXT[incident.threat_level] || 'text-zinc-300'}
+                />
+                <HeaderFact
+                  label="Risk Score"
+                  value={
+                    <span className="font-mono tabular-nums">
+                      {incident.risk_score != null ? `${Number(incident.risk_score).toFixed(1)}/100` : '—'}
+                    </span>
+                  }
+                />
+                <HeaderFact
+                  label="Confidence"
+                  value={confidence != null ? `${confidence}%` : 'Not Available'}
+                  className={confidence != null ? '' : 'text-zinc-500'}
+                />
+                <HeaderFact label="Threat Type" value={(incident.incident_type || '').toUpperCase()} />
+                <HeaderFact
+                  label="Last Updated"
+                  value={<span title={new Date(updated).toLocaleString()}>{relativeTime(updated)}</span>}
+                />
+              </div>
+              <p
+                className="truncate border-t border-white/5 px-4 py-2 font-mono text-[12.5px] text-zinc-500"
+                title={incident.raw_content}
+              >
+                {incident.raw_content}
+              </p>
+            </section>
+
+            <CrimeGPTModule
+              incident={incident}
+              meta={meta}
+              entities={caseData.entities}
+              related={caseData.related}
+              caseId={caseId}
+              confidence={confidence}
+            />
+          </>
+        )}
+      </div>
     </div>
   )
 }
