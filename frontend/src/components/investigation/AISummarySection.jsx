@@ -36,7 +36,7 @@ export default function AISummarySection({ incident, confidence }) {
         </div>
 
         {confidence != null && (
-          <div className="mb-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+          <div className="mb-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-800/75">
             <div className="h-full rounded-full bg-purple-500" style={{ width: `${confidence}%` }} />
           </div>
         )}
@@ -48,7 +48,7 @@ export default function AISummarySection({ incident, confidence }) {
         ) : (
           <ul className="grid gap-2 sm:grid-cols-2">
             {reasons.map((r, i) => (
-              <li key={i} className="flex items-start gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 text-sm text-slate-300">
+              <li key={i} className="flex items-start gap-2 rounded-lg border border-slate-800 bg-slate-900/72 px-3 py-2 text-sm text-slate-300">
                 <AlertTriangle size={14} className="mt-0.5 shrink-0 text-orange-400" />
                 {r}
               </li>

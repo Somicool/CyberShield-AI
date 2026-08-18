@@ -14,7 +14,7 @@ export default function AIRecommendations({ actions = [] }) {
       {actions.map((a) => (
         <li
           key={a}
-          className="flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2.5 text-sm text-slate-200"
+          className="flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/72 px-3 py-2.5 text-sm text-slate-200"
         >
           <CheckCircle2 size={15} className="shrink-0 text-emerald-400" />
           {a}

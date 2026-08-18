@@ -253,12 +253,12 @@ export default function InvestigationWorkspace() {
       />
 
       {/* Workflow controls */}
-      <div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/40 px-4 py-3">
+      <div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/72 px-4 py-3">
         <label className="text-xs text-slate-500">Case status</label>
         <select
           value={meta.status}
           onChange={(e) => setStatus(id, e.target.value)}
-          className="rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-sm focus:border-purple-600 focus:outline-none"
+          className="rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-1.5 text-sm focus:border-purple-600 focus:outline-none"
         >
           {CASE_STATUSES.map((s) => (
             <option key={s.value} value={s.value}>

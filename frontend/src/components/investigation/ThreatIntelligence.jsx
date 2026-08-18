@@ -19,7 +19,7 @@ function Row({ k, v }) {
 
 function IntelCard({ icon: Icon, title, children }) {
   return (
-    <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-4">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/72 p-4">
       <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
         <Icon size={14} className="text-sky-400" />
         {title}

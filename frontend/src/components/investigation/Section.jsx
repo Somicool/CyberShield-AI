@@ -10,7 +10,7 @@ export default function Section({ icon: Icon, title, subtitle, right, defaultOpe
   const [open, setOpen] = useState(defaultOpen)
 
   return (
-    <section className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40">
+    <section className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/72">
       <div className="flex items-center gap-3 border-b border-slate-800 px-4 py-3">
         <button
           onClick={() => setOpen((o) => !o)}

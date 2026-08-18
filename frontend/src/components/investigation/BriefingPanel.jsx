@@ -28,7 +28,7 @@ export default function BriefingPanel({ open, onClose, briefing, caseId, threatL
       <aside
         role="dialog"
         aria-label="AI Investigation Briefing"
-        className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-slate-800 bg-slate-950 shadow-2xl transition-transform duration-300 ${
+        className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-slate-800 bg-slate-950/95 shadow-2xl transition-transform duration-300 ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -37,10 +37,10 @@ export default function BriefingPanel({ open, onClose, briefing, caseId, threatL
             <Brain size={18} className="text-purple-400" />
             <div>
               <h3 className="text-sm font-semibold text-slate-100">AI Investigation Briefing</h3>
-              <p className="text-[11px] text-slate-500">{caseId} · read-only assessment</p>
+              <p className="text-[12.5px] text-slate-500">{caseId} · read-only assessment</p>
             </div>
           </div>
-          <button onClick={onClose} aria-label="Close briefing" className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-white">
+          <button onClick={onClose} aria-label="Close briefing" className="rounded p-1 text-slate-400 hover:bg-slate-800/75 hover:text-white">
             <X size={18} />
           </button>
         </div>
@@ -52,12 +52,12 @@ export default function BriefingPanel({ open, onClose, briefing, caseId, threatL
             </p>
           ))}
 
-          <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-4">
+          <div className="rounded-lg border border-slate-800 bg-slate-900/72 p-4">
             <div className="flex items-center gap-2 text-sm font-medium text-slate-200">
               <ShieldAlert size={15} className="text-amber-400" />
               Recommended Priority: <span className="text-white">{briefing?.priority}</span>
             </div>
-            <p className="mt-2 text-[11px] uppercase tracking-wide text-slate-500">Immediate actions recommended</p>
+            <p className="mt-2 text-[12.5px] uppercase tracking-wide text-slate-500">Immediate actions recommended</p>
             <ul className="mt-1.5 space-y-1">
               {briefing?.actions?.map((a) => (
                 <li key={a} className="flex items-center gap-2 text-sm text-slate-200">
@@ -68,7 +68,7 @@ export default function BriefingPanel({ open, onClose, briefing, caseId, threatL
             </ul>
           </div>
 
-          <p className="text-[11px] leading-relaxed text-slate-600">
+          <p className="text-[12.5px] leading-relaxed text-slate-600">
             This briefing is generated automatically from recorded detection, investigation and threat-graph data.
             Verify all findings before operational or legal action.
           </p>

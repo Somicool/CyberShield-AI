@@ -3,8 +3,8 @@ import { ChevronDown } from 'lucide-react'
 
 function ScoreCard({ label, value, suffix = '', accent = 'text-slate-100' }) {
   return (
-    <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-3">
-      <div className="text-[10px] uppercase tracking-wide text-slate-500">{label}</div>
+    <div className="rounded-lg border border-slate-800 bg-slate-900/72 p-3">
+      <div className="text-[11.5px] uppercase tracking-wide text-slate-500">{label}</div>
       <div className={`mt-1 text-xl font-semibold tabular-nums ${accent}`}>
         {value}
         <span className="text-sm text-slate-500">{suffix}</span>
@@ -16,7 +16,7 @@ function ScoreCard({ label, value, suffix = '', accent = 'text-slate-100' }) {
 function HeuristicRow({ hit }) {
   const [open, setOpen] = useState(false)
   return (
-    <li className="rounded-lg border border-slate-800 bg-slate-900/60">
+    <li className="rounded-lg border border-slate-800 bg-slate-900/72">
       <button
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}

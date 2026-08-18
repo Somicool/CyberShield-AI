@@ -7,14 +7,14 @@ import CasePriorityRibbon from '../cases/CasePriorityRibbon'
 function Meta({ label, children }) {
   return (
     <div className="min-w-0">
-      <div className="text-[10px] uppercase tracking-wide text-slate-500">{label}</div>
+      <div className="text-[11.5px] uppercase tracking-wide text-slate-500">{label}</div>
       <div className="truncate text-sm text-slate-200">{children}</div>
     </div>
   )
 }
 
 const QuickBtn =
-  'inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-medium text-slate-200 transition hover:bg-slate-700 disabled:opacity-50'
+  'inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/75 px-3 py-2 text-xs font-medium text-slate-200 transition hover:bg-slate-700 disabled:opacity-50'
 
 /**
  * Section 1 — sticky case header with identity, priority ribbon, the

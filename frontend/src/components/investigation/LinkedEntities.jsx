@@ -38,7 +38,7 @@ export default function LinkedEntities({ entities, onOpenEntity }) {
                   key={value}
                   onClick={() => onOpenEntity(type, value)}
                   title={`Open ${value} in Threat Graph`}
-                  className="max-w-full truncate rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 font-mono text-xs text-slate-200 transition hover:border-purple-500/50 hover:bg-slate-700"
+                  className="max-w-full truncate rounded-lg border border-slate-700 bg-slate-800/75 px-3 py-1.5 font-mono text-xs text-slate-200 transition hover:border-purple-500/50 hover:bg-slate-700"
                 >
                   {type === 'TelegramHandle' ? `@${value}` : value}
                 </button>

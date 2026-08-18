@@ -60,13 +60,13 @@ export default function IncidentDetail() {
         </div>
       </div>
 
-      <section className="bg-slate-900 border border-slate-800 rounded-lg p-5 mb-5">
+      <section className="bg-slate-900/80 border border-slate-800 rounded-lg p-5 mb-5">
         <h3 className="text-sm font-semibold text-slate-300 mb-2">AI Explanation</h3>
         <p className="text-slate-300 leading-relaxed">{incident.ai_explanation}</p>
       </section>
 
       {heuristics.length > 0 && (
-        <section className="bg-slate-900 border border-slate-800 rounded-lg p-5 mb-5">
+        <section className="bg-slate-900/80 border border-slate-800 rounded-lg p-5 mb-5">
           <h3 className="text-sm font-semibold text-slate-300 mb-3">Warning Signs Detected</h3>
           <ul className="space-y-2">
             {heuristics.map((h, i) => (
@@ -80,7 +80,7 @@ export default function IncidentDetail() {
       )}
 
       {embeddedUrls.length > 0 && (
-        <section className="bg-slate-900 border border-slate-800 rounded-lg p-5 mb-5">
+        <section className="bg-slate-900/80 border border-slate-800 rounded-lg p-5 mb-5">
           <h3 className="text-sm font-semibold text-slate-300 mb-3">Embedded Links Found</h3>
           <ul className="space-y-1">
             {embeddedUrls.map((u, i) => (
@@ -94,7 +94,7 @@ export default function IncidentDetail() {
       )}
 
       {incident.incident_type === 'url' && (
-        <section className="bg-slate-900 border border-slate-800 rounded-lg p-5 mb-5">
+        <section className="bg-slate-900/80 border border-slate-800 rounded-lg p-5 mb-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-slate-300">Domain Investigation</h3>
             <button
