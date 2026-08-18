@@ -5,13 +5,13 @@ import { ArrowRight } from 'lucide-react'
  * Shared presentation primitives for the redesigned Command Center dashboard.
  *
  * Visual language: graphite surfaces, hairline borders, no glow/neon, a single
- * muted amber accent. Flat and editorial rather than heavily boxed.
+ * muted cyan accent. Flat and editorial rather than heavily boxed.
  */
 
 export function Panel({ children, className = '' }) {
   return (
     <section
-      className={`overflow-hidden rounded-lg border border-white/7 bg-white/2 ${className}`}
+      className={`overflow-hidden rounded-lg border border-white/10 bg-[#111722]/82 backdrop-blur-md ${className}`}
     >
       {children}
     </section>
@@ -22,22 +22,22 @@ export function PanelHead({ title, hint, action }) {
   return (
     <div className="flex items-center justify-between gap-3 border-b border-white/5 px-4 py-2.5">
       <div className="flex items-baseline gap-2 min-w-0">
-        <h3 className="truncate text-[12.5px] font-semibold uppercase tracking-[0.08em] text-zinc-300">
+        <h3 className="truncate text-[14px] font-semibold uppercase tracking-[0.08em] text-zinc-300">
           {title}
         </h3>
-        {hint && <span className="shrink-0 text-[11px] text-zinc-500">{hint}</span>}
+        {hint && <span className="shrink-0 text-[12.5px] text-zinc-500">{hint}</span>}
       </div>
       {action}
     </div>
   )
 }
 
-/** Subtle amber "go to the full dataset" link used in every panel header. */
+/** Subtle cyan "go to the full dataset" link used in every panel header. */
 export function PanelLink({ to, children }) {
   return (
     <Link
       to={to}
-      className="group inline-flex shrink-0 items-center gap-1 text-[11.5px] font-medium text-amber-300/80 transition hover:text-amber-200"
+      className="group inline-flex shrink-0 items-center gap-1 text-[13px] font-medium text-cyan-300/80 transition hover:text-cyan-200"
     >
       {children}
       <ArrowRight size={12} className="transition group-hover:translate-x-0.5" />
@@ -61,5 +61,5 @@ export function SeverityDot({ level, className = '' }) {
 }
 
 export function EmptyLine({ children }) {
-  return <p className="px-4 py-6 text-center text-[12.5px] text-zinc-500">{children}</p>
+  return <p className="px-4 py-6 text-center text-[14px] text-zinc-500">{children}</p>
 }
