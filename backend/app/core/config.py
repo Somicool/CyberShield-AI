@@ -25,6 +25,30 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
+    # ---- Staff (police / admin) access control -------------------------
+    # Officer self-registration is DISABLED unless a code is configured.
+    # Empty string means the endpoint refuses every request (fail closed),
+    # so the only way to create staff accounts is an existing administrator.
+    OFFICER_REGISTRATION_CODE: str = ""
+
+    # Police and admin sign-in requires a TOTP authenticator app. Accounts
+    # that have not enrolled yet are sent through enrollment before they get
+    # a usable session token.
+    REQUIRE_MFA_FOR_STAFF: bool = True
+    MFA_ISSUER: str = "CyberAid"
+
+    # Staff sessions are shorter-lived than citizen sessions.
+    STAFF_TOKEN_EXPIRE_MINUTES: int = 30
+    MFA_ENROLLMENT_TOKEN_MINUTES: int = 10
+
+    # Brute-force protection (applies to every account).
+    MAX_FAILED_LOGINS: int = 5
+    LOCKOUT_MINUTES: int = 15
+
+    # Minimum password length; staff accounts are held to a longer minimum.
+    MIN_PASSWORD_LENGTH: int = 8
+    MIN_STAFF_PASSWORD_LENGTH: int = 12
+
     # AI
     GEMINI_API_KEY: str = ""
 
