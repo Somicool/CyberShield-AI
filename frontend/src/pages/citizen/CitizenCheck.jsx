@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { ShieldCheck, Link2, Mail, MessageSquare, QrCode } from 'lucide-react'
 import ScanTool from '../../components/citizen/ScanTool'
 import QrScanPanel from '../../components/citizen/QrScanPanel'
+import { PageHeader } from '../../components/citizen/Panel'
 
 const TABS = [
   { id: 'url', label: 'Link', icon: Link2 },
@@ -36,31 +37,35 @@ export default function CitizenCheck() {
   }, [tab])
 
   return (
-    <div className="mx-auto max-w-2xl p-6 sm:p-8">
-      <div className="mb-5 flex items-center gap-3">
-        <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-sky-500/40 bg-sky-500/15 text-sky-300">
-          <ShieldCheck size={24} />
-        </span>
-        <div>
-          <h1 className="text-xl font-semibold text-slate-100">Check for Scams</h1>
-          <p className="text-sm text-slate-400">Check a link, email, SMS or QR code in one place.</p>
-        </div>
-      </div>
+    <div className="min-h-full">
+      <div className="mx-auto flex max-w-3xl flex-col gap-3 p-6 sm:p-8">
+        <PageHeader
+          title="Check Suspicious Activity"
+          subtitle="Check a link, email, SMS or QR code in one place."
+          action={
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[12px] text-emerald-300/90">
+              <ShieldCheck size={12} /> Detection engine online
+            </span>
+          }
+        />
 
-      {/* Tabs */}
-      <div className="mb-5 grid grid-cols-4 gap-1 rounded-xl border border-slate-800 bg-slate-900/50 p-1.5">
-        {TABS.map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            onClick={() => setTab(id)}
-            className={`inline-flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium transition sm:text-sm ${
-              tab === id ? 'bg-sky-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-            }`}
-          >
-            <Icon size={15} /> {label}
-          </button>
-        ))}
-      </div>
+        {/* Mode selector */}
+        <div className="grid grid-cols-4 gap-1 rounded-xl border border-white/10 bg-slate-900/80 p-1.5 backdrop-blur-md">
+          {TABS.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => setTab(id)}
+              aria-current={tab === id}
+              className={`inline-flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[13px] font-medium transition sm:text-[14px] ${
+                tab === id
+                  ? 'border border-cyan-500/40 bg-cyan-500/12 text-cyan-200'
+                  : 'border border-transparent text-slate-400 hover:bg-white/5 hover:text-slate-200'
+              }`}
+            >
+              <Icon size={15} /> {label}
+            </button>
+          ))}
+        </div>
 
       {/* Panels — remount per tab so state resets cleanly */}
       {tab === 'url' && (
@@ -101,7 +106,8 @@ export default function CitizenCheck() {
           reportCategory="SMS Scam"
         />
       )}
-      {tab === 'qr' && <QrScanPanel key="qr" />}
+        {tab === 'qr' && <QrScanPanel key="qr" />}
+      </div>
     </div>
   )
 }
