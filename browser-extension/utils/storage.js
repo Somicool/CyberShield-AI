@@ -5,7 +5,7 @@
  *   - settings   : { protectionEnabled }
  *   - history    : [{ url, host, date, prediction, riskScore }]  (local browsing history)
  *   - stats      : { protectedWebsites, threatsBlocked, lastScan }
- *   - authToken  : JWT bridged from the CyberShield web session (never a password)
+ *   - authToken  : JWT bridged from the CyberAid web session (never a password)
  *
  * No passwords are ever stored. History never leaves the device.
  */

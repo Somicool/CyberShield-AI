@@ -89,7 +89,7 @@ function showTrusted() {
   el.prediction.textContent = 'trusted'
   el.confidence.textContent = '—'
   el.level.textContent = 'local'
-  el.explain.textContent = 'This is a local or CyberShield page, so real-time protection is not applied here.'
+  el.explain.textContent = 'This is a local or CyberAid page, so real-time protection is not applied here.'
   el.report.disabled = true
 }
 
@@ -111,12 +111,12 @@ async function report() {
   const resp = await send({ type: 'GUARDIAN_REPORT', url: scanTarget })
   if (resp?.ok) {
     el.reportNote.hidden = false
-    el.reportNote.textContent = `Reported to CyberShield. Reference ${resp.reference}.`
+    el.reportNote.textContent = `Reported to CyberAid. Reference ${resp.reference}.`
     el.report.textContent = 'Reported ✓'
   } else if (resp?.error === 'auth') {
     el.report.disabled = false
     el.reportNote.hidden = false
-    el.reportNote.textContent = 'Please sign in to CyberShield to report. Opening the report page…'
+    el.reportNote.textContent = 'Please sign in to CyberAid to report. Opening the report page…'
     chrome.tabs.create({ url: `${CONFIG.dashboardUrl}/citizen/report?url=${encodeURIComponent(scanTarget)}` })
   } else {
     el.report.disabled = false
@@ -169,7 +169,7 @@ async function init() {
     el.analyze.disabled = true
     el.report.disabled = true
   } else if (isTrustedOrExempt(currentUrl)) {
-    // localhost / private IPs / the CyberShield app itself — not scanned.
+    // localhost / private IPs / the CyberAid app itself — not scanned.
     showTrusted()
     el.analyze.disabled = true
   } else {

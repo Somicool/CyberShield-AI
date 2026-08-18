@@ -1,5 +1,5 @@
 /**
- * api.js — the ONLY place the extension talks to CyberShield AI.
+ * api.js — the ONLY place the extension talks to CyberAid.
  *
  * There is NO AI/model logic in the extension. Every check calls the existing
  * FastAPI backend:
@@ -7,7 +7,7 @@
  *   - POST /api/detect       → full analysis incl. Gemini AI summary
  *   - POST /api/complaints   → citizen complaint / report (requires JWT)
  *
- * CONFIG.apiBase / dashboardUrl point at the running CyberShield instance.
+ * CONFIG.apiBase / dashboardUrl point at the running CyberAid instance.
  * Change these for a deployed backend.
  */
 
@@ -51,7 +51,7 @@ export function reportWebsite({ url, category = 'Suspicious Website', descriptio
     token,
     body: {
       category,
-      description: description || `Reported from CyberShield Guardian: ${url}`,
+      description: description || `Reported from CyberAid Guardian: ${url}`,
       url,
     },
   })
@@ -101,7 +101,7 @@ export function confidenceLabel(score) {
 }
 
 /**
- * URLs the extension should NOT scan or warn about: the CyberShield app /
+ * URLs the extension should NOT scan or warn about: the CyberAid app /
  * backend themselves, localhost / loopback, and private-network addresses.
  * These are trusted or local development contexts, not internet phishing
  * targets, so scanning them produces false alarms.

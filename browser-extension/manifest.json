@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "CyberShield Guardian",
+  "name": "CyberAid Guardian",
   "version": "1.0.0",
-  "description": "Real-time phishing & scam protection for citizens, powered by the CyberShield AI backend.",
+  "description": "Real-time phishing & scam protection for citizens, powered by the CyberAid backend.",
   "permissions": ["tabs", "activeTab", "contextMenus", "storage", "notifications"],
   "host_permissions": [
     "http://127.0.0.1:8000/*",
@@ -17,7 +17,7 @@
   },
   "action": {
     "default_popup": "popup/popup.html",
-    "default_title": "CyberShield Guardian",
+    "default_title": "CyberAid Guardian",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",

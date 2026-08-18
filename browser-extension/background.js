@@ -1,10 +1,10 @@
 /**
- * background.js — CyberShield Guardian service worker (Manifest V3).
+ * background.js — CyberAid Guardian service worker (Manifest V3).
  *
  * Responsibilities:
  *  - Real-time protection: scan each navigated URL via /api/detect/scan and, if
  *    malicious, tell the page's content script to show a blocking warning.
- *  - Right-click "Analyze with CyberShield AI" context menu.
+ *  - Right-click "Analyze with CyberAid" context menu.
  *  - Toolbar badge reflecting the last result.
  *  - Message hub for the popup / content script (analyze, report, state).
  *
@@ -21,7 +21,7 @@ function scannable(url) {
     const u = new URL(url)
     if (SKIP_SCHEMES.some((s) => url.startsWith(s))) return false
     if (u.protocol !== 'http:' && u.protocol !== 'https:') return false
-    // Never scan/warn on the CyberShield app itself, localhost or private IPs.
+    // Never scan/warn on the CyberAid app itself, localhost or private IPs.
     if (isTrustedOrExempt(url)) return false
     return true
   } catch {
@@ -56,7 +56,7 @@ async function setBadge(tabId, verdict) {
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: 'cybershield-analyze',
-    title: 'Analyze with CyberShield AI',
+    title: 'Analyze with CyberAid',
     contexts: ['link', 'page', 'selection'],
   })
 })
@@ -77,7 +77,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       chrome.notifications?.create({
         type: 'basic',
         iconUrl: 'icons/icon128.png',
-        title: 'CyberShield Guardian — Threat detected',
+        title: 'CyberAid Guardian — Threat detected',
         message: `${hostOf(url)} scored ${Math.round(result.risk_score)}/100. Open the popup for details.`,
       })
     }
@@ -118,7 +118,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       chrome.notifications?.create({
         type: 'basic',
         iconUrl: 'icons/icon128.png',
-        title: 'CyberShield Guardian — Caution',
+        title: 'CyberAid Guardian — Caution',
         message: `${hostOf(tab.url)} looks suspicious (risk ${Math.round(result.risk_score)}/100). Proceed carefully.`,
       })
     }

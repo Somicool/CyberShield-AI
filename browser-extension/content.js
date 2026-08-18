@@ -4,7 +4,7 @@
  * Two jobs:
  *  1. Show a full-page blocking warning when the background worker flags the
  *     current site as malicious (Go Back / Continue Anyway / Report Website).
- *  2. On the CyberShield web app, bridge the logged-in JWT to the extension
+ *  2. On the CyberAid web app, bridge the logged-in JWT to the extension
  *     (so reporting works) and expose "installed + stats" to the Guardian page.
  *
  * Not a module (content scripts run in an isolated world); it delegates all
@@ -29,7 +29,7 @@
 
     const card = document.createElement('div')
     card.setAttribute('style', [
-      'max-width:520px', 'width:calc(100% - 40px)', 'background:#0b1220',
+      'max-width:520px', 'width:calc(100% - 40px)', 'background:#080b12',
       'border:1px solid rgba(239,68,68,0.5)', 'border-radius:16px', 'padding:28px',
       'box-shadow:0 20px 60px rgba(0,0,0,0.6)',
     ].join(';'))
@@ -40,7 +40,7 @@
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">' +
       '<span style="font-size:26px">\u26D4</span>' +
       '<h1 style="margin:0;font-size:20px;color:#fca5a5">Dangerous website blocked</h1></div>' +
-      '<p style="margin:0 0 14px;font-size:14px;color:#94a3b8">CyberShield Guardian flagged this site as a likely phishing or scam page.</p>' +
+      '<p style="margin:0 0 14px;font-size:14px;color:#94a3b8">CyberAid Guardian flagged this site as a likely phishing or scam page.</p>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">' +
       cell('Website', escapeHtml(data.host)) +
       cell('Risk Score', score + '/100') +
@@ -48,10 +48,10 @@
       cell('Confidence', conf) +
       '</div>' +
       '<div style="font-size:12px;color:#64748b;margin-bottom:6px">AI Explanation</div>' +
-      '<div id="csg-explanation" style="font-size:13px;line-height:1.5;color:#cbd5e1;background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px;margin-bottom:18px">Loading AI assessment\u2026</div>' +
+      '<div id="csg-explanation" style="font-size:13px;line-height:1.5;color:#cbd5e1;background:#0d1420;border:1px solid #1e2635;border-radius:10px;padding:12px;margin-bottom:18px">Loading AI assessment\u2026</div>' +
       '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
-      btn('csg-back', 'Go Back', '#334155') +
-      btn('csg-report', 'Report Website', '#7c3aed') +
+      btn('csg-back', 'Go Back', '#2a3444') +
+      btn('csg-report', 'Report Website', '#0891b2') +
       btn('csg-continue', 'Continue Anyway', 'transparent', '#64748b') +
       '</div>'
 
@@ -90,13 +90,13 @@
 
   function cell(label, value) {
     return (
-      '<div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:10px">' +
+      '<div style="background:#0d1420;border:1px solid #1e2635;border-radius:10px;padding:10px">' +
       '<div style="font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b">' + label + '</div>' +
       '<div style="font-size:14px;color:#e2e8f0;margin-top:2px;word-break:break-all">' + value + '</div></div>'
     )
   }
   function btn(id, label, bg, color) {
-    return `<button id="${id}" style="flex:1;min-width:120px;cursor:pointer;border:1px solid ${bg === 'transparent' ? '#334155' : bg};background:${bg};color:${color || '#fff'};border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600">${label}</button>`
+    return `<button id="${id}" style="flex:1;min-width:120px;cursor:pointer;border:1px solid ${bg === 'transparent' ? '#2a3444' : bg};background:${bg};color:${color || '#fff'};border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600">${label}</button>`
   }
   function escapeHtml(s) {
     return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
@@ -106,7 +106,7 @@
     if (msg?.type === 'GUARDIAN_SHOW_WARNING') buildWarning(msg.data)
   })
 
-  // ---- 2. CyberShield web app bridge ------------------------------------
+  // ---- 2. CyberAid web app bridge ------------------------------------
   const isApp =
     DASHBOARD_HOSTS.includes(location.hostname) ||
     document.querySelector('meta[name="cybershield-guardian-app"]') != null
