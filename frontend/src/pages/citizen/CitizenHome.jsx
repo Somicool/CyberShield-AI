@@ -1,27 +1,57 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  FileWarning, Link2, Mail, MessageSquare, QrCode, DatabaseZap, Puzzle,
-  ClipboardList, BookOpen, AlertTriangle, ChevronRight, ShieldCheck,
+  FileWarning, ShieldQuestion, DatabaseZap, Puzzle, BookOpen, ShieldCheck, ArrowRight,
 } from 'lucide-react'
 import { getMe } from '../../api/auth'
-import { listMyComplaints } from '../../api/complaints'
-import { listIncidents } from '../../api/incidents'
 import { SAFETY_TOPICS } from '../../lib/safetyContent'
-import { StatusPill } from './CitizenComplaints'
-import { verdictFor } from '../../lib/citizenThreat'
+import { Panel, PanelHead, PanelLink } from '../../components/citizen/Panel'
 
+/**
+ * The four things a citizen can do. Link, email, SMS and QR checks all live
+ * inside "Check Suspicious Activity" (the Check page's tabs), so the home
+ * screen stays a short list of decisions rather than seven near-identical
+ * tiles. Data Breach Check has no backend yet and is shown as planned rather
+ * than as a working button.
+ */
 const QUICK_ACTIONS = [
-  { label: 'Report Cyber Crime', icon: FileWarning, to: '/citizen/report', tone: 'border-red-500/40 bg-red-500/10 text-red-300' },
-  { label: 'Check Suspicious Link', icon: Link2, to: '/citizen/check?tab=url', tone: 'border-sky-500/40 bg-sky-500/10 text-sky-300' },
-  { label: 'Check Suspicious Email', icon: Mail, to: '/citizen/check?tab=email', tone: 'border-sky-500/40 bg-sky-500/10 text-sky-300' },
-  { label: 'Check Suspicious SMS', icon: MessageSquare, to: '/citizen/check?tab=sms', tone: 'border-sky-500/40 bg-sky-500/10 text-sky-300' },
-  { label: 'Check QR Code', icon: QrCode, to: '/citizen/check?tab=qr', tone: 'border-sky-500/40 bg-sky-500/10 text-sky-300' },
-  { label: 'Data Breach Check', icon: DatabaseZap, to: null, tone: 'border-slate-700 bg-slate-800/40 text-slate-400', soon: true },
-  { label: 'CyberShield Guardian', icon: Puzzle, to: '/citizen/guardian', tone: 'border-purple-500/40 bg-purple-500/10 text-purple-300' },
+  {
+    label: 'Report Cyber Crime',
+    desc: 'File a complaint and get a reference number to track it.',
+    icon: FileWarning,
+    to: '/citizen/report',
+    tone: 'border-red-500/35 bg-red-500/10 text-red-300',
+  },
+  {
+    label: 'Check Suspicious Activity',
+    desc: 'Check a link, email, SMS or QR code before you trust it.',
+    icon: ShieldQuestion,
+    to: '/citizen/check',
+    tone: 'border-cyan-500/35 bg-cyan-500/10 text-cyan-300',
+  },
+  {
+    label: 'Data Breach Check',
+    desc: 'See if your email appears in a known data breach.',
+    icon: DatabaseZap,
+    to: null,
+    tone: 'border-white/10 bg-white/5 text-slate-400',
+    soon: true,
+  },
+  {
+    label: 'CyberAid Guardian',
+    desc: 'Browser add-on that warns you about scam sites as you browse.',
+    icon: Puzzle,
+    to: '/citizen/guardian',
+    tone: 'border-emerald-500/35 bg-emerald-500/10 text-emerald-300',
+  },
 ]
 
-const TYPE_LABEL = { url: 'Suspicious website', email: 'Phishing email', sms: 'Scam SMS', qr: 'Malicious QR code' }
+/** Plain-language orientation shown inside the welcome panel. */
+const GUIDANCE = [
+  'Not sure about a message, link or QR code? Check it first — it takes a few seconds.',
+  'Already lost money or personal data? Report it. You will get a reference number to follow your case.',
+  'Want to be warned automatically while you browse? Install CyberAid Guardian.',
+]
 
 function firstName(me) {
   if (!me?.full_name) return null
@@ -30,123 +60,97 @@ function firstName(me) {
 
 export default function CitizenHome() {
   const [me, setMe] = useState(null)
-  const [complaints, setComplaints] = useState([])
-  const [alerts, setAlerts] = useState([])
 
   useEffect(() => {
     getMe().then(setMe).catch(() => {})
-    listMyComplaints().then((c) => setComplaints(c.slice(0, 3))).catch(() => {})
-    listIncidents({ page: 1, pageSize: 30 })
-      .then((d) => {
-        const items = (d.items || []).filter((i) => i.threat_level === 'high' || i.threat_level === 'critical').slice(0, 4)
-        setAlerts(items)
-      })
-      .catch(() => {})
   }, [])
 
   return (
-    <div className="mx-auto max-w-5xl p-6 sm:p-8">
-      {/* Welcome */}
-      <div className="mb-6 rounded-2xl border border-slate-800 bg-linear-to-br from-sky-600/15 to-slate-900/10 p-6">
-        <div className="flex items-center gap-3">
-          <ShieldCheck size={28} className="text-sky-400" />
-          <div>
-            <h1 className="text-2xl font-semibold text-slate-100">
-              Hello{firstName(me) ? `, ${firstName(me)}` : ''}
-            </h1>
-            <p className="text-sm text-slate-400">Welcome to CyberShield. How can we help you stay safe today?</p>
+    <div className="min-h-full">
+      <div className="mx-auto flex max-w-5xl flex-col gap-3 p-6 sm:p-8">
+        {/* Welcome — the orientation panel, deliberately the largest thing on
+            the page so a first-time visitor knows what this portal is for. */}
+        <section className="overflow-hidden rounded-2xl border border-white/10 bg-linear-to-br from-cyan-500/12 via-slate-900/45 to-slate-900/25 p-7 backdrop-blur-md sm:p-9">
+          <div className="flex items-start gap-4">
+            <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-cyan-400/30 bg-cyan-400/10 text-cyan-300">
+              <ShieldCheck size={28} />
+            </span>
+            <div className="min-w-0">
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl">
+                Hello{firstName(me) ? `, ${firstName(me)}` : ''}
+              </h1>
+              <p className="mt-1.5 max-w-2xl text-base text-slate-300">
+                Welcome to CyberAid — the citizen side of your state cyber crime platform. You can check
+                something that looks suspicious, report a cyber crime, and follow what happens next.
+              </p>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Quick actions */}
-      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">Quick Actions</h2>
-      <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {QUICK_ACTIONS.map(({ label, icon: Icon, to, tone, soon }) => {
-          const inner = (
-            <div className={`flex h-full flex-col items-start gap-3 rounded-2xl border p-4 transition ${tone} ${to ? 'hover:brightness-125' : 'cursor-default'}`}>
-              <Icon size={24} />
-              <span className="text-sm font-medium leading-snug text-slate-100">{label}</span>
-              {soon && <span className="rounded-full border border-slate-600 px-2 py-0.5 text-[10px] text-slate-400">Coming soon</span>}
-            </div>
-          )
-          return to ? <Link key={label} to={to}>{inner}</Link> : <div key={label}>{inner}</div>
-        })}
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Recent reports */}
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400">Recent Reports</h2>
-            <Link to="/citizen/complaints" className="text-xs text-sky-400 hover:underline">View all</Link>
-          </div>
-          {complaints.length === 0 ? (
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 text-center text-sm text-slate-500">
-              <ClipboardList size={24} className="mx-auto mb-2 text-slate-700" />
-              You have not filed any reports yet.
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {complaints.map((c) => (
-                <Link key={c.id} to={`/citizen/complaints/${c.id}`} className="flex items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-900/50 px-4 py-3 hover:border-sky-500/40">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs text-sky-300">{c.reference}</span>
-                      <StatusPill status={c.status} />
-                    </div>
-                    <div className="mt-0.5 truncate text-sm text-slate-300">{c.category}</div>
-                  </div>
-                  <ChevronRight size={16} className="shrink-0 text-slate-600" />
-                </Link>
-              ))}
-            </div>
-          )}
+          <ul className="mt-6 grid gap-3 sm:grid-cols-3">
+            {GUIDANCE.map((line) => (
+              <li
+                key={line}
+                className="flex items-start gap-2 rounded-xl border border-white/8 bg-white/4 px-3.5 py-3 text-[14px] leading-relaxed text-slate-300"
+              >
+                <ArrowRight size={14} className="mt-1 shrink-0 text-cyan-300/80" />
+                {line}
+              </li>
+            ))}
+          </ul>
         </section>
 
-        {/* Latest threat alerts */}
-        <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">Latest Threat Alerts</h2>
-          {alerts.length === 0 ? (
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 text-center text-sm text-slate-500">
-              No recent high-risk alerts.
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {alerts.map((a) => {
-                const verdict = verdictFor(a.threat_level)
-                return (
-                  <div key={a.id} className="flex items-start gap-3 rounded-xl border border-slate-800 bg-slate-900/50 px-4 py-3">
-                    <AlertTriangle size={18} className="mt-0.5 shrink-0 text-amber-400" />
-                    <div className="min-w-0">
-                      <div className="text-sm font-medium text-slate-200">{TYPE_LABEL[a.incident_type] || 'Cyber threat'}</div>
-                      <div className="truncate text-xs text-slate-500">{a.raw_content}</div>
-                      <span className={`mt-1 inline-block rounded border px-1.5 py-0.5 text-[10px] font-medium ${verdict.tone}`}>{verdict.label}</span>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          )}
-        </section>
-      </div>
+        {/* The four things you can do */}
+        <h2 className="mt-1 text-[13.5px] font-semibold uppercase tracking-[0.08em] text-slate-400">
+          What would you like to do?
+        </h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {QUICK_ACTIONS.map(({ label, desc, icon: Icon, to, tone, soon }) => {
+            const inner = (
+              <div
+                className={`flex h-full flex-col gap-3 rounded-xl border border-white/10 bg-slate-900/80 p-5 backdrop-blur-md transition ${
+                  to ? 'hover:border-cyan-500/40 hover:bg-slate-900/90' : 'cursor-default opacity-80'
+                }`}
+              >
+                <span className={`inline-flex h-11 w-11 items-center justify-center rounded-xl border ${tone}`}>
+                  <Icon size={22} />
+                </span>
+                <span className="text-base font-semibold leading-snug text-slate-100">{label}</span>
+                <span className="text-[13.5px] leading-relaxed text-slate-400">{desc}</span>
+                {soon ? (
+                  <span className="mt-auto inline-flex w-fit rounded-full border border-white/12 px-2 py-0.5 text-[11.5px] text-slate-400">
+                    Coming soon
+                  </span>
+                ) : (
+                  <span className="mt-auto inline-flex items-center gap-1 text-[13px] font-medium text-cyan-300/90">
+                    Open <ArrowRight size={12} />
+                  </span>
+                )}
+              </div>
+            )
+            return to ? (
+              <Link key={label} to={to}>
+                {inner}
+              </Link>
+            ) : (
+              <div key={label}>{inner}</div>
+            )
+          })}
+        </div>
 
-      {/* Cyber safety tips */}
-      <section className="mt-8">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400">Cyber Safety Tips</h2>
-          <Link to="/citizen/safety" className="text-xs text-sky-400 hover:underline">See all</Link>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-3">
-          {SAFETY_TOPICS.slice(0, 3).map((t) => (
-            <Link key={t.id} to="/citizen/safety" className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4 transition hover:border-emerald-500/40">
-              <BookOpen size={20} className="text-emerald-300" />
-              <div className="mt-2 text-sm font-semibold text-slate-100">{t.title}</div>
-              <div className="mt-1 text-xs text-slate-500">{t.summary}</div>
-            </Link>
-          ))}
-        </div>
-      </section>
+        {/* Cyber safety tips */}
+        <Panel className="mt-1">
+          <PanelHead title="Cyber Safety Tips" action={<PanelLink to="/citizen/safety">See all</PanelLink>} />
+          <div className="grid divide-y divide-white/6 sm:grid-cols-3 sm:divide-y-0 sm:divide-x">
+            {SAFETY_TOPICS.slice(0, 3).map((t) => (
+              <Link key={t.id} to="/citizen/safety" className="group px-4 py-3.5 transition hover:bg-white/4">
+                <BookOpen size={17} className="text-emerald-300/80" />
+                <div className="mt-2 text-[14.5px] font-semibold text-slate-100">{t.title}</div>
+                <div className="mt-0.5 text-[13px] leading-relaxed text-slate-400">{t.summary}</div>
+              </Link>
+            ))}
+          </div>
+        </Panel>
+      </div>
     </div>
   )
 }
