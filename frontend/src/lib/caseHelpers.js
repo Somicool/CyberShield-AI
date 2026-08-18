@@ -140,7 +140,7 @@ export function openCaseReport(incident, meta, caseId) {
   const html = `<!doctype html><html><head><meta charset="utf-8"/>
     <title>${esc(caseId)} — Investigation Report</title>
     <style>
-      body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#0f172a;margin:40px;line-height:1.5}
+      body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#0d1420;margin:40px;line-height:1.5}
       h1{font-size:20px;margin:0 0 4px}
       h2{font-size:14px;margin:24px 0 8px;text-transform:uppercase;letter-spacing:.05em;color:#475569;border-bottom:1px solid #e2e8f0;padding-bottom:4px}
       .meta{color:#64748b;font-size:12px}
@@ -150,7 +150,7 @@ export function openCaseReport(incident, meta, caseId) {
       ul{margin:6px 0;padding-left:18px;font-size:13px}
       .foot{margin-top:32px;color:#94a3b8;font-size:11px;border-top:1px solid #e2e8f0;padding-top:8px}
     </style></head><body>
-    <h1>CyberShield AI — Investigation Report</h1>
+    <h1>CyberAid — Investigation Report</h1>
     <div class="meta">${esc(caseId)} · Generated ${new Date().toLocaleString()}</div>
 
     <h2>Case Overview</h2>
@@ -184,7 +184,7 @@ export function openCaseReport(incident, meta, caseId) {
     <h2>Recommended Actions</h2>
     <ul>${recommendedActions(incident.threat_level).map((a) => `<li>${esc(a)}</li>`).join('')}</ul>
 
-    <div class="foot">This report was compiled automatically by CyberShield AI from recorded detection and
+    <div class="foot">This report was compiled automatically by CyberAid from recorded detection and
     investigation data. Verify findings before operational or legal action.</div>
     <script>window.onload=function(){setTimeout(function(){window.print()},250)}</script>
     </body></html>`
@@ -218,14 +218,14 @@ export function openBatchReport(cases) {
   const html = `<!doctype html><html><head><meta charset="utf-8"/>
     <title>Cyber Crime — Case Export (${cases.length})</title>
     <style>
-      body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#0f172a;margin:40px}
+      body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#0d1420;margin:40px}
       h1{font-size:18px;margin:0 0 4px}
       .meta{color:#64748b;font-size:12px;margin-bottom:16px}
       table{width:100%;border-collapse:collapse;font-size:12px}
       th,td{border:1px solid #e2e8f0;padding:6px 8px;text-align:left}
       th{background:#f1f5f9;text-transform:uppercase;font-size:10px;letter-spacing:.05em;color:#475569}
     </style></head><body>
-    <h1>CyberShield AI — Case Export</h1>
+    <h1>CyberAid — Case Export</h1>
     <div class="meta">${cases.length} cases · Generated ${new Date().toLocaleString()}</div>
     <table>
       <thead><tr><th>Case ID</th><th>Type</th><th>Risk</th><th>Level</th><th>Status</th><th>Officer</th><th>Created</th></tr></thead>
@@ -283,7 +283,7 @@ export function openInvestigationReport(incident, meta, caseId, { briefing, enti
   const html = `<!doctype html><html><head><meta charset="utf-8"/>
     <title>${esc(caseId)} — Investigation Report</title>
     <style>
-      body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#0f172a;margin:40px;line-height:1.5}
+      body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#0d1420;margin:40px;line-height:1.5}
       h1{font-size:20px;margin:0 0 4px}
       h2{font-size:13px;margin:22px 0 6px;text-transform:uppercase;letter-spacing:.05em;color:#475569;border-bottom:1px solid #e2e8f0;padding-bottom:4px}
       .meta{color:#64748b;font-size:12px}
@@ -295,7 +295,7 @@ export function openInvestigationReport(incident, meta, caseId, { briefing, enti
       p{font-size:13px;margin:6px 0}
       .foot{margin-top:28px;color:#94a3b8;font-size:11px;border-top:1px solid #e2e8f0;padding-top:8px}
     </style></head><body>
-    <h1>CyberShield AI — Investigation Report</h1>
+    <h1>CyberAid — Investigation Report</h1>
     <div class="meta">${esc(caseId)} · Generated ${new Date().toLocaleString()}</div>
 
     <h2>Case Overview</h2>
@@ -346,7 +346,7 @@ export function openInvestigationReport(incident, meta, caseId, { briefing, enti
 
     ${meta?.notes ? `<h2>Officer Notes</h2><p>${esc(meta.notes)}</p>` : ''}
 
-    <div class="foot">Compiled automatically by CyberShield AI from recorded detection, investigation and
+    <div class="foot">Compiled automatically by CyberAid from recorded detection, investigation and
     threat-graph data. This report contains no fabricated evidence; verify all findings before operational
     or legal action.</div>
     <script>window.onload=function(){setTimeout(function(){window.print()},250)}</script>
