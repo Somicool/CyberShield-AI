@@ -43,7 +43,7 @@ export default function SeveritySection({
   const t = TONE[tone] || TONE.medium
 
   return (
-    <section className={`overflow-hidden rounded-lg border bg-white/2 transition ${open ? t.open : t.ring}`}>
+    <section className={`overflow-hidden rounded-lg border bg-[#111722]/82 backdrop-blur-md transition ${open ? t.open : t.ring}`}>
       <button
         onClick={onToggle}
         aria-expanded={open}
@@ -56,11 +56,11 @@ export default function SeveritySection({
         {Icon && <Icon size={17} className={`shrink-0 ${t.icon}`} />}
         <span className="flex items-center gap-2">
           <span className={`h-2 w-2 rounded-full ${t.dot}`} />
-          <span className="text-[14px] font-semibold tracking-tight text-zinc-100">{title}</span>
+          <span className="text-[15.5px] font-semibold tracking-tight text-zinc-100">{title}</span>
         </span>
-        <span className="hidden text-[11.5px] text-zinc-500 sm:inline">{subtitle}</span>
+        <span className="hidden text-[13px] text-zinc-500 sm:inline">{subtitle}</span>
         <span
-          className={`ml-auto shrink-0 rounded-full border px-2.5 py-0.5 text-[11.5px] font-semibold tabular-nums ${t.count}`}
+          className={`ml-auto shrink-0 rounded-full border px-2.5 py-0.5 text-[13px] font-semibold tabular-nums ${t.count}`}
         >
           {count}
         </span>
@@ -75,7 +75,7 @@ export default function SeveritySection({
               </table>
             </div>
           ) : count === 0 ? (
-            <p className="py-6 text-center text-[12.5px] text-zinc-500">
+            <p className="py-6 text-center text-[14px] text-zinc-500">
               No cases in this category.
             </p>
           ) : (

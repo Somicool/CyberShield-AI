@@ -34,13 +34,13 @@ export default function CaseTimeline({ stamps = {}, steps = DEFAULT_STEPS }) {
               className={`absolute left-[-27px] flex h-4 w-4 items-center justify-center rounded-full border ${
                 done
                   ? 'border-emerald-500/60 bg-emerald-500/20 text-emerald-400'
-                  : 'border-slate-700 bg-slate-900 text-slate-600'
+                  : 'border-slate-700 bg-slate-900/80 text-slate-600'
               }`}
             >
               {done ? <Check size={10} /> : <Clock size={10} />}
             </span>
             <div className={`text-sm ${done ? 'text-slate-200' : 'text-slate-500'}`}>{step.label}</div>
-            <div className="text-[11px] text-slate-600">{fmt(at) || 'Pending'}</div>
+            <div className="text-[12.5px] text-slate-600">{fmt(at) || 'Pending'}</div>
           </li>
         )
       })}

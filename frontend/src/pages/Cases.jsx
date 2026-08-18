@@ -181,24 +181,24 @@ export default function Cases() {
   }, [])
 
   return (
-    <div className="min-h-full bg-[#16181c]">
+    <div className="min-h-full">
       <div className="mx-auto flex max-w-375 flex-col gap-4 p-6">
         {/* header */}
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-amber-400/25 bg-amber-400/10 text-amber-300">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-400/25 bg-cyan-400/10 text-cyan-300">
               <FolderKanban size={18} />
             </span>
             <div>
-              <h1 className="text-[19px] font-semibold tracking-tight text-zinc-50">Cases</h1>
-              <p className="mt-0.5 text-[12.5px] text-zinc-500">
+              <h1 className="text-[21px] font-semibold tracking-tight text-zinc-50">Cases</h1>
+              <p className="mt-0.5 text-[14px] text-zinc-500">
                 Manage, investigate and monitor cybercrime investigations by priority.
               </p>
             </div>
           </div>
           <button
             onClick={() => loadCases(true)}
-            className="inline-flex items-center gap-1.5 rounded-md border border-white/8 bg-white/3 px-2.5 py-1.5 text-[12px] text-zinc-300 transition hover:bg-white/6"
+            className="inline-flex items-center gap-1.5 rounded-md border border-white/8 bg-white/3 px-2.5 py-1.5 text-[13.5px] text-zinc-300 transition hover:bg-white/6"
           >
             <RefreshCw size={13} /> Refresh
           </button>
@@ -207,13 +207,13 @@ export default function Cases() {
         <CaseFilters value={filters} onChange={setFilters} />
 
         {error && (
-          <div className="flex items-center gap-2 rounded-lg border border-red-900/60 bg-red-950/30 px-4 py-3 text-[12.5px] text-red-300">
+          <div className="flex items-center gap-2 rounded-lg border border-red-900/60 bg-red-950/30 px-4 py-3 text-[14px] text-red-300">
             <AlertCircle size={15} /> {error}
           </div>
         )}
 
         {notice && (
-          <div className="flex items-center justify-between gap-2 rounded-lg border border-emerald-900/60 bg-emerald-950/25 px-4 py-2.5 text-[12.5px] text-emerald-300">
+          <div className="flex items-center justify-between gap-2 rounded-lg border border-emerald-900/60 bg-emerald-950/25 px-4 py-2.5 text-[14px] text-emerald-300">
             <span className="inline-flex items-center gap-2">
               <Trash2 size={14} /> {notice}
             </span>
@@ -261,7 +261,7 @@ export default function Cases() {
         </div>
 
         {!loading && (
-          <p className="text-[11px] text-zinc-600">
+          <p className="text-[12.5px] text-zinc-600">
             {rows.length} case{rows.length !== 1 ? 's' : ''} loaded · status &amp; officer assignment are managed
             inside each investigation.
           </p>

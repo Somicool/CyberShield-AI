@@ -6,7 +6,7 @@ const RIBBON_TINT = {
   high: 'border-orange-500/50 bg-orange-950/20',
   medium: 'border-yellow-500/40 bg-yellow-950/20',
   low: 'border-emerald-500/40 bg-emerald-950/20',
-  unknown: 'border-slate-700 bg-slate-900',
+  unknown: 'border-slate-700 bg-slate-900/80',
 }
 
 /**
@@ -36,7 +36,7 @@ export default function CasePriorityRibbon({ caseId, threatLevel, confidence, li
       </div>
 
       <div className="mt-3">
-        <div className="mb-1.5 flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-slate-400">
+        <div className="mb-1.5 flex items-center gap-1.5 text-[12.5px] uppercase tracking-wide text-slate-400">
           <AlertOctagon size={13} /> Recommended Actions
         </div>
         <ul className="space-y-1">

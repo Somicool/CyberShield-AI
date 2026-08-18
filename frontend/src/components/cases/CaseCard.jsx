@@ -19,9 +19,9 @@ function Action({ icon: Icon, label, onClick, busy }) {
     <button
       onClick={onClick}
       disabled={busy}
-      className="inline-flex items-center justify-center gap-1.5 rounded-md border border-white/8 bg-white/3 px-2 py-2 text-[11.5px] font-medium text-zinc-300 transition hover:border-amber-400/30 hover:bg-white/6 hover:text-zinc-100 disabled:opacity-50"
+      className="inline-flex items-center justify-center gap-1.5 rounded-md border border-white/8 bg-white/3 px-2 py-2 text-[13px] font-medium text-zinc-300 transition hover:border-cyan-400/30 hover:bg-white/6 hover:text-zinc-100 disabled:opacity-50"
     >
-      {busy ? <Loader2 size={13} className="animate-spin" /> : <Icon size={13} className="text-amber-300/70" />}
+      {busy ? <Loader2 size={13} className="animate-spin" /> : <Icon size={13} className="text-cyan-300/70" />}
       {label}
     </button>
   )
@@ -50,28 +50,28 @@ export default function CaseCard({
   const [confirming, setConfirming] = useState(false)
 
   return (
-    <article className="flex flex-col rounded-lg border border-white/7 bg-white/2 transition hover:border-white/12">
+    <article className="flex flex-col rounded-lg border border-white/7 bg-[#111722]/82 backdrop-blur-md transition hover:border-white/12">
       {/* identity */}
       <div className="flex items-start justify-between gap-3 border-b border-white/5 px-4 py-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[12.5px] text-zinc-100">{deriveCaseId(incident)}</span>
+            <span className="font-mono text-[14px] text-zinc-100">{deriveCaseId(incident)}</span>
             <ThreatBadge level={incident.threat_level} />
           </div>
-          <p className="mt-1.5 truncate text-[12px] text-zinc-500" title={incident.raw_content}>
+          <p className="mt-1.5 truncate text-[13.5px] text-zinc-500" title={incident.raw_content}>
             {incident.raw_content}
           </p>
         </div>
         <div className="shrink-0 text-right">
-          <div className={`font-mono text-[19px] font-semibold leading-none tabular-nums ${RISK_TEXT[incident.threat_level] || 'text-zinc-200'}`}>
+          <div className={`font-mono text-[21px] font-semibold leading-none tabular-nums ${RISK_TEXT[incident.threat_level] || 'text-zinc-200'}`}>
             {incident.risk_score?.toFixed(0) ?? '—'}
           </div>
-          <div className="mt-0.5 text-[10px] uppercase tracking-wide text-zinc-600">Risk</div>
+          <div className="mt-0.5 text-[11.5px] uppercase tracking-wide text-zinc-600">Risk</div>
         </div>
       </div>
 
       {/* meta */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-2 px-4 py-3 text-[11.5px]">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-2 px-4 py-3 text-[13px]">
         <div>
           <span className="text-zinc-600">Type</span>
           <div className="text-zinc-300">{TYPE_LABEL[incident.incident_type] || incident.incident_type}</div>
@@ -105,11 +105,11 @@ export default function CaseCard({
       <div className="px-4 pb-3 pt-2">
         {confirming ? (
           <div className="flex items-center gap-2 rounded-md border border-red-500/30 bg-red-500/8 px-2.5 py-2">
-            <span className="flex-1 text-[11px] text-red-200">Delete permanently?</span>
+            <span className="flex-1 text-[12.5px] text-red-200">Delete permanently?</span>
             <button
               onClick={() => onDelete(incident)}
               disabled={deleteBusy}
-              className="inline-flex items-center gap-1 rounded border border-red-500/40 bg-red-500/15 px-2 py-1 text-[11px] font-medium text-red-200 transition hover:bg-red-500/25 disabled:opacity-50"
+              className="inline-flex items-center gap-1 rounded border border-red-500/40 bg-red-500/15 px-2 py-1 text-[12.5px] font-medium text-red-200 transition hover:bg-red-500/25 disabled:opacity-50"
             >
               {deleteBusy ? <Loader2 size={11} className="animate-spin" /> : <Check size={11} />}
               Yes, delete
@@ -117,7 +117,7 @@ export default function CaseCard({
             <button
               onClick={() => setConfirming(false)}
               disabled={deleteBusy}
-              className="inline-flex items-center gap-1 rounded border border-white/10 px-2 py-1 text-[11px] text-zinc-400 transition hover:text-zinc-200 disabled:opacity-50"
+              className="inline-flex items-center gap-1 rounded border border-white/10 px-2 py-1 text-[12.5px] text-zinc-400 transition hover:text-zinc-200 disabled:opacity-50"
             >
               <X size={11} /> Cancel
             </button>
@@ -125,7 +125,7 @@ export default function CaseCard({
         ) : (
           <button
             onClick={() => setConfirming(true)}
-            className="inline-flex items-center gap-1.5 text-[11px] text-zinc-600 transition hover:text-red-300"
+            className="inline-flex items-center gap-1.5 text-[12.5px] text-zinc-600 transition hover:text-red-300"
           >
             <Trash2 size={12} /> Delete case
           </button>

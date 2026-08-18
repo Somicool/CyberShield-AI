@@ -47,7 +47,7 @@ function HashChip({ hash }) {
     <button
       onClick={copy}
       title={`SHA-256: ${hash}\nClick to copy`}
-      className="inline-flex items-center gap-1 rounded border border-slate-700 bg-slate-900 px-1.5 py-0.5 font-mono text-[10px] text-slate-400 transition hover:text-slate-200"
+      className="inline-flex items-center gap-1 rounded border border-slate-700 bg-slate-900/80 px-1.5 py-0.5 font-mono text-[11.5px] text-slate-400 transition hover:text-slate-200"
     >
       <Lock size={9} />
       {shortHash(hash)}
@@ -61,12 +61,12 @@ function EvidenceCard({ item, onRemove, verifyState }) {
   const Icon = KIND_ICON[item.kind] || FileText
   const verdict = verifyState?.[item.id]
   return (
-    <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-3">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/72 p-3">
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
           <Icon size={15} className="shrink-0 text-slate-400" />
           <span className="truncate text-sm font-medium text-slate-200">{item.label}</span>
-          <span className={`shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-medium ${kind.tone}`}>
+          <span className={`shrink-0 rounded border px-1.5 py-0.5 text-[11.5px] font-medium ${kind.tone}`}>
             {kind.label}
           </span>
         </div>
@@ -74,7 +74,7 @@ function EvidenceCard({ item, onRemove, verifyState }) {
           <button
             onClick={() => onRemove(item.id)}
             title="Remove evidence"
-            className="shrink-0 rounded p-1 text-slate-500 transition hover:bg-slate-800 hover:text-red-400"
+            className="shrink-0 rounded p-1 text-slate-500 transition hover:bg-slate-800/75 hover:text-red-400"
           >
             <Trash2 size={13} />
           </button>
@@ -88,12 +88,12 @@ function EvidenceCard({ item, onRemove, verifyState }) {
           {item.meta?.type && <span className="ml-2 text-slate-500">{item.meta.type}</span>}
         </div>
       ) : (
-        <pre className="mt-2 max-h-32 overflow-y-auto whitespace-pre-wrap wrap-break-word rounded bg-slate-950/60 p-2 text-xs text-slate-300">
+        <pre className="mt-2 max-h-32 overflow-y-auto whitespace-pre-wrap wrap-break-word rounded bg-slate-950/78 p-2 text-xs text-slate-300">
           {item.content}
         </pre>
       )}
 
-      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500">
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] text-slate-500">
         <HashChip hash={item.hash} />
         <span>{item.source === 'auto' ? 'Auto-collected' : 'Officer-added'}</span>
         <span>· {item.addedBy}</span>
@@ -259,14 +259,14 @@ export default function EvidenceVault({ incident, detail, meta, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-label="Evidence Vault">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative flex max-h-[88vh] w-full max-w-2xl flex-col rounded-xl border border-slate-800 bg-slate-950 shadow-2xl">
+      <div className="relative flex max-h-[88vh] w-full max-w-2xl flex-col rounded-xl border border-slate-800 bg-slate-950/95 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4">
           <div className="flex items-center gap-2">
             <ShieldCheck size={18} className="text-purple-400" />
             <div>
               <h3 className="text-sm font-semibold text-slate-100">Evidence Vault</h3>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[12.5px] text-slate-500">
                 {caseId} · {counts.total} item{counts.total !== 1 ? 's' : ''} · {counts.auto} auto · {counts.manual} added
               </p>
             </div>
@@ -275,18 +275,18 @@ export default function EvidenceVault({ incident, detail, meta, onClose }) {
             <button
               onClick={verifyAll}
               disabled={!items.length}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:bg-slate-700 disabled:opacity-40"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/75 px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:bg-slate-700 disabled:opacity-40"
             >
               <ShieldCheck size={13} /> Verify integrity
             </button>
             <button
               onClick={exportManifest}
               disabled={!canExport}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:bg-slate-700 disabled:opacity-40"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/75 px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:bg-slate-700 disabled:opacity-40"
             >
               <Download size={13} /> Export manifest
             </button>
-            <button onClick={onClose} aria-label="Close" className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-white">
+            <button onClick={onClose} aria-label="Close" className="rounded p-1 text-slate-400 hover:bg-slate-800/75 hover:text-white">
               <X size={16} />
             </button>
           </div>
@@ -318,7 +318,7 @@ export default function EvidenceVault({ incident, detail, meta, onClose }) {
                 key={k}
                 onClick={() => { setTab(k); setError('') }}
                 className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
-                  tab === k ? 'bg-purple-600 text-white' : 'border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700'
+                  tab === k ? 'bg-purple-600 text-white' : 'border border-slate-700 bg-slate-800/75 text-slate-300 hover:bg-slate-700'
                 }`}
               >
                 <Icon size={13} /> {l}
@@ -328,14 +328,14 @@ export default function EvidenceVault({ incident, detail, meta, onClose }) {
 
           {tab === 'file' ? (
             <label
-              className="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-slate-700 bg-slate-900/40 px-4 py-6 text-center transition hover:border-purple-600/60 hover:bg-slate-900"
+              className="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-slate-700 bg-slate-900/72 px-4 py-6 text-center transition hover:border-purple-600/60 hover:bg-slate-900/80"
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => { e.preventDefault(); onFiles(e.dataTransfer.files) }}
             >
               <input ref={fileInputRef} type="file" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
               {busy ? <Loader2 size={20} className="animate-spin text-purple-400" /> : <UploadCloud size={20} className="text-slate-400" />}
               <span className="text-sm text-slate-300">Drop files here or click to select</span>
-              <span className="text-[11px] text-slate-500">
+              <span className="text-[12.5px] text-slate-500">
                 A SHA-256 fingerprint is recorded for chain-of-custody. File contents are not uploaded.
               </span>
             </label>
@@ -345,14 +345,14 @@ export default function EvidenceVault({ incident, detail, meta, onClose }) {
                 value={label}
                 onChange={(e) => setLabel(e.target.value)}
                 placeholder={tab === 'url' ? 'Label (e.g. Phishing mirror)' : 'Label (e.g. Complainant statement)'}
-                className="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-purple-600 focus:outline-none"
+                className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-purple-600 focus:outline-none"
               />
               {tab === 'url' ? (
                 <input
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="https://..."
-                  className="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-purple-600 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-purple-600 focus:outline-none"
                 />
               ) : (
                 <textarea
@@ -360,11 +360,11 @@ export default function EvidenceVault({ incident, detail, meta, onClose }) {
                   onChange={(e) => setContent(e.target.value)}
                   rows={3}
                   placeholder="Record an observation, statement or finding…"
-                  className="w-full resize-y rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-purple-600 focus:outline-none"
+                  className="w-full resize-y rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-purple-600 focus:outline-none"
                 />
               )}
               <div className="flex items-center justify-between">
-                <span className="text-[11px] text-red-400">{error}</span>
+                <span className="text-[12.5px] text-red-400">{error}</span>
                 <button
                   onClick={addTextItem}
                   disabled={busy}
@@ -375,7 +375,7 @@ export default function EvidenceVault({ incident, detail, meta, onClose }) {
               </div>
             </div>
           )}
-          {tab === 'file' && error && <p className="mt-2 text-[11px] text-red-400">{error}</p>}
+          {tab === 'file' && error && <p className="mt-2 text-[12.5px] text-red-400">{error}</p>}
         </div>
       </div>
     </div>

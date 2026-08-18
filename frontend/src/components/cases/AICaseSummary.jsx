@@ -16,11 +16,11 @@ export default function AICaseSummary({ incident }) {
   const actions = recommendedActions(incident?.threat_level)
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+    <div className="rounded-xl border border-slate-800 bg-slate-900/72 p-4">
       <div className="mb-2 flex items-center gap-2">
         <Sparkles size={15} className="text-purple-400" />
         <h4 className="text-sm font-semibold text-slate-200">AI Case Summary</h4>
-        <span className="ml-auto rounded bg-slate-800 px-2 py-0.5 text-[10px] uppercase tracking-wide text-slate-400">
+        <span className="ml-auto rounded bg-slate-800/75 px-2 py-0.5 text-[11.5px] uppercase tracking-wide text-slate-400">
           Gemini
         </span>
       </div>

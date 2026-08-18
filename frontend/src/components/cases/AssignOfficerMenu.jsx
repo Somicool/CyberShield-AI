@@ -52,7 +52,7 @@ export default function AssignOfficerMenu({ current, onAssign, trigger, align = 
         }}
       >
         {trigger || (
-          <span className="inline-flex items-center gap-1 rounded-md border border-slate-700 bg-slate-800 px-2 py-1 text-xs text-slate-300 hover:bg-slate-700">
+          <span className="inline-flex items-center gap-1 rounded-md border border-slate-700 bg-slate-800/75 px-2 py-1 text-xs text-slate-300 hover:bg-slate-700">
             <UserPlus size={13} /> Assign
           </span>
         )}
@@ -60,7 +60,7 @@ export default function AssignOfficerMenu({ current, onAssign, trigger, align = 
 
       {open && (
         <div
-          className={`absolute z-30 mt-1 max-h-64 w-56 overflow-y-auto rounded-lg border border-slate-700 bg-slate-900 py-1 shadow-xl ${
+          className={`absolute z-30 mt-1 max-h-64 w-56 overflow-y-auto rounded-lg border border-slate-700 bg-slate-900/80 py-1 shadow-xl ${
             align === 'right' ? 'right-0' : 'left-0'
           }`}
           role="menu"
@@ -71,11 +71,11 @@ export default function AssignOfficerMenu({ current, onAssign, trigger, align = 
               key={o.id}
               role="menuitem"
               onClick={() => pick(o.name)}
-              className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-xs hover:bg-slate-800"
+              className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-xs hover:bg-slate-800/75"
             >
               <span>
                 <span className="block text-slate-200">{o.name}</span>
-                <span className="block text-[11px] text-slate-500">{o.unit}</span>
+                <span className="block text-[12.5px] text-slate-500">{o.unit}</span>
               </span>
               {current === o.name && <Check size={14} className="text-emerald-400" />}
             </button>

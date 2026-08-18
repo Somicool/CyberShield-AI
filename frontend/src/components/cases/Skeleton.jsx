@@ -1,6 +1,6 @@
 /** Simple shimmer skeleton block, used for table/panel loading states. */
 export function Skeleton({ className = '' }) {
-  return <div className={`animate-pulse rounded bg-slate-800/70 ${className}`} />
+  return <div className={`animate-pulse rounded bg-slate-800/75 ${className}`} />
 }
 
 /** A run of skeleton table rows matching the case table column count. */

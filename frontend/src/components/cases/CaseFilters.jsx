@@ -5,7 +5,7 @@ const THREAT_LEVELS = ['critical', 'high', 'medium', 'low']
 const THREAT_TYPES = ['url', 'email', 'sms', 'qr']
 
 const selectClass =
-  'rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-200 focus:border-purple-600 focus:outline-none'
+  'rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-200 focus:border-purple-600 focus:outline-none'
 
 /**
  * Header controls for the Cases workspace: text search, status / threat
@@ -25,7 +25,7 @@ export default function CaseFilters({ value, onChange }) {
           placeholder="Search cases, content, case ID..."
           value={value.search}
           onChange={(e) => set({ search: e.target.value })}
-          className="w-full rounded-lg border border-slate-800 bg-slate-900 py-2 pl-9 pr-3 text-sm focus:border-purple-600 focus:outline-none"
+          className="w-full rounded-lg border border-slate-800 bg-slate-900/80 py-2 pl-9 pr-3 text-sm focus:border-purple-600 focus:outline-none"
         />
       </div>
 
