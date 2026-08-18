@@ -11,15 +11,18 @@
 // ---- Node type registry (extensible for future entity types) -------------
 
 export const NODE_TYPES = {
-  Domain: { label: 'Domain', color: '#60a5fa', glyph: 'D' },
-  URL: { label: 'URL', color: '#38bdf8', glyph: 'U' },
-  Email: { label: 'Email', color: '#f472b6', glyph: 'E' },
-  Phone: { label: 'Phone', color: '#fbbf24', glyph: 'P' },
-  Wallet: { label: 'Wallet', color: '#34d399', glyph: 'W' },
-  TelegramHandle: { label: 'Telegram', color: '#f87171', glyph: 'T' },
-  Incident: { label: 'Incident', color: '#a855f7', glyph: 'I' },
-  Case: { label: 'Case', color: '#c084fc', glyph: 'C' },
-  IP: { label: 'IP Address', color: '#22d3ee', glyph: 'IP' },
+  // Muted command-center palette: distinguishable but restrained. Red/orange
+  // are deliberately absent — they are reserved for risk indicators drawn over
+  // nodes that are reused across multiple investigations.
+  Domain: { label: 'Domain', color: '#7d9dc4', glyph: 'D' },
+  URL: { label: 'URL', color: '#6fa8b8', glyph: 'U' },
+  Email: { label: 'Email', color: '#b38fae', glyph: 'E' },
+  Phone: { label: 'Phone', color: '#c2a469', glyph: 'P' },
+  Wallet: { label: 'Wallet', color: '#7fab92', glyph: 'W' },
+  TelegramHandle: { label: 'Telegram', color: '#9aa871', glyph: 'T' },
+  Incident: { label: 'Incident', color: '#d7a34a', glyph: 'I' },
+  Case: { label: 'Case', color: '#c08f57', glyph: 'C' },
+  IP: { label: 'IP Address', color: '#8aaead', glyph: 'IP' },
 }
 
 export const ENTITY_QUERY_TYPES = ['Domain', 'Email', 'Phone', 'Wallet', 'TelegramHandle']
@@ -325,4 +328,64 @@ export function buildCampaignBriefing(model, { geminiSnippet } = {}) {
   const confidence = top ? top.confidence : Object.keys(reuseByType).length ? 'Medium' : 'Low'
 
   return { narrative, confidence, actions: [...actions] }
+}
+
+// ---- Compact summary for the Graph Insights panel -------------------------
+
+/**
+ * Entities that were observed in `min` or more incidents inside the loaded
+ * graph. These are the genuinely interesting indicators — the graph canvas
+ * marks them with a restrained risk ring.
+ */
+export function hotEntityIds(model, min = 2) {
+  const adj = buildAdjacency(model)
+  const hot = new Set()
+  for (const node of model.nodesById.values()) {
+    if (node.type === 'Incident') continue
+    let incidents = 0
+    for (const nb of adj.get(node.id) || []) {
+      if (model.nodesById.get(nb)?.type === 'Incident') incidents++
+    }
+    if (incidents >= min) hot.add(node.id)
+  }
+  return hot
+}
+
+/**
+ * Headline numbers for the insights panel. Every value is counted from the
+ * loaded graph; nothing is estimated. `riskLevel` is null when the graph shows
+ * no cross-case reuse at all, so the UI can say so plainly instead of
+ * implying a threat assessment that does not exist.
+ */
+export function graphStats(model) {
+  const adj = buildAdjacency(model)
+  const nodes = [...model.nodesById.values()]
+  const incidents = nodes.filter((n) => n.type === 'Incident')
+  const entities = nodes.filter((n) => n.type !== 'Incident')
+
+  let maxReuse = 0
+  let sharedEntities = 0
+  const linkedCaseIds = new Set()
+
+  for (const node of entities) {
+    const incidentNeighbors = [...(adj.get(node.id) || [])].filter(
+      (nb) => model.nodesById.get(nb)?.type === 'Incident'
+    )
+    if (incidentNeighbors.length >= 2) {
+      sharedEntities++
+      maxReuse = Math.max(maxReuse, incidentNeighbors.length)
+      for (const id of incidentNeighbors) linkedCaseIds.add(id)
+    }
+  }
+
+  const riskLevel = maxReuse >= 4 ? 'Critical' : maxReuse === 3 ? 'High' : maxReuse === 2 ? 'Medium' : null
+
+  return {
+    entities: entities.length,
+    incidents: incidents.length,
+    relationships: model.edges.length,
+    sharedEntities,
+    linkedCases: linkedCaseIds.size,
+    riskLevel,
+  }
 }

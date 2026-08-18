@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { Share2, Brain, Radar, Route as RouteIcon, Boxes, AlertCircle } from 'lucide-react'
+import { Share2, Brain, Route as RouteIcon, Boxes, AlertCircle } from 'lucide-react'
 import { getGraphConnections, getIncident } from '../api/incidents'
 import {
   createModel,
   mergeConnections,
   seedIncident,
-  toGraphData,
-  degreeOf,
   shortestPath,
   detectClusters,
   deriveInsights,
+  graphStats,
+  hotEntityIds,
   buildCampaignBriefing,
   ENTITY_QUERY_TYPES,
 } from '../lib/graphModel'
@@ -22,17 +22,32 @@ import GraphInsights from '../components/graph/GraphInsights'
 import ClusterBadges from '../components/graph/ClusterBadges'
 import GraphFilters from '../components/graph/GraphFilters'
 import GraphLegend from '../components/graph/GraphLegend'
+import GraphSection from '../components/graph/GraphSection'
 import InvestigationPath from '../components/graph/InvestigationPath'
 import EntityDetailsPanel from '../components/graph/EntityDetailsPanel'
 import CampaignBriefingPanel from '../components/graph/CampaignBriefingPanel'
-import PlannedModules from '../components/graph/PlannedModules'
-import Section from '../components/investigation/Section'
 
 const MAX_EXPAND_QUERIES = 30
 const DEFAULT_FILTERS = { hiddenTypes: new Set(), hiddenRels: new Set(), minConnections: 0, hideIsolated: false }
 
+/** Graph-service connectivity, shown honestly — never faked, never hidden. */
+function ServiceStatus({ status }) {
+  const map = {
+    connected: ['bg-emerald-400', 'text-emerald-300/90', 'CONNECTED'],
+    unavailable: ['bg-red-400', 'text-red-300', 'GRAPH SERVICE UNAVAILABLE'],
+    unknown: ['bg-zinc-500', 'text-zinc-500', 'NOT QUERIED'],
+  }
+  const [dot, text, label] = map[status] || map.unknown
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-black/35 px-2 py-1">
+      <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
+      <span className={`text-[11.5px] font-semibold uppercase tracking-[0.08em] ${text}`}>{label}</span>
+    </span>
+  )
+}
+
 /**
- * Threat Intelligence Graph — the intelligence analysis workspace.
+ * Threat Intelligence Graph — the relationship analysis workspace.
  *
  * Built entirely on the real /detect/graph endpoint: the graph grows by
  * expanding from genuine queries (BFS by relationship depth). Paths, clusters,
@@ -53,6 +68,7 @@ export default function ThreatIntelligenceGraph() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [hasSearched, setHasSearched] = useState(false)
+  const [serviceStatus, setServiceStatus] = useState('unknown')
 
   const [filters, setFilters] = useState(DEFAULT_FILTERS)
   const [caseContext, setCaseContext] = useState(null) // { id, caseId, entityCount }
@@ -69,84 +85,106 @@ export default function ThreatIntelligenceGraph() {
   const bump = () => setVersion((v) => v + 1)
 
   // ---- data loading -------------------------------------------------------
-  const expandBFS = useCallback(async (type, value, d) => {
-    const model = modelRef.current
-    const visited = new Set([`${type}:${value}`])
-    let frontier = [{ type, value }]
-    let queries = 0
-    for (let level = 0; level < d && queries < MAX_EXPAND_QUERIES; level++) {
-      const next = []
-      for (const item of frontier) {
-        if (queries >= MAX_EXPAND_QUERIES) break
-        queries++
-        const data = await getGraphConnections(item.type, item.value)
-        mergeConnections(model, item.type, item.value, data.connections || [])
-        for (const c of data.connections || []) {
-          const v = c.properties?.value
-          const key = `${c.type}:${v}`
-          if (v && ENTITY_QUERY_TYPES.includes(c.type) && !visited.has(key)) {
-            visited.add(key)
-            next.push({ type: c.type, value: v })
-          }
-        }
-      }
-      frontier = next
+
+  /**
+   * Every graph lookup goes through here so the service status pill always
+   * reflects what the backend actually did.
+   */
+  const fetchConnections = useCallback(async (type, value) => {
+    try {
+      const data = await getGraphConnections(type, value)
+      setServiceStatus('connected')
+      return data
+    } catch (e) {
+      if (e?.response?.status === 503) setServiceStatus('unavailable')
+      throw e
     }
   }, [])
+
+  const expandBFS = useCallback(
+    async (type, value, d) => {
+      const model = modelRef.current
+      const visited = new Set([`${type}:${value}`])
+      let frontier = [{ type, value }]
+      let queries = 0
+      for (let level = 0; level < d && queries < MAX_EXPAND_QUERIES; level++) {
+        const next = []
+        for (const item of frontier) {
+          if (queries >= MAX_EXPAND_QUERIES) break
+          queries++
+          const data = await fetchConnections(item.type, item.value)
+          mergeConnections(model, item.type, item.value, data.connections || [])
+          for (const c of data.connections || []) {
+            const v = c.properties?.value
+            const key = `${c.type}:${v}`
+            if (v && ENTITY_QUERY_TYPES.includes(c.type) && !visited.has(key)) {
+              visited.add(key)
+              next.push({ type: c.type, value: v })
+            }
+          }
+        }
+        frontier = next
+      }
+    },
+    [fetchConnections]
+  )
 
   /**
    * Builds the graph for ONE case: seeds the case node with every entity
    * extracted from its content, then expands each queryable entity through the
    * real /detect/graph endpoint to reveal links to other investigations.
    */
-  const loadCaseGraph = useCallback(async (incidentId) => {
-    setLoading(true)
-    setError('')
-    try {
-      const incident = await getIncident(incidentId)
-      const entities = extractEntities(incident)
-      const entityCount = Object.values(entities).reduce((s, a) => s + a.length, 0)
+  const loadCaseGraph = useCallback(
+    async (incidentId) => {
+      setLoading(true)
+      setError('')
+      try {
+        const incident = await getIncident(incidentId)
+        const entities = extractEntities(incident)
+        const entityCount = Object.values(entities).reduce((s, a) => s + a.length, 0)
 
-      seedIncident(modelRef.current, incidentId, incident.incident_type, entities)
+        seedIncident(modelRef.current, incidentId, incident.incident_type, entities)
 
-      // Expand outward from each of the case's own indicators.
-      let queries = 0
-      let graphUnavailable = false
-      for (const [type, values] of Object.entries(entities)) {
-        if (!ENTITY_QUERY_TYPES.includes(type)) continue
-        for (const value of values) {
-          if (queries >= MAX_EXPAND_QUERIES) break
-          queries++
-          try {
-            const data = await getGraphConnections(type, value)
-            mergeConnections(modelRef.current, type, value, data.connections || [])
-          } catch (e) {
-            // One failed lookup must not abort the case graph; remember if the
-            // graph service itself is down so we can explain it.
-            if (e?.response?.status === 503) graphUnavailable = true
+        // Expand outward from each of the case's own indicators.
+        let queries = 0
+        let graphUnavailable = false
+        for (const [type, values] of Object.entries(entities)) {
+          if (!ENTITY_QUERY_TYPES.includes(type)) continue
+          for (const value of values) {
+            if (queries >= MAX_EXPAND_QUERIES) break
+            queries++
+            try {
+              const data = await fetchConnections(type, value)
+              mergeConnections(modelRef.current, type, value, data.connections || [])
+            } catch (e) {
+              // One failed lookup must not abort the case graph; remember if the
+              // graph service itself is down so we can explain it.
+              if (e?.response?.status === 503) graphUnavailable = true
+            }
           }
         }
-      }
 
-      setCaseContext({ id: incidentId, caseId: deriveCaseId(incident), entityCount })
-      setHasSearched(true)
-      setHighlightId(`Incident:${incidentId}`)
-      bump()
-      setTimeout(() => canvasRef.current?.fit(), 400)
+        setCaseContext({ id: incidentId, caseId: deriveCaseId(incident), entityCount })
+        setHasSearched(true)
+        setHighlightId(`Incident:${incidentId}`)
+        bump()
+        setTimeout(() => canvasRef.current?.fit(), 400)
 
-      // The case + its own indicators always render; only cross-case links
-      // need the graph service, so say so rather than failing silently.
-      if (graphUnavailable) {
-        setError(
-          'Showing this case and its own indicators. Cross-case relationships are unavailable because the threat graph service could not be reached.'
-        )
+        // The case + its own indicators always render; only cross-case links
+        // need the graph service, so say so rather than failing silently.
+        if (graphUnavailable) {
+          setError(
+            'Showing this case and its own indicators. Cross-case relationships are unavailable because the threat graph service could not be reached.'
+          )
+        }
+      } catch {
+        setError('Could not load this case.')
+      } finally {
+        setLoading(false)
       }
-    } catch {
-      setError('Could not load this case.')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+    },
+    [fetchConnections]
+  )
 
   const runSearch = useCallback(async () => {
     const value = searchValue.trim()
@@ -162,8 +200,12 @@ export default function ThreatIntelligenceGraph() {
         canvasRef.current?.fit()
         canvasRef.current?.centerNode(`${searchType}:${value}`)
       }, 400)
-    } catch {
-      setError('Graph lookup failed. Check the entity type/value and try again.')
+    } catch (e) {
+      setError(
+        e?.response?.status === 503
+          ? 'The threat graph service is unavailable, so relationships cannot be retrieved right now.'
+          : 'Graph lookup failed. Check the entity type/value and try again.'
+      )
     } finally {
       setLoading(false)
     }
@@ -204,19 +246,22 @@ export default function ThreatIntelligenceGraph() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
 
-  const expandNode = useCallback(async (node) => {
-    if (!ENTITY_QUERY_TYPES.includes(node.type)) return
-    setLoading(true)
-    try {
-      const data = await getGraphConnections(node.type, node.value)
-      mergeConnections(modelRef.current, node.type, node.value, data.connections || [])
-      bump()
-    } catch {
-      setError('Could not expand this entity.')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const expandNode = useCallback(
+    async (node) => {
+      if (!ENTITY_QUERY_TYPES.includes(node.type)) return
+      setLoading(true)
+      try {
+        const data = await fetchConnections(node.type, node.value)
+        mergeConnections(modelRef.current, node.type, node.value, data.connections || [])
+        bump()
+      } catch {
+        setError('Could not expand this entity.')
+      } finally {
+        setLoading(false)
+      }
+    },
+    [fetchConnections]
+  )
 
   // ---- filtered graph data ------------------------------------------------
   const graphData = useMemo(() => {
@@ -246,6 +291,8 @@ export default function ThreatIntelligenceGraph() {
   }, [version, filters])
 
   const insights = useMemo(() => deriveInsights(modelRef.current), [version])
+  const stats = useMemo(() => graphStats(modelRef.current), [version])
+  const hotIds = useMemo(() => hotEntityIds(modelRef.current), [version])
   const clusters = useMemo(() => detectClusters(modelRef.current), [version])
   const availableTypes = useMemo(
     () => [...new Set([...modelRef.current.nodesById.values()].map((n) => n.type))],
@@ -266,14 +313,17 @@ export default function ThreatIntelligenceGraph() {
     }
   }, [])
 
-  const focusNode = useCallback((id) => {
-    const node = modelRef.current.nodesById.get(id)
-    if (node) {
-      setHighlightId(id)
-      handleNodeClick(node)
-      canvasRef.current?.centerNode(id)
-    }
-  }, [handleNodeClick])
+  const focusNode = useCallback(
+    (id) => {
+      const node = modelRef.current.nodesById.get(id)
+      if (node) {
+        setHighlightId(id)
+        handleNodeClick(node)
+        canvasRef.current?.centerNode(id)
+      }
+    },
+    [handleNodeClick]
+  )
 
   // ---- path ---------------------------------------------------------------
   const tracePath = useCallback((sourceId, targetId) => {
@@ -328,6 +378,7 @@ export default function ThreatIntelligenceGraph() {
     setFilters(DEFAULT_FILTERS)
     setHasSearched(false)
     setCaseContext(null)
+    setError('')
     bump()
   }
 
@@ -352,29 +403,28 @@ export default function ThreatIntelligenceGraph() {
   const nodeCount = graphData.nodes.length
 
   return (
-    <div className="flex flex-col gap-4 p-8">
-      {/* Section 1 — header */}
-      <header className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-purple-500/30 bg-purple-500/10 text-purple-300">
-            <Share2 size={20} />
-          </span>
-          <div>
-            <h2 className="text-xl font-semibold tracking-tight">Threat Intelligence Graph</h2>
-            <p className="text-sm text-slate-500">
-              Visualize relationships between cybercrime entities and identify organised attack campaigns.
-            </p>
-          </div>
+    <div className="flex min-h-full flex-col gap-3 p-6">
+      {/* Header */}
+      <header className="flex flex-wrap items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="text-[19px] font-semibold tracking-tight text-zinc-100">Threat Intelligence Graph</h2>
+          <p className="text-[13px] text-zinc-500">
+            Trace relationships between domains, URLs, emails, wallets, phone numbers and incidents.
+          </p>
         </div>
-        <button
-          onClick={analyzeCampaign}
-          disabled={nodeCount === 0}
-          className="inline-flex items-center gap-2 rounded-lg border border-purple-500/50 bg-purple-600/20 px-4 py-2.5 text-sm font-semibold text-purple-100 transition hover:bg-purple-600/30 disabled:opacity-50"
-        >
-          <Brain size={17} /> Analyze Campaign
-        </button>
+        <div className="flex items-center gap-2">
+          <ServiceStatus status={serviceStatus} />
+          <button
+            onClick={analyzeCampaign}
+            disabled={nodeCount === 0}
+            className="inline-flex h-9 items-center gap-1.5 rounded-md border border-white/10 bg-black/35 px-3 text-[13px] font-medium text-zinc-200 transition hover:border-cyan-400/40 hover:text-cyan-200 disabled:opacity-40"
+          >
+            <Brain size={14} /> Analyze Campaign
+          </button>
+        </div>
       </header>
 
+      {/* Control bar */}
       <GraphToolbar
         searchType={searchType}
         searchValue={searchValue}
@@ -393,46 +443,39 @@ export default function ThreatIntelligenceGraph() {
       />
 
       {error && (
-        <div className="flex items-center gap-2 rounded-lg border border-red-900 bg-red-950/40 px-4 py-3 text-sm text-red-300">
-          <AlertCircle size={16} /> {error}
+        <div className="flex items-start gap-2 rounded-lg border border-red-500/25 bg-red-500/8 px-3 py-2 text-[13px] text-red-200">
+          <AlertCircle size={14} className="mt-0.5 shrink-0" /> {error}
         </div>
       )}
 
       {/* Case context — shown when the graph was opened for a specific case */}
       {caseContext && (
-        <div className="flex flex-wrap items-center gap-3 rounded-lg border border-amber-400/25 bg-amber-400/8 px-4 py-2.5">
-          <span className="inline-flex items-center gap-2 text-[12.5px] text-amber-200">
-            <Boxes size={14} />
+        <div className="flex flex-wrap items-center gap-3 rounded-lg border border-cyan-400/20 bg-cyan-400/6 px-3 py-2">
+          <span className="inline-flex items-center gap-2 text-[13px] text-cyan-200">
+            <Boxes size={13} />
             Case graph · <span className="font-mono">{caseContext.caseId}</span>
           </span>
-          <span className="text-[11.5px] text-zinc-400">
-            {caseContext.entityCount} indicator{caseContext.entityCount === 1 ? '' : 's'} extracted from this case
+          <span className="text-[12.5px] text-zinc-400">
+            {caseContext.entityCount} indicator{caseContext.entityCount === 1 ? '' : 's'} extracted
           </span>
           <Link
             to={`/dashboard/investigate/${caseContext.id}`}
-            className="ml-auto text-[11.5px] font-medium text-amber-300/90 hover:text-amber-200"
+            className="ml-auto text-[12.5px] font-medium text-cyan-300/90 hover:text-cyan-200"
           >
             Open Investigation →
           </Link>
         </div>
       )}
 
-      {/* Section 6 — insights */}
-      {hasSearched && (
-        <div className="flex items-center gap-2">
-          <Radar size={15} className="text-purple-400" />
-          <span className="text-sm font-semibold text-slate-200">Graph Insights</span>
-        </div>
-      )}
-      {hasSearched && <GraphInsights insights={insights} onFocus={focusNode} />}
+      {/* Graph Insights — compact strip directly above the canvas */}
+      {hasSearched && <GraphInsights stats={stats} insights={insights} onFocus={focusNode} />}
 
-      {/* Section 8 — clusters */}
       {clusters.length > 0 && <ClusterBadges clusters={clusters} onFocus={focusNode} />}
 
-      {/* Canvas + details panel */}
-      <div className={`grid gap-4 ${selectedNode ? 'xl:grid-cols-[1fr_360px]' : 'grid-cols-1'}`}>
+      {/* Canvas (dominant) + details panel */}
+      <div className={`grid min-h-0 gap-3 ${selectedNode ? 'xl:grid-cols-[1fr_340px]' : 'grid-cols-1'}`}>
         <div className="min-w-0">
-          <div className="h-[560px] overflow-hidden rounded-xl border border-slate-800">
+          <div className="h-[calc(100vh-340px)] min-h-125 overflow-hidden rounded-lg border border-white/10">
             {hasSearched ? (
               <GraphCanvas
                 ref={canvasRef}
@@ -441,16 +484,17 @@ export default function ThreatIntelligenceGraph() {
                 selectedId={selectedNode?.id}
                 highlightId={highlightId}
                 roots={modelRef.current.roots}
+                hotIds={hotIds}
                 onNodeClick={handleNodeClick}
                 onBackgroundClick={() => setSelectedNode(null)}
               />
             ) : (
-              <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
-                <Share2 size={30} className="text-slate-700" />
-                <p className="text-sm text-slate-400">Search an entity to build the intelligence graph.</p>
-                <p className="max-w-md text-xs text-slate-600">
-                  Start from a domain, wallet, email, phone number or Telegram handle — or open the graph from a
-                  case (Cases → View Threat Graph) to map that investigation and everything connected to it.
+              <div className="flex h-full flex-col items-center justify-center gap-2 bg-[#0a0f18]/85 text-center">
+                <Share2 size={26} className="text-zinc-700" />
+                <p className="text-[13.5px] text-zinc-400">Search an entity to build the intelligence graph.</p>
+                <p className="max-w-md text-[12.5px] text-zinc-600">
+                  Start from a domain, wallet, email, phone number or Telegram handle — or open the graph from a case
+                  (Cases → View Threat Graph) to map that investigation and everything connected to it.
                 </p>
               </div>
             )}
@@ -458,8 +502,8 @@ export default function ThreatIntelligenceGraph() {
         </div>
 
         {selectedNode && (
-          <div className="xl:sticky xl:top-6 xl:max-h-[calc(100vh-3rem)] xl:self-start">
-            <div className="h-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950/40">
+          <div className="xl:sticky xl:top-6 xl:self-start">
+            <div className="h-[calc(100vh-340px)] min-h-125 overflow-hidden rounded-lg border border-white/10 bg-[#111722]/82 backdrop-blur-md">
               <EntityDetailsPanel
                 node={selectedNode}
                 model={modelRef.current}
@@ -467,6 +511,7 @@ export default function ThreatIntelligenceGraph() {
                 loadingDetail={loadingDetail}
                 onClose={() => setSelectedNode(null)}
                 onOpenInvestigation={(incidentId) => navigate(`/dashboard/investigate/${incidentId}`)}
+                onViewCase={(incidentId) => navigate(`/dashboard/incidents/${incidentId}`)}
                 onCenter={(id) => canvasRef.current?.centerNode(id)}
                 onSearchRelated={expandNode}
               />
@@ -475,12 +520,17 @@ export default function ThreatIntelligenceGraph() {
         )}
       </div>
 
+      {/* Collapsed by default — the officer reaches the graph first */}
       {hasSearched && (
         <>
-          <GraphFilters value={filters} onChange={setFilters} availableTypes={availableTypes} availableRels={availableRels} />
+          <GraphFilters
+            value={filters}
+            onChange={setFilters}
+            availableTypes={availableTypes}
+            availableRels={availableRels}
+          />
           <GraphLegend />
-
-          <Section icon={RouteIcon} title="Investigation Path" defaultOpen={false}>
+          <GraphSection icon={RouteIcon} title="Investigation Path">
             <InvestigationPath
               nodes={graphData.nodes}
               path={path.nodes}
@@ -489,13 +539,9 @@ export default function ThreatIntelligenceGraph() {
               onClear={() => setPath({ computed: false, nodes: [] })}
               onFocus={focusNode}
             />
-          </Section>
+          </GraphSection>
         </>
       )}
-
-      <Section icon={Boxes} title="Future Modules" defaultOpen={false}>
-        <PlannedModules />
-      </Section>
 
       <CampaignBriefingPanel
         open={briefingOpen}
