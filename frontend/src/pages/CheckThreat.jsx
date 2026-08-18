@@ -183,22 +183,22 @@ export default function CheckThreat() {
   const isMessageMode = type !== 'url'
 
   return (
-    <div className="min-h-full bg-[#16181c]">
+    <div className="min-h-full">
       <div className="mx-auto max-w-3xl space-y-4 p-6">
         {/* header */}
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-amber-400/25 bg-amber-400/10 text-amber-300">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-400/25 bg-cyan-400/10 text-cyan-300">
               <ScanSearch size={18} />
             </span>
             <div>
-              <h1 className="text-[19px] font-semibold tracking-tight text-zinc-50">Threat Analysis</h1>
-              <p className="mt-0.5 text-[12.5px] text-zinc-500">
-                Analyze suspicious URLs, emails, and messages using CyberShield AI.
+              <h1 className="text-[21px] font-semibold tracking-tight text-zinc-50">Threat Analysis</h1>
+              <p className="mt-0.5 text-[14px] text-zinc-500">
+                Analyze suspicious URLs, emails, and messages using CyberAid.
               </p>
             </div>
           </div>
-          <span className="inline-flex items-center gap-1.5 text-[11.5px] text-zinc-500">
+          <span className="inline-flex items-center gap-1.5 text-[13px] text-zinc-500">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
             Detection Engine Online
           </span>
@@ -208,11 +208,11 @@ export default function CheckThreat() {
         <ThreatTypeSelector value={type} onChange={switchType} disabled={loading} />
 
         {/* analysis workspace */}
-        <section className="rounded-lg border border-white/7 bg-white/2">
+        <section className="rounded-lg border border-white/7 bg-[#111722]/82 backdrop-blur-md">
           <form onSubmit={handleAnalyze} className="space-y-3 p-5">
             {type === 'email' && (
               <div>
-                <label htmlFor="sender" className="block text-[11.5px] font-medium text-zinc-400">
+                <label htmlFor="sender" className="block text-[13px] font-medium text-zinc-400">
                   Sender Email <span className="text-zinc-600">(optional)</span>
                 </label>
                 <input
@@ -221,13 +221,13 @@ export default function CheckThreat() {
                   value={sender}
                   onChange={(e) => setSender(e.target.value)}
                   placeholder="sender@example.com"
-                  className="mt-1.5 w-full rounded-md border border-white/8 bg-black/25 px-3 py-2.5 text-[13px] text-zinc-100 placeholder:text-zinc-600 focus:border-amber-400/40 focus:outline-none"
+                  className="mt-1.5 w-full rounded-md border border-white/8 bg-black/35 px-3 py-2.5 text-[14.5px] text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400/40 focus:outline-none"
                 />
               </div>
             )}
 
             <div>
-              <label htmlFor="content" className="block text-[11.5px] font-medium text-zinc-400">
+              <label htmlFor="content" className="block text-[13px] font-medium text-zinc-400">
                 {type === 'url' ? 'Suspicious URL' : type === 'email' ? 'Email Content' : 'Message Content'}
               </label>
               {type === 'url' ? (
@@ -237,7 +237,7 @@ export default function CheckThreat() {
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="Paste a URL to analyze..."
-                  className="mt-1.5 w-full rounded-md border border-white/8 bg-black/25 px-3 py-2.5 font-mono text-[13px] text-zinc-100 placeholder:font-sans placeholder:text-zinc-600 focus:border-amber-400/40 focus:outline-none"
+                  className="mt-1.5 w-full rounded-md border border-white/8 bg-black/35 px-3 py-2.5 font-mono text-[14.5px] text-zinc-100 placeholder:font-sans placeholder:text-zinc-600 focus:border-cyan-400/40 focus:outline-none"
                 />
               ) : (
                 <textarea
@@ -250,7 +250,7 @@ export default function CheckThreat() {
                       ? 'Paste the full email content, including any links...'
                       : 'Paste the text message content...'
                   }
-                  className="mt-1.5 w-full resize-y rounded-md border border-white/8 bg-black/25 px-3 py-2.5 text-[13px] leading-relaxed text-zinc-100 placeholder:text-zinc-600 focus:border-amber-400/40 focus:outline-none"
+                  className="mt-1.5 w-full resize-y rounded-md border border-white/8 bg-black/35 px-3 py-2.5 text-[14.5px] leading-relaxed text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400/40 focus:outline-none"
                 />
               )}
             </div>
@@ -258,7 +258,7 @@ export default function CheckThreat() {
             <button
               type="submit"
               disabled={loading || !content.trim()}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-amber-400/40 bg-amber-400/15 py-2.5 text-[13.5px] font-semibold text-amber-100 transition hover:bg-amber-400/25 disabled:opacity-45"
+              className="btn-primary w-full py-2.5 text-[15px]"
             >
               {loading ? <Loader2 size={15} className="animate-spin" /> : <ScanSearch size={15} />}
               {loading ? 'Analyzing…' : 'Analyze Threat'}
@@ -267,23 +267,23 @@ export default function CheckThreat() {
 
           {/* quick test */}
           <div className="flex flex-wrap items-center gap-2 border-t border-white/5 px-5 py-3">
-            <span className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.08em] text-zinc-600">
+            <span className="inline-flex items-center gap-1.5 text-[12.5px] uppercase tracking-[0.08em] text-zinc-600">
               <Beaker size={12} /> Quick Test
             </span>
             <button
               type="button"
               onClick={loadExample}
               disabled={loading}
-              className="rounded-md border border-white/8 bg-white/3 px-2.5 py-1 text-[11.5px] text-zinc-300 transition hover:border-amber-400/30 hover:text-zinc-100 disabled:opacity-50"
+              className="rounded-md border border-white/8 bg-white/3 px-2.5 py-1 text-[13px] text-zinc-300 transition hover:border-cyan-400/30 hover:text-zinc-100 disabled:opacity-50"
             >
               {QUICK_TESTS[type].label}
             </button>
-            <span className="text-[10.5px] text-zinc-600">fills the form only — nothing is submitted</span>
+            <span className="text-[12px] text-zinc-600">fills the form only — nothing is submitted</span>
           </div>
         </section>
 
         {error && (
-          <div className="flex items-center gap-2 rounded-lg border border-red-900/60 bg-red-950/30 px-4 py-3 text-[12.5px] text-red-300">
+          <div className="flex items-center gap-2 rounded-lg border border-red-900/60 bg-red-950/30 px-4 py-3 text-[14px] text-red-300">
             <AlertCircle size={15} /> {error}
           </div>
         )}
@@ -308,7 +308,7 @@ export default function CheckThreat() {
         <RecentChecks items={recent} loading={recentLoading} />
 
         {isMessageMode && (
-          <p className="text-[10.5px] text-zinc-600">
+          <p className="text-[12px] text-zinc-600">
             Embedded links inside messages are scored automatically as part of the analysis.
           </p>
         )}

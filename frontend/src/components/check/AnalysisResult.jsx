@@ -65,23 +65,23 @@ function confidenceLabel(score) {
 function Metric({ label, value, valueClass = 'text-zinc-100', hint }) {
   return (
     <div className="px-4 py-3">
-      <div className="text-[10.5px] uppercase tracking-[0.09em] text-zinc-500">{label}</div>
-      <div className={`mt-1 text-[17px] font-semibold leading-none tabular-nums ${valueClass}`}>{value}</div>
-      {hint && <div className="mt-1 text-[10.5px] text-zinc-600">{hint}</div>}
+      <div className="text-[12px] uppercase tracking-[0.09em] text-zinc-500">{label}</div>
+      <div className={`mt-1 text-[19px] font-semibold leading-none tabular-nums ${valueClass}`}>{value}</div>
+      {hint && <div className="mt-1 text-[12px] text-zinc-600">{hint}</div>}
     </div>
   )
 }
 
 function ActionButton({ icon: Icon, label, onClick, busy, tone = 'default', done }) {
   const tones = {
-    default: 'border-white/10 bg-white/4 text-zinc-200 hover:border-amber-400/35 hover:bg-white/7',
-    primary: 'border-amber-400/40 bg-amber-400/12 text-amber-200 hover:bg-amber-400/20',
+    default: 'border-white/10 bg-white/4 text-zinc-200 hover:border-cyan-400/35 hover:bg-white/7',
+    primary: 'border-cyan-400/40 bg-cyan-400/12 text-cyan-200 hover:bg-cyan-400/20',
   }
   return (
     <button
       onClick={onClick}
       disabled={busy || done}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-md border px-3 py-2 text-[12.5px] font-medium transition disabled:opacity-60 ${tones[tone]}`}
+      className={`inline-flex items-center justify-center gap-1.5 rounded-md border px-3 py-2 text-[14px] font-medium transition disabled:opacity-60 ${tones[tone]}`}
     >
       {busy ? <Loader2 size={13} className="animate-spin" /> : done ? <Check size={13} className="text-emerald-400" /> : <Icon size={13} />}
       {label}
@@ -117,18 +117,18 @@ export default function AnalysisResult({
             <v.Icon size={20} />
           </span>
           <div>
-            <div className={`text-[17px] font-semibold uppercase tracking-[0.06em] ${v.text}`}>
+            <div className={`text-[19px] font-semibold uppercase tracking-[0.06em] ${v.text}`}>
               {v.label}
             </div>
-            <div className="text-[11.5px] text-zinc-500">
+            <div className="text-[13px] text-zinc-500">
               {isSafe ? 'No significant threat detected' : 'Review the findings below before acting'}
             </div>
           </div>
         </div>
         <div className="text-right">
-          <div className={`font-mono text-[26px] font-semibold leading-none tabular-nums ${v.text}`}>
+          <div className={`font-mono text-[28px] font-semibold leading-none tabular-nums ${v.text}`}>
             {score.toFixed(0)}
-            <span className="text-[13px] text-zinc-500">/100</span>
+            <span className="text-[14.5px] text-zinc-500">/100</span>
           </div>
         </div>
       </div>
@@ -149,8 +149,8 @@ export default function AnalysisResult({
 
       {/* AI explanation */}
       <div className="px-5 py-4">
-        <h4 className="text-[11px] uppercase tracking-[0.09em] text-zinc-500">Why was this flagged?</h4>
-        <p className="mt-2 text-[13px] leading-relaxed text-zinc-300">
+        <h4 className="text-[12.5px] uppercase tracking-[0.09em] text-zinc-500">Why was this flagged?</h4>
+        <p className="mt-2 text-[14.5px] leading-relaxed text-zinc-300">
           {result.explanation || 'No AI explanation is available for this check.'}
         </p>
       </div>
@@ -158,18 +158,18 @@ export default function AnalysisResult({
       {/* warning signs (existing heuristics only) */}
       {signs.length > 0 && (
         <div className="border-t border-white/6 px-5 py-4">
-          <h4 className="text-[11px] uppercase tracking-[0.09em] text-zinc-500">
+          <h4 className="text-[12.5px] uppercase tracking-[0.09em] text-zinc-500">
             Key Warning Signs <span className="text-zinc-600">({signs.length})</span>
           </h4>
           <ul className="mt-2.5 grid gap-1.5 sm:grid-cols-2">
             {signs.map((h, i) => (
               <li
                 key={i}
-                className="flex items-start gap-2 rounded-md border border-white/6 bg-white/2 px-2.5 py-1.5 text-[12px] text-zinc-300"
+                className="flex items-start gap-2 rounded-md border border-white/6 bg-white/2 px-2.5 py-1.5 text-[13.5px] text-zinc-300"
               >
                 <AlertTriangle size={12} className="mt-0.5 shrink-0 text-amber-400/80" />
                 <span className="flex-1">{h.reason}</span>
-                <span className="shrink-0 font-mono text-[10.5px] text-zinc-600">+{h.points}</span>
+                <span className="shrink-0 font-mono text-[12px] text-zinc-600">+{h.points}</span>
               </li>
             ))}
           </ul>
@@ -180,7 +180,7 @@ export default function AnalysisResult({
       <div className="border-t border-white/6 px-5 py-4">
         {isSafe ? (
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <span className="inline-flex items-center gap-2 text-[13px] text-emerald-300">
+            <span className="inline-flex items-center gap-2 text-[14.5px] text-emerald-300">
               <Check size={15} /> No significant threat detected
             </span>
             <ActionButton icon={RotateCcw} label="Analyze Another" onClick={onAnalyzeAnother} />
@@ -209,16 +209,16 @@ export default function AnalysisResult({
             </div>
 
             {reportReference && (
-              <p className="mt-2.5 text-[11.5px] text-emerald-300">
-                Reported to CyberShield · reference <span className="font-mono">{reportReference}</span>
+              <p className="mt-2.5 text-[13px] text-emerald-300">
+                Reported to CyberAid · reference <span className="font-mono">{reportReference}</span>
               </p>
             )}
             {investigationDone && (
-              <p className="mt-2.5 text-[11.5px] text-zinc-500">
+              <p className="mt-2.5 text-[13px] text-zinc-500">
                 WHOIS, DNS, SSL and hosting intelligence collected — open the investigation to review it.
               </p>
             )}
-            {actionError && <p className="mt-2.5 text-[11.5px] text-red-300">{actionError}</p>}
+            {actionError && <p className="mt-2.5 text-[13px] text-red-300">{actionError}</p>}
           </>
         )}
       </div>
