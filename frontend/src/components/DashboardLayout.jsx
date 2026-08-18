@@ -3,6 +3,7 @@ import {
   ShieldAlert, Activity, FolderKanban, ScanSearch, BarChart3, Share2, Bot, Scale, Map, Settings,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import Brand from './Brand'
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', icon: ShieldAlert },
@@ -31,16 +32,17 @@ export default function DashboardLayout() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex">
-      <aside className="w-60 border-r border-slate-800 flex flex-col">
-        <div className="p-5 border-b border-slate-800">
-          <Link to="/dashboard" className="text-lg font-semibold hover:text-purple-300">
-            CyberShield AI
+    <div className="flex min-h-screen text-white">
+      {/* Sticky so navigation stays in reach on long, data-dense pages. */}
+      <aside className="sticky top-0 flex h-screen w-60 shrink-0 flex-col border-r border-white/10 bg-[#0b1119]/88 backdrop-blur-md">
+        <div className="border-b border-white/8 p-5">
+          <Link to="/dashboard" className="text-lg font-semibold transition hover:text-cyan-200">
+            <Brand />
           </Link>
           <p className="text-xs text-slate-500">Smart Policing Dashboard</p>
         </div>
 
-        <nav className="flex-1 p-3 space-y-1">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
           {navItems.map((item) => {
             const Icon = item.icon
             return (
@@ -49,10 +51,10 @@ export default function DashboardLayout() {
                 to={item.to}
                 end={item.to === '/dashboard'}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 rounded text-sm transition ${
+                  `flex items-center gap-3 rounded px-3 py-2 text-sm transition ${
                     isActive
-                      ? 'bg-purple-600/20 text-purple-300 border border-purple-700/50'
-                      : 'text-slate-400 hover:bg-slate-900 hover:text-white'
+                      ? 'border border-cyan-500/40 bg-cyan-500/12 text-cyan-200'
+                      : 'border border-transparent text-slate-400 hover:bg-white/5 hover:text-white'
                   }`
                 }
               >
@@ -63,17 +65,17 @@ export default function DashboardLayout() {
           })}
         </nav>
 
-        <div className="p-3 border-t border-slate-800">
+        <div className="border-t border-white/8 p-3">
           <button
             onClick={logout}
-            className="w-full text-sm bg-slate-900 hover:bg-slate-800 px-3 py-2 rounded text-slate-300"
+            className="w-full rounded border border-white/10 bg-white/4 px-3 py-2 text-sm text-slate-300 transition hover:border-white/20 hover:text-white"
           >
             Log out
           </button>
         </div>
       </aside>
 
-      <main className="flex-1 overflow-y-auto">
+      <main className="min-w-0 flex-1">
         <Outlet />
       </main>
     </div>
