@@ -1,109 +1,226 @@
 import {
-  FileText, Clock, Cpu, BookText, Scale, Boxes, PenLine, Gavel, MessageSquareText, ShieldCheck,
+  FileText, Boxes, PenLine, Gavel, MessageSquareText, Scale, BookText, Activity, Cpu, ArrowRight,
 } from 'lucide-react'
 import { DOCUMENT_CATALOG } from '../../lib/documents'
-import ThreatBadge from '../ThreatBadge'
+import { statusLabel } from '../../lib/caseHelpers'
+import { ENTITY_LABELS } from '../../lib/crimegptContext'
 
 const AI_STATUS = {
-  ready: { label: 'Ready', tone: 'text-sky-300', dot: 'bg-sky-400' },
+  ready: { label: 'Ready', tone: 'text-zinc-300', dot: 'bg-zinc-400' },
   online: { label: 'Online (Gemini)', tone: 'text-emerald-300', dot: 'bg-emerald-400' },
-  fallback: { label: 'Offline — using fallback', tone: 'text-amber-300', dot: 'bg-amber-400' },
+  fallback: { label: 'Offline — fallback', tone: 'text-amber-300', dot: 'bg-amber-400' },
 }
 
-function StatCard({ icon: Icon, label, value, sub, accent = 'purple' }) {
-  const tones = {
-    purple: 'border-purple-500/30 text-purple-300',
-    emerald: 'border-emerald-500/30 text-emerald-300',
-    amber: 'border-amber-500/30 text-amber-300',
-    sky: 'border-sky-500/30 text-sky-300',
-    slate: 'border-slate-700 text-slate-300',
-  }
+const THREAT_TEXT = {
+  critical: 'text-red-300',
+  high: 'text-amber-300',
+  medium: 'text-zinc-200',
+  low: 'text-emerald-300',
+}
+
+/** Primary actions produce case output; the rest are supporting steps. */
+const QUICK_ACTIONS = [
+  { label: 'Write Narrative', icon: PenLine, to: 'narrative', primary: true },
+  { label: 'Suggest Legal Sections', icon: Scale, to: 'legal', primary: true },
+  { label: 'Generate Documents', icon: FileText, to: 'documents', primary: true },
+  { label: 'Review Entities', icon: Boxes, to: 'entities' },
+  { label: 'Find Case Law', icon: Gavel, to: 'caselaw' },
+  { label: 'Ask Legal Assistant', icon: MessageSquareText, to: 'assistant' },
+]
+
+function Metric({ icon: Icon, label, value, sub, valueClass = '' }) {
   return (
-    <div className={`rounded-xl border bg-slate-900/50 p-4 ${tones[accent]}`}>
-      <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-slate-500">
-        <Icon size={14} /> {label}
+    <div className="min-w-0 px-4 py-2.5">
+      <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.08em] text-zinc-500">
+        <Icon size={12} /> {label}
       </div>
-      <div className="mt-1.5 text-xl font-semibold text-slate-100">{value}</div>
-      {sub && <div className="mt-0.5 text-xs text-slate-500">{sub}</div>}
+      <div className={`mt-0.5 truncate text-[17px] font-semibold tabular-nums ${valueClass || 'text-zinc-100'}`}>
+        {value}
+      </div>
+      {sub && <div className="truncate text-[12px] text-zinc-500">{sub}</div>}
     </div>
   )
 }
 
+function Row({ label, children }) {
+  return (
+    <div className="flex gap-3 px-4 py-2">
+      <span className="w-40 shrink-0 text-[12px] uppercase tracking-[0.08em] text-zinc-500">{label}</span>
+      <span className="min-w-0 flex-1 text-[13.5px] text-zinc-200">{children}</span>
+    </div>
+  )
+}
+
+const NONE = <span className="text-zinc-500">Not recorded yet</span>
+
 /**
- * CrimeGPT Dashboard — at-a-glance view of the active investigation, document
- * progress, AI status, case-diary progress and suggested legal sections, plus
- * quick actions that jump straight into a workflow.
+ * CrimeGPT Dashboard — what is open, what is done, what needs attention.
+ *
+ * Every figure is counted from real case data: the incident record, the
+ * workflow store's status, and this case's CrimeGPT record (documents, diary,
+ * accepted legal sections, reviewed entities). Empty means empty — nothing is
+ * filled in on the officer's behalf.
  */
-export default function CrimeGPTDashboard({ incident, caseId, crimeCase, confidence, aiStatus, onNavigate }) {
+export default function CrimeGPTDashboard({ incident, meta, crimeCase, aiStatus, onNavigate }) {
   const docs = crimeCase.documents || []
-  const generatedCount = docs.length
-  const pendingCount = Math.max(0, DOCUMENT_CATALOG.length - new Set(docs.map((d) => d.docType)).size)
+  const docTypesDone = new Set(docs.map((d) => d.docType)).size
   const diaryCount = (crimeCase.diary || []).length
-  const legalCount = (crimeCase.legalSections || []).length
-  const entityCount = crimeCase.entities
-    ? Object.values(crimeCase.entities).reduce((s, a) => s + (a?.length || 0), 0)
+  const legal = crimeCase.legalSections || []
+  const entityCounts = crimeCase.entities || null
+  const entityCount = entityCounts
+    ? Object.values(entityCounts).reduce((s, a) => s + (a?.length || 0), 0)
     : 0
   const status = AI_STATUS[aiStatus] || AI_STATUS.ready
+  const investigationStatus = statusLabel(meta?.status || 'open')
 
-  const QUICK = [
-    { label: 'Write Narrative', icon: PenLine, to: 'narrative' },
-    { label: 'Review Entities', icon: Boxes, to: 'entities' },
-    { label: 'Suggest Legal Sections', icon: Scale, to: 'legal' },
-    { label: 'Find Case Law', icon: Gavel, to: 'caselaw' },
-    { label: 'Generate Documents', icon: FileText, to: 'documents' },
-    { label: 'Ask Legal Assistant', icon: MessageSquareText, to: 'assistant' },
-  ]
+  const filledCategories = entityCounts
+    ? Object.entries(ENTITY_LABELS)
+        .filter(([key]) => (entityCounts[key] || []).length)
+        .map(([key, label]) => `${label} (${entityCounts[key].length})`)
+    : []
 
   return (
-    <div className="space-y-4">
-      {/* Active investigation banner */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-        <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-slate-500">
-          <ShieldCheck size={14} /> Active Investigation
+    <div className="flex flex-col gap-3">
+      {/* Section 4 — case status */}
+      <section className="overflow-hidden rounded-lg border border-white/10 bg-[#111722]/82 backdrop-blur-md">
+        <div className="border-b border-white/5 px-4 py-2">
+          <h3 className="text-[13px] font-semibold uppercase tracking-[0.08em] text-zinc-300">Case Status</h3>
         </div>
-        <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-2">
-          <div>
-            <div className="text-lg font-semibold text-slate-100">{caseId}</div>
-            <div className="text-xs text-slate-500">{incident.incident_type} · detected {new Date(incident.created_at).toLocaleString()}</div>
-          </div>
-          <div className="flex items-center gap-2">
-            <ThreatBadge level={incident.threat_level} />
-            <span className="rounded border border-slate-700 bg-slate-800 px-2 py-0.5 text-xs text-slate-300 font-mono">
-              {incident.risk_score != null ? Number(incident.risk_score).toFixed(1) : '-'}/100
-            </span>
-            <span className="text-xs text-slate-500">{confidence != null ? `${confidence}% confidence` : ''}</span>
-          </div>
+        <div className="grid grid-cols-2 divide-white/5 sm:grid-cols-3 sm:divide-x lg:grid-cols-6">
+          <Metric icon={Activity} label="Investigation" value={investigationStatus} />
+          <Metric
+            icon={FileText}
+            label="Documents"
+            value={docs.length}
+            sub={`${docTypesDone}/${DOCUMENT_CATALOG.length} types drafted`}
+          />
+          <Metric
+            icon={BookText}
+            label="Case Diary"
+            value={diaryCount}
+            sub={`${diaryCount === 1 ? 'entry' : 'entries'} recorded`}
+          />
+          <Metric
+            icon={Scale}
+            label="Legal Sections"
+            value={legal.length}
+            sub={legal.length ? 'accepted' : 'none accepted'}
+          />
+          <Metric
+            icon={Boxes}
+            label="Entities"
+            value={entityCount}
+            sub={crimeCase.entitiesFinalized ? 'finalized' : 'draft'}
+          />
+          <Metric
+            icon={Cpu}
+            label="AI Status"
+            value={
+              <span className={`inline-flex items-center gap-1.5 text-[15px] ${status.tone}`}>
+                <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
+                {status.label}
+              </span>
+            }
+          />
         </div>
-        <p className="mt-3 line-clamp-2 rounded-lg bg-slate-950/60 px-3 py-2 text-xs text-slate-400">
-          {incident.raw_content}
-        </p>
-      </div>
+      </section>
 
-      {/* Stat cards */}
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        <StatCard icon={FileText} label="Generated Documents" value={generatedCount} sub={`${DOCUMENT_CATALOG.length} document types available`} accent="emerald" />
-        <StatCard icon={Clock} label="Pending Documents" value={pendingCount} sub="Not yet generated" accent="amber" />
-        <StatCard icon={Cpu} label="AI Status" value={<span className={`inline-flex items-center gap-2 text-base ${status.tone}`}><span className={`h-2 w-2 rounded-full ${status.dot}`} />{status.label}</span>} sub="Gemini-backed legal reasoning" accent="sky" />
-        <StatCard icon={BookText} label="Case Diary Progress" value={diaryCount} sub={`${diaryCount} recorded event${diaryCount !== 1 ? 's' : ''}`} accent="purple" />
-        <StatCard icon={Scale} label="Suggested Legal Sections" value={legalCount} sub={legalCount ? 'Accepted for this case' : 'None accepted yet'} accent="purple" />
-        <StatCard icon={Boxes} label="Reviewed Entities" value={entityCount} sub={crimeCase.entitiesFinalized ? 'Finalized' : 'Draft'} accent="slate" />
-      </div>
-
-      {/* Quick actions */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
-        <h3 className="mb-3 text-sm font-semibold text-slate-200">Quick Actions</h3>
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {QUICK.map(({ label, icon: Icon, to }) => (
+      {/* Section 5 — quick actions */}
+      <section className="overflow-hidden rounded-lg border border-white/10 bg-[#111722]/82 backdrop-blur-md">
+        <div className="border-b border-white/5 px-4 py-2">
+          <h3 className="text-[13px] font-semibold uppercase tracking-[0.08em] text-zinc-300">Quick Actions</h3>
+        </div>
+        <div className="flex flex-wrap gap-2 p-3">
+          {QUICK_ACTIONS.map(({ label, icon: Icon, to, primary }) => (
             <button
               key={to}
               onClick={() => onNavigate(to)}
-              className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-slate-200 transition hover:border-purple-500/40 hover:bg-slate-700"
+              className={`inline-flex h-9 items-center gap-1.5 rounded-md border px-3 text-[13px] transition ${
+                primary
+                  ? 'btn-primary'
+                  : 'border-white/10 bg-black/35 text-zinc-300 hover:border-white/20 hover:text-zinc-100'
+              }`}
             >
-              <Icon size={15} className="text-purple-300" /> {label}
+              <Icon size={13} /> {label}
             </button>
           ))}
         </div>
-      </div>
+      </section>
+
+      {/* Section 6 — case intelligence */}
+      <section className="overflow-hidden rounded-lg border border-white/10 bg-[#111722]/82 backdrop-blur-md">
+        <div className="border-b border-white/5 px-4 py-2">
+          <h3 className="text-[13px] font-semibold uppercase tracking-[0.08em] text-zinc-300">Case Intelligence</h3>
+        </div>
+        <div className="divide-y divide-white/5">
+          <Row label="Threat">
+            <span className={THREAT_TEXT[incident.threat_level] || 'text-zinc-300'}>
+              {(incident.threat_level || 'unknown').toUpperCase()}
+            </span>
+            <span className="text-zinc-500"> · {incident.incident_type}</span>
+          </Row>
+          <Row label="Risk">
+            <span className="font-mono tabular-nums">
+              {incident.risk_score != null ? `${Number(incident.risk_score).toFixed(1)}/100` : '—'}
+            </span>
+          </Row>
+          <Row label="AI Summary">
+            {incident.ai_explanation ? (
+              <span className="block leading-relaxed text-zinc-300">{incident.ai_explanation}</span>
+            ) : (
+              <span className="text-zinc-500">No AI explanation stored for this case.</span>
+            )}
+          </Row>
+          <Row label="Entities">
+            {filledCategories.length ? (
+              <span className="text-zinc-300">{filledCategories.join(' · ')}</span>
+            ) : (
+              NONE
+            )}
+            {filledCategories.length > 0 && (
+              <button
+                onClick={() => onNavigate('entities')}
+                className="ml-2 inline-flex items-center gap-1 text-[12.5px] text-cyan-300/80 hover:text-cyan-200"
+              >
+                Review <ArrowRight size={11} />
+              </button>
+            )}
+          </Row>
+          <Row label="Suggested Legal Sections">
+            {legal.length ? (
+              <span className="flex flex-wrap gap-1.5">
+                {legal.map((s, idx) => (
+                  <span
+                    key={`${s.act}-${s.section}-${idx}`}
+                    className="rounded border border-white/12 px-1.5 py-0.5 text-[12.5px] text-zinc-200"
+                    title={s.title}
+                  >
+                    {s.act} {s.section}
+                  </span>
+                ))}
+              </span>
+            ) : (
+              <>
+                <span className="text-zinc-500">None accepted yet.</span>
+                <button
+                  onClick={() => onNavigate('legal')}
+                  className="ml-2 inline-flex items-center gap-1 text-[12.5px] text-cyan-300/80 hover:text-cyan-200"
+                >
+                  Suggest sections <ArrowRight size={11} />
+                </button>
+              </>
+            )}
+          </Row>
+          <Row label="Investigation Status">
+            {investigationStatus}
+            {meta?.assignedOfficer ? (
+              <span className="text-zinc-500"> · {meta.assignedOfficer}</span>
+            ) : (
+              <span className="text-zinc-500"> · Unassigned</span>
+            )}
+          </Row>
+        </div>
+      </section>
     </div>
   )
 }
