@@ -17,6 +17,11 @@ const apiClient = axios.create({
 })
 
 apiClient.interceptors.request.use((config) => {
+  // Never clobber an Authorization header the caller set deliberately — the
+  // MFA enrollment calls pass a short-lived enrollment token explicitly, and a
+  // stale session token left in storage must not replace it.
+  if (config.headers.Authorization) return config
+
   const token = localStorage.getItem('access_token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
