@@ -97,18 +97,18 @@ export default function LegalAssistant({ incidentId, caseId, context }) {
   const lastIsAssistant = messages.length > 0 && messages[messages.length - 1].role === 'assistant'
 
   return (
-    <div className="flex h-[70vh] min-h-[520px] flex-col overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40">
+    <div className="flex h-[70vh] min-h-[520px] flex-col overflow-hidden rounded-xl border border-slate-800 bg-slate-900/72">
       <div className="flex items-center gap-2 border-b border-slate-800 px-4 py-3">
         <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-purple-500/40 bg-purple-500/10 text-purple-300">
           <MessageSquareText size={16} />
         </span>
         <div>
           <h3 className="text-sm font-semibold text-slate-200">Legal Assistant</h3>
-          <p className="text-[11px] text-slate-500">Grounded in this investigation · {caseId}</p>
+          <p className="text-[12.5px] text-slate-500">Grounded in this investigation · {caseId}</p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 border-b border-emerald-800/40 bg-emerald-950/20 px-4 py-2 text-[11px] text-emerald-300">
+      <div className="flex items-center gap-2 border-b border-emerald-800/40 bg-emerald-950/20 px-4 py-2 text-[12.5px] text-emerald-300">
         <ShieldCheck size={13} /> Investigation context active — answers use this case's real data and current Indian law.
       </div>
 
@@ -119,7 +119,7 @@ export default function LegalAssistant({ incidentId, caseId, context }) {
             <p className="mt-3 text-sm text-slate-400">Ask about legal sections, draft document points, summarize the case or plan next steps.</p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               {SUGGESTIONS.map((s) => (
-                <button key={s.label} onClick={() => send(s.prompt)} className="rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-xs text-slate-300 transition hover:border-purple-500/40 hover:bg-slate-800">
+                <button key={s.label} onClick={() => send(s.prompt)} className="rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 text-xs text-slate-300 transition hover:border-purple-500/40 hover:bg-slate-800/75">
                   {s.label}
                 </button>
               ))}
@@ -140,7 +140,7 @@ export default function LegalAssistant({ incidentId, caseId, context }) {
         {lastIsAssistant && !streaming && (
           <div className="flex flex-wrap gap-2 pl-11">
             {SUGGESTIONS.map((s) => (
-              <button key={s.label} onClick={() => send(s.prompt)} className="rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-xs text-slate-300 transition hover:border-purple-500/40 hover:bg-slate-800">
+              <button key={s.label} onClick={() => send(s.prompt)} className="rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 text-xs text-slate-300 transition hover:border-purple-500/40 hover:bg-slate-800/75">
                 {s.label}
               </button>
             ))}

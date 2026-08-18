@@ -42,25 +42,25 @@ export default function CaseDiary({ incidentId, caseId, crimeCase }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-900/40 px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-900/72 px-4 py-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
           <BookText size={16} className="text-purple-400" /> AI Case Diary
           <span className="text-xs font-normal text-slate-500">· {diary.length} entries</span>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => exportMarkdown(`Case Diary ${caseId}`, buildMarkdown(), { caseId })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-slate-200 hover:bg-slate-700"><Download size={13} /> Markdown</button>
-          <button onClick={() => exportPdf(`Case Diary ${caseId}`, buildMarkdown(), { caseId })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-slate-200 hover:bg-slate-700"><Download size={13} /> PDF</button>
+          <button onClick={() => exportMarkdown(`Case Diary ${caseId}`, buildMarkdown(), { caseId })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/75 px-3 py-2 text-xs text-slate-200 hover:bg-slate-700"><Download size={13} /> Markdown</button>
+          <button onClick={() => exportPdf(`Case Diary ${caseId}`, buildMarkdown(), { caseId })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/75 px-3 py-2 text-xs text-slate-200 hover:bg-slate-700"><Download size={13} /> PDF</button>
         </div>
       </div>
 
       {/* Add entry */}
-      <div className="flex items-start gap-2 rounded-xl border border-slate-800 bg-slate-900/40 p-3">
+      <div className="flex items-start gap-2 rounded-xl border border-slate-800 bg-slate-900/72 p-3">
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={2}
           placeholder="Add a manual diary entry (action taken, observation, decision)…"
-          className="flex-1 resize-y rounded-lg border border-slate-800 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-purple-600 focus:outline-none"
+          className="flex-1 resize-y rounded-lg border border-slate-800 bg-slate-950/78 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-purple-600 focus:outline-none"
         />
         <button onClick={add} className="inline-flex items-center gap-1.5 rounded-lg bg-purple-600 px-3 py-2 text-xs font-medium text-white hover:bg-purple-500"><Plus size={13} /> Add</button>
       </div>
@@ -73,24 +73,24 @@ export default function CaseDiary({ incidentId, caseId, crimeCase }) {
           {diary.map((d) => (
             <li key={d.id} className="relative">
               <span className={`absolute left-[-23px] top-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border ${d.auto ? 'border-sky-500/50 bg-sky-500/20' : 'border-purple-500/50 bg-purple-500/20'}`} />
-              <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-3">
+              <div className="rounded-lg border border-slate-800 bg-slate-900/75 p-3">
                 <div className="mb-1 flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500">
+                  <span className="inline-flex items-center gap-1.5 text-[12.5px] text-slate-500">
                     {d.auto ? <Cpu size={11} className="text-sky-400" /> : <User size={11} className="text-purple-400" />}
                     {new Date(d.at).toLocaleString()} · {d.auto ? 'Auto' : 'Officer'}
                   </span>
                   {!d.auto && editing !== d.id && (
                     <div className="flex items-center gap-1">
-                      <button onClick={() => { setEditing(d.id); setEditText(d.text) }} className="rounded p-1 text-slate-500 hover:bg-slate-800 hover:text-slate-200" aria-label="Edit"><Pencil size={12} /></button>
-                      <button onClick={() => removeDiaryEntry(incidentId, d.id)} className="rounded p-1 text-slate-500 hover:bg-slate-800 hover:text-red-400" aria-label="Delete"><Trash2 size={12} /></button>
+                      <button onClick={() => { setEditing(d.id); setEditText(d.text) }} className="rounded p-1 text-slate-500 hover:bg-slate-800/75 hover:text-slate-200" aria-label="Edit"><Pencil size={12} /></button>
+                      <button onClick={() => removeDiaryEntry(incidentId, d.id)} className="rounded p-1 text-slate-500 hover:bg-slate-800/75 hover:text-red-400" aria-label="Delete"><Trash2 size={12} /></button>
                     </div>
                   )}
                 </div>
                 {editing === d.id ? (
                   <div className="space-y-2">
-                    <textarea value={editText} onChange={(e) => setEditText(e.target.value)} rows={2} className="w-full resize-y rounded border border-slate-800 bg-slate-950/60 px-2 py-1 text-sm text-slate-200 focus:border-purple-600 focus:outline-none" />
+                    <textarea value={editText} onChange={(e) => setEditText(e.target.value)} rows={2} className="w-full resize-y rounded border border-slate-800 bg-slate-950/78 px-2 py-1 text-sm text-slate-200 focus:border-purple-600 focus:outline-none" />
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => setEditing(null)} className="inline-flex items-center gap-1 rounded border border-slate-700 bg-slate-800 px-2 py-1 text-xs text-slate-300 hover:bg-slate-700"><X size={12} /> Cancel</button>
+                      <button onClick={() => setEditing(null)} className="inline-flex items-center gap-1 rounded border border-slate-700 bg-slate-800/75 px-2 py-1 text-xs text-slate-300 hover:bg-slate-700"><X size={12} /> Cancel</button>
                       <button onClick={() => saveEdit(d.id)} className="inline-flex items-center gap-1 rounded bg-purple-600 px-2 py-1 text-xs font-medium text-white hover:bg-purple-500"><Check size={12} /> Save</button>
                     </div>
                   </div>

@@ -67,12 +67,12 @@ export default function NarrativeEditor({ incidentId, caseId, crimeCase, onNavig
 
   return (
     <div className="space-y-3">
-      <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+      <div className="rounded-xl border border-slate-800 bg-slate-900/72 p-4">
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
             <PenLine size={16} className="text-purple-400" /> Investigation Narrative
           </div>
-          <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
+          <span className="inline-flex items-center gap-1 text-[12.5px] text-slate-500">
             {saved ? <><Check size={12} className="text-emerald-400" /> Saved</> : <><Save size={12} /> Saving…</>}
           </span>
         </div>
@@ -82,14 +82,14 @@ export default function NarrativeEditor({ incidentId, caseId, crimeCase, onNavig
           onChange={(e) => setText(e.target.value)}
           rows={14}
           placeholder="Record the investigation narrative — what happened, how the offence was committed, actions taken, victims and suspects, evidence collected, and observations. CrimeGPT reads this text (plus the detection and threat-intelligence data already on the case) to extract entities, suggest legal sections and draft documents."
-          className="w-full resize-y rounded-lg border border-slate-800 bg-slate-950/60 px-3 py-3 text-sm leading-relaxed text-slate-200 placeholder:text-slate-600 focus:border-purple-600 focus:outline-none"
+          className="w-full resize-y rounded-lg border border-slate-800 bg-slate-950/78 px-3 py-3 text-sm leading-relaxed text-slate-200 placeholder:text-slate-600 focus:border-purple-600 focus:outline-none"
         />
 
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-          <div className="text-[11px] text-slate-500">{words} words · {chars} characters</div>
+          <div className="text-[12.5px] text-slate-500">{words} words · {chars} characters</div>
           <div className="flex items-center gap-2">
             {lastExtract && (
-              <span className="text-[11px] text-slate-400">
+              <span className="text-[12.5px] text-slate-400">
                 Last analysis: {lastExtract.total} entities
                 {lastExtract.source !== 'ai' ? ' (AI unavailable)' : ''}
               </span>
@@ -97,7 +97,7 @@ export default function NarrativeEditor({ incidentId, caseId, crimeCase, onNavig
             <button
               onClick={analyze}
               disabled={analyzing}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-medium text-slate-200 transition hover:bg-slate-700 disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/75 px-3 py-2 text-xs font-medium text-slate-200 transition hover:bg-slate-700 disabled:opacity-50"
             >
               {analyzing ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} className="text-purple-300" />}
               Analyze narrative
@@ -110,7 +110,7 @@ export default function NarrativeEditor({ incidentId, caseId, crimeCase, onNavig
             </button>
           </div>
         </div>
-        {error && <p className="mt-2 text-[11px] text-red-400">{error}</p>}
+        {error && <p className="mt-2 text-[12.5px] text-red-400">{error}</p>}
       </div>
 
       <p className="px-1 text-xs text-slate-600">

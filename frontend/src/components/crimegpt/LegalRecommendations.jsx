@@ -24,10 +24,10 @@ function ConfidenceBar({ value }) {
   const tone = pct >= 75 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-slate-500'
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-800">
+      <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-800/75">
         <div className={`h-full ${tone}`} style={{ width: `${pct}%` }} />
       </div>
-      <span className="text-[11px] text-slate-500">{pct}%</span>
+      <span className="text-[12.5px] text-slate-500">{pct}%</span>
     </div>
   )
 }
@@ -80,7 +80,7 @@ export default function LegalRecommendations({ incidentId, caseId, context, crim
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-900/40 px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-900/72 px-4 py-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
           <Scale size={16} className="text-purple-400" /> Legal Recommendation Engine
         </div>
@@ -104,21 +104,21 @@ export default function LegalRecommendations({ incidentId, caseId, context, crim
           </h3>
           <div className="space-y-2">
             {accepted.map((s) => (
-              <div key={key(s)} className="rounded-lg border border-slate-800 bg-slate-900/60 p-3">
+              <div key={key(s)} className="rounded-lg border border-slate-800 bg-slate-900/72 p-3">
                 {editing === key(s) ? (
                   <EditForm section={s} onSave={(patch) => saveEdit(key(s), patch)} onCancel={() => setEditing(null)} />
                 ) : (
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className={`rounded border px-1.5 py-0.5 text-[10px] font-medium ${ACT_TONE[s.act] || ACT_TONE.Other}`}>{s.act}</span>
+                        <span className={`rounded border px-1.5 py-0.5 text-[11.5px] font-medium ${ACT_TONE[s.act] || ACT_TONE.Other}`}>{s.act}</span>
                         <span className="text-sm font-medium text-slate-100">Section {s.section} — {s.title}</span>
                       </div>
                       <p className="mt-1 text-xs text-slate-400">{s.reason}</p>
                     </div>
                     <div className="flex shrink-0 items-center gap-1">
-                      <button onClick={() => setEditing(key(s))} className="rounded p-1 text-slate-500 hover:bg-slate-800 hover:text-slate-200" aria-label="Modify"><Pencil size={13} /></button>
-                      <button onClick={() => remove(s)} className="rounded p-1 text-slate-500 hover:bg-slate-800 hover:text-red-400" aria-label="Remove"><X size={13} /></button>
+                      <button onClick={() => setEditing(key(s))} className="rounded p-1 text-slate-500 hover:bg-slate-800/75 hover:text-slate-200" aria-label="Modify"><Pencil size={13} /></button>
+                      <button onClick={() => remove(s)} className="rounded p-1 text-slate-500 hover:bg-slate-800/75 hover:text-red-400" aria-label="Remove"><X size={13} /></button>
                     </div>
                   </div>
                 )}
@@ -135,10 +135,10 @@ export default function LegalRecommendations({ incidentId, caseId, context, crim
           {suggestions.map((s) => {
             const isAccepted = acceptedKeys.has(key(s))
             return (
-              <div key={key(s)} className="flex items-start justify-between gap-3 rounded-lg border border-slate-800 bg-slate-900/50 p-3">
+              <div key={key(s)} className="flex items-start justify-between gap-3 rounded-lg border border-slate-800 bg-slate-900/75 p-3">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className={`rounded border px-1.5 py-0.5 text-[10px] font-medium ${ACT_TONE[s.act] || ACT_TONE.Other}`}>{s.act}</span>
+                    <span className={`rounded border px-1.5 py-0.5 text-[11.5px] font-medium ${ACT_TONE[s.act] || ACT_TONE.Other}`}>{s.act}</span>
                     <span className="text-sm font-medium text-slate-100">Section {s.section} — {s.title}</span>
                     <ConfidenceBar value={s.confidence} />
                   </div>
@@ -160,7 +160,7 @@ export default function LegalRecommendations({ incidentId, caseId, context, crim
       )}
 
       {(disclaimer || suggestions.length > 0 || accepted.length > 0) && (
-        <p className="flex items-start gap-1.5 rounded-lg border border-amber-800/40 bg-amber-950/10 px-3 py-2 text-[11px] text-amber-300/90">
+        <p className="flex items-start gap-1.5 rounded-lg border border-amber-800/40 bg-amber-950/10 px-3 py-2 text-[12.5px] text-amber-300/90">
           <ShieldAlert size={13} className="mt-0.5 shrink-0" />
           {disclaimer || 'AI-suggested provisions are decision-support only and must be verified by the investigating officer and legal advisor.'}
         </p>
@@ -175,10 +175,10 @@ function EditForm({ section, onSave, onCancel }) {
   return (
     <div className="space-y-2">
       <div className="text-xs text-slate-500">{section.act} · Section {section.section}</div>
-      <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full rounded border border-slate-800 bg-slate-950/60 px-2 py-1 text-sm text-slate-200 focus:border-purple-600 focus:outline-none" placeholder="Title" />
-      <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={2} className="w-full resize-y rounded border border-slate-800 bg-slate-950/60 px-2 py-1 text-xs text-slate-300 focus:border-purple-600 focus:outline-none" placeholder="Reason" />
+      <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full rounded border border-slate-800 bg-slate-950/78 px-2 py-1 text-sm text-slate-200 focus:border-purple-600 focus:outline-none" placeholder="Title" />
+      <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={2} className="w-full resize-y rounded border border-slate-800 bg-slate-950/78 px-2 py-1 text-xs text-slate-300 focus:border-purple-600 focus:outline-none" placeholder="Reason" />
       <div className="flex justify-end gap-2">
-        <button onClick={onCancel} className="rounded border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs text-slate-300 hover:bg-slate-700">Cancel</button>
+        <button onClick={onCancel} className="rounded border border-slate-700 bg-slate-800/75 px-2.5 py-1 text-xs text-slate-300 hover:bg-slate-700">Cancel</button>
         <button onClick={() => onSave({ title, reason })} className="rounded bg-purple-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-purple-500">Save</button>
       </div>
     </div>

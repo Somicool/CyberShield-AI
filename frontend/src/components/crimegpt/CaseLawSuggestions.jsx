@@ -45,14 +45,14 @@ export default function CaseLawSuggestions({ incidentId, caseId, context, crimeC
   const unpin = (c) => setCaseLaw(incidentId, pinned.filter((p) => key(p) !== key(c)))
 
   const Card = ({ c, actionAccepted, onAction }) => (
-    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-3">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/75 p-3">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <Landmark size={14} className="shrink-0 text-purple-300" />
             <span className="text-sm font-medium text-slate-100">{c.name}</span>
           </div>
-          <div className="mt-0.5 text-[11px] text-slate-500">{c.court}{c.year ? ` · ${c.year}` : ''}</div>
+          <div className="mt-0.5 text-[12.5px] text-slate-500">{c.court}{c.year ? ` · ${c.year}` : ''}</div>
         </div>
         <button
           onClick={() => onAction(c)}
@@ -71,7 +71,7 @@ export default function CaseLawSuggestions({ incidentId, caseId, context, crimeC
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-900/40 px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-900/72 px-4 py-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
           <Gavel size={16} className="text-purple-400" /> Case Law Suggestions
         </div>
@@ -94,17 +94,17 @@ export default function CaseLawSuggestions({ incidentId, caseId, context, crimeC
           </h3>
           <div className="space-y-2">
             {pinned.map((c) => (
-              <div key={key(c)} className="rounded-lg border border-slate-800 bg-slate-900/60 p-3">
+              <div key={key(c)} className="rounded-lg border border-slate-800 bg-slate-900/72 p-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <Landmark size={14} className="shrink-0 text-purple-300" />
                       <span className="text-sm font-medium text-slate-100">{c.name}</span>
                     </div>
-                    <div className="mt-0.5 text-[11px] text-slate-500">{c.court}{c.year ? ` · ${c.year}` : ''}</div>
+                    <div className="mt-0.5 text-[12.5px] text-slate-500">{c.court}{c.year ? ` · ${c.year}` : ''}</div>
                     {c.relevance && <p className="mt-1 text-xs text-slate-500">{c.relevance}</p>}
                   </div>
-                  <button onClick={() => unpin(c)} className="rounded p-1 text-slate-500 hover:bg-slate-800 hover:text-red-400" aria-label="Unpin"><X size={13} /></button>
+                  <button onClick={() => unpin(c)} className="rounded p-1 text-slate-500 hover:bg-slate-800/75 hover:text-red-400" aria-label="Unpin"><X size={13} /></button>
                 </div>
               </div>
             ))}
@@ -122,7 +122,7 @@ export default function CaseLawSuggestions({ incidentId, caseId, context, crimeC
       )}
 
       {(disclaimer || cases.length > 0 || pinned.length > 0) && (
-        <p className="flex items-start gap-1.5 rounded-lg border border-amber-800/40 bg-amber-950/10 px-3 py-2 text-[11px] text-amber-300/90">
+        <p className="flex items-start gap-1.5 rounded-lg border border-amber-800/40 bg-amber-950/10 px-3 py-2 text-[12.5px] text-amber-300/90">
           <ShieldAlert size={13} className="mt-0.5 shrink-0" />
           {disclaimer || 'AI-recommended judgments are research pointers only. Verify every citation and its current standing before relying on it.'}
         </p>
