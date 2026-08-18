@@ -49,15 +49,15 @@ export default function ThreatActivity({ dailyCounts = [], trend, days }) {
       {trend && (
         <div className="flex items-center gap-2 border-b border-white/5 px-4 py-2.5">
           <TrendIcon size={14} className={trendClass} />
-          <span className="text-[12.5px] text-zinc-300">{trend.sentence}</span>
-          <span className="ml-auto font-mono text-[11.5px] tabular-nums text-zinc-500">
+          <span className="text-[14px] text-zinc-300">{trend.sentence}</span>
+          <span className="ml-auto font-mono text-[13px] tabular-nums text-zinc-500">
             {totalInPeriod} in period
           </span>
         </div>
       )}
 
       {!hasData ? (
-        <p className="px-4 py-12 text-center text-[12.5px] text-zinc-500">
+        <p className="px-4 py-12 text-center text-[14px] text-zinc-500">
           No incident activity recorded in this period.
         </p>
       ) : (
@@ -112,7 +112,7 @@ export default function ThreatActivity({ dailyCounts = [], trend, days }) {
           </ResponsiveContainer>
 
           {sparse && (
-            <p className="px-3 pb-1 text-[10.5px] text-zinc-600">
+            <p className="px-3 pb-1 text-[12px] text-zinc-600">
               Only {data.length} day{data.length === 1 ? '' : 's'} of activity in this period — shown as discrete
               values rather than a trend curve.
             </p>

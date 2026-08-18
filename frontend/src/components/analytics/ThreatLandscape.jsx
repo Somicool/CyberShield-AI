@@ -25,7 +25,7 @@ function SeverityChart({ levels, onDrill }) {
   const total = data.reduce((s, d) => s + d.count, 0)
 
   if (total === 0) {
-    return <p className="px-4 py-10 text-center text-[12.5px] text-zinc-500">No severity data yet.</p>
+    return <p className="px-4 py-10 text-center text-[14px] text-zinc-500">No severity data yet.</p>
   }
 
   return (
@@ -62,11 +62,11 @@ function SeverityChart({ levels, onDrill }) {
             onClick={() => onDrill(d.level)}
             className="rounded px-1 py-1 text-left transition hover:bg-white/4"
           >
-            <span className="flex items-center gap-1.5 text-[10.5px] text-zinc-500">
+            <span className="flex items-center gap-1.5 text-[12px] text-zinc-500">
               <span className="h-1.5 w-1.5 rounded-full" style={{ background: SEVERITY_COLOR[d.level] }} />
               {d.label}
             </span>
-            <span className="mt-0.5 block font-mono text-[12.5px] tabular-nums text-zinc-300">
+            <span className="mt-0.5 block font-mono text-[14px] tabular-nums text-zinc-300">
               {d.count}
               <span className="text-zinc-600"> · {total ? Math.round((d.count / total) * 100) : 0}%</span>
             </span>
@@ -94,7 +94,7 @@ function TypeChart({ types, onDrill }) {
   const total = data.reduce((s, d) => s + d.count, 0)
 
   if (total === 0) {
-    return <p className="px-4 py-10 text-center text-[12.5px] text-zinc-500">No threat-type data yet.</p>
+    return <p className="px-4 py-10 text-center text-[14px] text-zinc-500">No threat-type data yet.</p>
   }
 
   return (
@@ -124,8 +124,8 @@ function TypeChart({ types, onDrill }) {
         </ResponsiveContainer>
         {/* centre total */}
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-mono text-[19px] font-semibold leading-none tabular-nums text-zinc-100">{total}</span>
-          <span className="mt-0.5 text-[9.5px] uppercase tracking-wide text-zinc-600">cases</span>
+          <span className="font-mono text-[21px] font-semibold leading-none tabular-nums text-zinc-100">{total}</span>
+          <span className="mt-0.5 text-[11px] uppercase tracking-wide text-zinc-600">cases</span>
         </div>
       </div>
 
@@ -137,8 +137,8 @@ function TypeChart({ types, onDrill }) {
             className="flex w-full items-center gap-2 rounded px-1.5 py-1 text-left transition hover:bg-white/4"
           >
             <span className="h-2 w-2 shrink-0 rounded-sm" style={{ background: d.color }} />
-            <span className="min-w-0 flex-1 truncate text-[12px] text-zinc-300">{d.label}</span>
-            <span className="shrink-0 font-mono text-[11.5px] tabular-nums text-zinc-500">
+            <span className="min-w-0 flex-1 truncate text-[13.5px] text-zinc-300">{d.label}</span>
+            <span className="shrink-0 font-mono text-[13px] tabular-nums text-zinc-500">
               {d.count}
               <span className="text-zinc-600"> · {Math.round((d.count / total) * 100)}%</span>
             </span>

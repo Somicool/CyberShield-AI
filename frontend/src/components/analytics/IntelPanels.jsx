@@ -7,8 +7,8 @@ import { TYPE_LABEL } from '../../lib/analytics'
 function Row({ label, value, valueClass = 'text-zinc-200', to }) {
   const body = (
     <>
-      <span className="text-[12px] text-zinc-500">{label}</span>
-      <span className={`ml-auto font-mono text-[12.5px] tabular-nums ${valueClass}`}>{value}</span>
+      <span className="text-[13.5px] text-zinc-500">{label}</span>
+      <span className={`ml-auto font-mono text-[14px] tabular-nums ${valueClass}`}>{value}</span>
     </>
   )
   return to ? (
@@ -28,7 +28,7 @@ export function RiskIntelligence({ summary }) {
       <PanelHead
         title="Risk Intelligence"
         action={
-          <span className="inline-flex items-center gap-1 text-[11px] text-zinc-600">
+          <span className="inline-flex items-center gap-1 text-[12.5px] text-zinc-600">
             <Gauge size={12} /> derived
           </span>
         }
@@ -60,7 +60,7 @@ export function RiskIntelligence({ summary }) {
 
       {/* Section 7 — investigation performance is not exposed by the backend. */}
       <div className="mt-auto border-t border-white/5 px-4 py-2.5">
-        <span className="inline-flex items-center gap-1.5 text-[11px] text-zinc-600">
+        <span className="inline-flex items-center gap-1.5 text-[12.5px] text-zinc-600">
           <Timer size={12} /> Investigation performance data unavailable
         </span>
       </div>
@@ -84,7 +84,7 @@ export function KeyIntelligence({ items = [] }) {
         action={<PanelLink to="/dashboard/graph">Threat Graph</PanelLink>}
       />
       {items.length === 0 ? (
-        <p className="flex flex-1 items-center gap-2 px-4 py-6 text-[12.5px] text-zinc-500">
+        <p className="flex flex-1 items-center gap-2 px-4 py-6 text-[14px] text-zinc-500">
           <Lightbulb size={15} className="text-zinc-600" />
           No additional intelligence available.
         </p>
@@ -93,7 +93,7 @@ export function KeyIntelligence({ items = [] }) {
           {items.map((it) => (
             <li
               key={it.id}
-              className={`border-l-2 px-4 py-3 text-[12.5px] leading-relaxed text-zinc-300 ${TONE[it.tone] || TONE.neutral}`}
+              className={`border-l-2 px-4 py-3 text-[14px] leading-relaxed text-zinc-300 ${TONE[it.tone] || TONE.neutral}`}
             >
               {it.text}
             </li>

@@ -61,19 +61,19 @@ export default function Analytics() {
   const keyIntel = useMemo(() => deriveKeyIntel(summary), [summary])
 
   return (
-    <div className="min-h-full bg-[#16181c]">
+    <div className="min-h-full">
       <div className="mx-auto max-w-375 space-y-4 p-6">
         {/* header */}
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-amber-400/25 bg-amber-400/10 text-amber-300">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-400/25 bg-cyan-400/10 text-cyan-300">
               <BarChart3 size={18} />
             </span>
             <div>
-              <h1 className="text-[19px] font-semibold tracking-tight text-zinc-50">
+              <h1 className="text-[21px] font-semibold tracking-tight text-zinc-50">
                 Cyber Intelligence &amp; Analytics
               </h1>
-              <p className="mt-0.5 text-[12.5px] text-zinc-500">
+              <p className="mt-0.5 text-[14px] text-zinc-500">
                 Threat patterns, investigation activity, and cybercrime trends.
               </p>
             </div>
@@ -86,9 +86,9 @@ export default function Analytics() {
                 <button
                   key={r.days}
                   onClick={() => setDays(r.days)}
-                  className={`rounded px-2.5 py-1.5 text-[11.5px] font-medium transition ${
+                  className={`rounded px-2.5 py-1.5 text-[13px] font-medium transition ${
                     days === r.days
-                      ? 'bg-amber-400/12 text-amber-200'
+                      ? 'bg-cyan-400/12 text-cyan-200'
                       : 'text-zinc-500 hover:text-zinc-300'
                   }`}
                 >
@@ -100,7 +100,7 @@ export default function Analytics() {
             <button
               onClick={() => load(days, true)}
               disabled={refreshing}
-              className="inline-flex items-center gap-1.5 rounded-md border border-white/8 bg-white/3 px-2.5 py-1.5 text-[12px] text-zinc-300 transition hover:bg-white/6 disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-white/8 bg-white/3 px-2.5 py-1.5 text-[13.5px] text-zinc-300 transition hover:bg-white/6 disabled:opacity-50"
             >
               <RefreshCw size={13} className={refreshing ? 'animate-spin' : ''} /> Refresh
             </button>
@@ -108,13 +108,13 @@ export default function Analytics() {
         </header>
 
         {error && (
-          <div className="flex items-center gap-2 rounded-lg border border-red-900/60 bg-red-950/30 px-4 py-3 text-[12.5px] text-red-300">
+          <div className="flex items-center gap-2 rounded-lg border border-red-900/60 bg-red-950/30 px-4 py-3 text-[14px] text-red-300">
             <AlertCircle size={15} /> {error}
           </div>
         )}
 
         {loading ? (
-          <div className="flex items-center gap-2 rounded-lg border border-white/7 bg-white/2 px-4 py-16 text-[13px] text-zinc-500">
+          <div className="flex items-center gap-2 rounded-lg border border-white/7 bg-white/2 px-4 py-16 text-[14.5px] text-zinc-500">
             <Loader2 size={15} className="animate-spin" /> Loading analytics…
           </div>
         ) : (

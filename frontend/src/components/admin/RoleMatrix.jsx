@@ -2,7 +2,7 @@ import { Check } from 'lucide-react'
 
 /**
  * Section 4 — Role Management. Permissions reflect what each role can actually
- * access in CyberShield today, shown read-only (permissions are enforced in
+ * access in CyberAid today, shown read-only (permissions are enforced in
  * code/route guards, not configurable at runtime).
  */
 const ROLES = [
@@ -33,7 +33,7 @@ export default function RoleMatrix() {
   return (
     <div className="grid gap-3 md:grid-cols-3">
       {ROLES.map((r) => (
-        <div key={r.name} className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+        <div key={r.name} className="rounded-xl border border-slate-800 bg-slate-900/72 p-4">
           <h4 className={`text-sm font-semibold ${r.color}`}>{r.name}</h4>
           <ul className="mt-3 space-y-1.5">
             {r.permissions.map((p) => (
@@ -45,7 +45,7 @@ export default function RoleMatrix() {
           </ul>
         </div>
       ))}
-      <p className="text-[11px] text-slate-600 md:col-span-3">Permissions are enforced in code and shown read-only. Configurable permissions are a Planned Module.</p>
+      <p className="text-[12.5px] text-slate-600 md:col-span-3">Permissions are enforced in code and shown read-only. Configurable permissions are a Planned Module.</p>
     </div>
   )
 }

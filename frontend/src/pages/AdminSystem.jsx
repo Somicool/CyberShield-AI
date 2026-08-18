@@ -123,13 +123,13 @@ export default function AdminSystem() {
       u.last_login || '', u.created_at || '',
     ])
     const csv = [header, ...lines].map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n')
-    download(csv, `cybershield-users-${Date.now()}.csv`, 'text/csv')
+    download(csv, `cyberaid-users-${Date.now()}.csv`, 'text/csv')
   }
 
   const exportStats = async () => {
     try {
       const stats = await getStats(30)
-      download(JSON.stringify(stats, null, 2), `cybershield-statistics-${Date.now()}.json`, 'application/json')
+      download(JSON.stringify(stats, null, 2), `cyberaid-statistics-${Date.now()}.json`, 'application/json')
     } catch {
       window.alert('Could not export statistics')
     }
@@ -142,7 +142,7 @@ export default function AdminSystem() {
   const kpis = [
     { icon: Users, label: 'Registered Citizens', value: overview?.citizens ?? '—', accent: 'sky' },
     { icon: ShieldCheck, label: 'Police Officers', value: overview?.police ?? '—', accent: 'purple' },
-    { icon: UserCog, label: 'Administrators', value: overview?.admins ?? '—', accent: 'amber' },
+    { icon: UserCog, label: 'Administrators', value: overview?.admins ?? '—', accent: 'cyan' },
     { icon: Activity, label: 'Active Sessions', value: 'Not Available', accent: 'slate' },
     { icon: ListChecks, label: 'Total Investigations', value: overview?.total_investigations ?? '—', accent: 'purple' },
     { icon: Clock, label: 'System Uptime', value: formatUptime(overview?.uptime_seconds), accent: 'emerald' },
@@ -161,14 +161,14 @@ export default function AdminSystem() {
           </span>
           <div>
             <h2 className="text-xl font-semibold tracking-tight">Administration &amp; System Management</h2>
-            <p className="text-sm text-slate-500">Manage CyberShield AI users, permissions, system configuration, and platform health.</p>
+            <p className="text-sm text-slate-500">Manage CyberAid users, permissions, system configuration, and platform health.</p>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button onClick={loadAll} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800"><RefreshCw size={14} /> Refresh</button>
-          <button onClick={() => healthRef.current?.scrollIntoView({ behavior: 'smooth' })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800"><Activity size={14} /> System Status</button>
-          <button onClick={() => auditRef.current?.scrollIntoView({ behavior: 'smooth' })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800"><FileDown size={14} /> Export Logs</button>
-          <button onClick={() => settingsRef.current?.scrollIntoView({ behavior: 'smooth' })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800"><SettingsIcon size={14} /> Settings</button>
+          <button onClick={loadAll} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800/75"><RefreshCw size={14} /> Refresh</button>
+          <button onClick={() => healthRef.current?.scrollIntoView({ behavior: 'smooth' })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800/75"><Activity size={14} /> System Status</button>
+          <button onClick={() => auditRef.current?.scrollIntoView({ behavior: 'smooth' })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800/75"><FileDown size={14} /> Export Logs</button>
+          <button onClick={() => settingsRef.current?.scrollIntoView({ behavior: 'smooth' })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800/75"><SettingsIcon size={14} /> Settings</button>
         </div>
       </header>
 
@@ -197,7 +197,7 @@ export default function AdminSystem() {
       {/* Section 6 — audit logs */}
       <div ref={auditRef}>
         <Section icon={ListChecks} title="Audit Logs">
-          <div className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-4 text-sm text-slate-400">
+          <div className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/75 px-4 py-4 text-sm text-slate-400">
             <ListChecks size={18} className="text-slate-500" />
             Audit Logging is a Planned Feature. User actions, role changes and settings updates will be recorded here once the audit backend is implemented.
           </div>
@@ -233,9 +233,9 @@ export default function AdminSystem() {
       {/* Section 9 — backup & export */}
       <Section icon={HardDriveDownload} title="Backup & Export">
         <div className="flex flex-wrap gap-2">
-          <button onClick={exportUsers} className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 hover:bg-slate-700">Export Users (CSV)</button>
-          <button onClick={exportStats} className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 hover:bg-slate-700">Export Investigation Statistics</button>
-          <button onClick={exportStats} className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 hover:bg-slate-700">Export Analytics</button>
+          <button onClick={exportUsers} className="rounded-lg border border-slate-700 bg-slate-800/75 px-3 py-2 text-sm text-slate-200 hover:bg-slate-700">Export Users (CSV)</button>
+          <button onClick={exportStats} className="rounded-lg border border-slate-700 bg-slate-800/75 px-3 py-2 text-sm text-slate-200 hover:bg-slate-700">Export Investigation Statistics</button>
+          <button onClick={exportStats} className="rounded-lg border border-slate-700 bg-slate-800/75 px-3 py-2 text-sm text-slate-200 hover:bg-slate-700">Export Analytics</button>
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <span className="text-xs text-slate-400">Download Reports</span> <PlannedBadge />
@@ -245,7 +245,7 @@ export default function AdminSystem() {
 
       {/* Section 10 — announcements */}
       <Section icon={Megaphone} title="System Announcements" defaultOpen={false}>
-        <div className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-4 text-sm text-slate-400">
+        <div className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/75 px-4 py-4 text-sm text-slate-400">
           <Megaphone size={18} className="text-slate-500" />
           Publishing maintenance, security and system notices requires an announcements backend. <PlannedBadge />
         </div>
@@ -260,13 +260,13 @@ export default function AdminSystem() {
       {resetResult && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-label="Temporary password">
           <div className="absolute inset-0 bg-black/60" onClick={() => setResetResult(null)} />
-          <div className="relative w-full max-w-md rounded-xl border border-slate-800 bg-slate-950 p-5">
+          <div className="relative w-full max-w-md rounded-xl border border-slate-800 bg-slate-950/95 p-5">
             <div className="mb-3 flex items-center justify-between">
               <h4 className="text-sm font-semibold text-slate-200">Temporary Password</h4>
-              <button onClick={() => setResetResult(null)} className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-white"><X size={16} /></button>
+              <button onClick={() => setResetResult(null)} className="rounded p-1 text-slate-400 hover:bg-slate-800/75 hover:text-white"><X size={16} /></button>
             </div>
             <p className="text-sm text-slate-400">A temporary password was set for <span className="text-slate-200">{resetResult.email}</span>. Share it securely — it is shown only once.</p>
-            <div className="mt-3 rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 font-mono text-sm text-purple-300">{resetResult.password}</div>
+            <div className="mt-3 rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 font-mono text-sm text-purple-300">{resetResult.password}</div>
           </div>
         </div>
       )}
@@ -276,7 +276,7 @@ export default function AdminSystem() {
 
 function SettingCard({ title, rows, planned }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+    <div className="rounded-xl border border-slate-800 bg-slate-900/72 p-4">
       <div className="mb-2 flex items-center justify-between">
         <h4 className="text-sm font-semibold text-slate-200">{title}</h4>
         {planned && <PlannedBadge />}
@@ -293,15 +293,15 @@ function SettingCard({ title, rows, planned }) {
           ))}
         </dl>
       )}
-      {planned && <p className="mt-2 text-[11px] text-slate-600">Editing these settings is planned; values shown are current runtime configuration.</p>}
+      {planned && <p className="mt-2 text-[12.5px] text-slate-600">Editing these settings is planned; values shown are current runtime configuration.</p>}
     </div>
   )
 }
 
 function SecItem({ label, value, ok }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-      <div className="text-[11px] uppercase tracking-wide text-slate-500">{label}</div>
+    <div className="rounded-xl border border-slate-800 bg-slate-900/72 p-4">
+      <div className="text-[12.5px] uppercase tracking-wide text-slate-500">{label}</div>
       <div className={`mt-1 text-sm ${ok ? 'text-emerald-300' : 'text-slate-200'}`}>{value}</div>
     </div>
   )

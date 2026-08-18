@@ -14,10 +14,10 @@ function ProfileModal({ user, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-label="User profile">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative w-full max-w-md rounded-xl border border-slate-800 bg-slate-950 p-5">
+      <div className="relative w-full max-w-md rounded-xl border border-slate-800 bg-slate-950/95 p-5">
         <div className="mb-3 flex items-center justify-between">
           <h4 className="text-sm font-semibold text-slate-200">User Profile</h4>
-          <button onClick={onClose} className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-white"><X size={16} /></button>
+          <button onClick={onClose} className="rounded p-1 text-slate-400 hover:bg-slate-800/75 hover:text-white"><X size={16} /></button>
         </div>
         <dl className="space-y-2 text-sm">
           {[
@@ -70,10 +70,10 @@ export default function AdminUserTable({ users = [], loading, onChangeRole, onTo
             placeholder="Search by name or email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-slate-800 bg-slate-900 py-2 pl-9 pr-3 text-sm focus:border-purple-600 focus:outline-none"
+            className="w-full rounded-lg border border-slate-800 bg-slate-900/80 py-2 pl-9 pr-3 text-sm focus:border-purple-600 focus:outline-none"
           />
         </div>
-        <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} className="rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-200 focus:border-purple-600 focus:outline-none">
+        <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)} className="rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-200 focus:border-purple-600 focus:outline-none">
           <option value="">All roles</option>
           {ROLES.map((r) => <option key={r} value={r}>{ROLE_LABEL[r]}</option>)}
         </select>
@@ -99,23 +99,23 @@ export default function AdminUserTable({ users = [], loading, onChangeRole, onTo
               <tr><td colSpan={7} className="px-4 py-10 text-center text-slate-500">No users match your search.</td></tr>
             ) : (
               rows.map((u) => (
-                <tr key={u.id} className="hover:bg-slate-900/50">
+                <tr key={u.id} className="hover:bg-slate-900/75">
                   <td className="px-4 py-3 text-slate-200">{u.full_name || <span className="text-slate-600">—</span>}</td>
                   <td className="px-4 py-3 text-slate-300">{u.email}</td>
                   <td className="px-4 py-3">
                     <select
                       value={u.role}
                       onChange={(e) => onChangeRole(u, e.target.value)}
-                      className="rounded border border-slate-800 bg-slate-900 px-2 py-1 text-xs text-slate-200 focus:border-purple-600 focus:outline-none"
+                      className="rounded border border-slate-800 bg-slate-900/80 px-2 py-1 text-xs text-slate-200 focus:border-purple-600 focus:outline-none"
                     >
                       {ROLES.map((r) => <option key={r} value={r}>{ROLE_LABEL[r]}</option>)}
                     </select>
                   </td>
                   <td className="px-4 py-3">
                     {u.is_active ? (
-                      <span className="rounded border border-emerald-500/40 bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium uppercase text-emerald-300">Active</span>
+                      <span className="rounded border border-emerald-500/40 bg-emerald-500/15 px-2 py-0.5 text-[12.5px] font-medium uppercase text-emerald-300">Active</span>
                     ) : (
-                      <span className="rounded border border-slate-500/40 bg-slate-500/15 px-2 py-0.5 text-[11px] font-medium uppercase text-slate-400">Disabled</span>
+                      <span className="rounded border border-slate-500/40 bg-slate-500/15 px-2 py-0.5 text-[12.5px] font-medium uppercase text-slate-400">Disabled</span>
                     )}
                   </td>
                   <td className="px-4 py-3 text-xs text-slate-500">{fmt(u.last_login)}</td>

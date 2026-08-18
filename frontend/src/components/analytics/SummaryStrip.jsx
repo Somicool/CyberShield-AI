@@ -11,13 +11,13 @@ function Cell({ label, value, suffix, alert, trend, last }) {
 
   return (
     <div className={`px-4 py-3 ${last ? '' : 'border-white/6 lg:border-r'}`}>
-      <div className="text-[10.5px] uppercase tracking-[0.09em] text-zinc-500">{label}</div>
+      <div className="text-[12px] uppercase tracking-[0.09em] text-zinc-500">{label}</div>
       <div className="mt-1 flex items-baseline gap-1.5">
-        <span className={`text-[20px] font-semibold leading-none tabular-nums ${valueClass}`}>{value}</span>
-        {suffix && <span className="text-[11px] text-zinc-500">{suffix}</span>}
+        <span className={`text-[22px] font-semibold leading-none tabular-nums ${valueClass}`}>{value}</span>
+        {suffix && <span className="text-[12.5px] text-zinc-500">{suffix}</span>}
       </div>
       {trend && (
-        <div className={`mt-1.5 inline-flex items-center gap-1 text-[10.5px] ${trendClass}`}>
+        <div className={`mt-1.5 inline-flex items-center gap-1 text-[12px] ${trendClass}`}>
           <TrendIcon size={11} />
           {trend.label}
         </div>

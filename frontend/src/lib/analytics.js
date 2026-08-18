@@ -22,10 +22,10 @@ export const SEVERITY_COLOR = {
 export const TYPE_RAMP = ['#d4a72c', '#a8842a', '#7d6326', '#57431d']
 
 export const CHART_AXIS = '#71717a'
-export const CHART_GRID = '#27272a'
+export const CHART_GRID = '#1e2635'
 export const TOOLTIP_STYLE = {
-  background: '#18181b',
-  border: '1px solid #3f3f46',
+  background: '#111722',
+  border: '1px solid #2a3444',
   borderRadius: 6,
   fontSize: 12,
   color: '#e4e4e7',

@@ -14,7 +14,7 @@ const TEXT = {
 
 /**
  * Flagship — System Health Center. Runs real on-demand checks against the
- * services CyberShield actually uses (results come from GET /api/admin/health).
+ * services CyberAid actually uses (results come from GET /api/admin/health).
  * Continuous/live monitoring is not implemented and is labelled as planned.
  */
 export default function SystemHealthCenter({ health, loading, onRefresh }) {
@@ -28,7 +28,7 @@ export default function SystemHealthCenter({ health, loading, onRefresh }) {
             <span className="text-xs text-slate-500">· checked {new Date(health.checked_at).toLocaleTimeString()}</span>
           )}
         </div>
-        <button onClick={onRefresh} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-800">
+        <button onClick={onRefresh} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-800/75">
           <RefreshCw size={13} /> Re-check
         </button>
       </div>
@@ -42,7 +42,7 @@ export default function SystemHealthCenter({ health, loading, onRefresh }) {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {(health?.services || []).map((s) => (
-            <div key={s.name} className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+            <div key={s.name} className="rounded-xl border border-slate-800 bg-slate-900/72 p-4">
               <div className="flex items-center justify-between">
                 <span className="flex items-center gap-2 text-sm font-medium text-slate-200">
                   <span className={`h-2.5 w-2.5 rounded-full ${DOT[s.status] || DOT.unknown}`} />
@@ -51,7 +51,7 @@ export default function SystemHealthCenter({ health, loading, onRefresh }) {
                 <span className={`text-xs font-semibold uppercase ${TEXT[s.status] || TEXT.unknown}`}>{s.status}</span>
               </div>
               <div className="mt-2 text-xs text-slate-400">Current state: {s.state}</div>
-              <div className="mt-0.5 text-[11px] text-slate-600">
+              <div className="mt-0.5 text-[12.5px] text-slate-600">
                 Last check: {s.last_check ? new Date(s.last_check).toLocaleTimeString() : '—'}
               </div>
             </div>
@@ -59,7 +59,7 @@ export default function SystemHealthCenter({ health, loading, onRefresh }) {
         </div>
       )}
 
-      <p className="mt-2 text-[11px] text-slate-600">
+      <p className="mt-2 text-[12.5px] text-slate-600">
         Checks run on load and on demand. Continuous live monitoring & alerting is a <span className="text-slate-400">Planned Module</span>.
       </p>
     </div>
