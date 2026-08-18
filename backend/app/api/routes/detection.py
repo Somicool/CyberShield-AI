@@ -12,7 +12,7 @@ import uuid
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user_optional
+from app.api.deps import get_current_police, get_current_user_optional
 from app.db.session import get_db
 from app.models.incident import Incident, IncidentType
 from app.models.user import User
@@ -112,7 +112,11 @@ def scan(payload: ScanRequest):
 
 
 @router.post("/{incident_id}/investigate", response_model=InvestigateResponse)
-def investigate(incident_id: uuid.UUID, db: Session = Depends(get_db)):
+def investigate(
+    incident_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    officer: User = Depends(get_current_police),
+):
     """
     Runs the Investigation Agent (WHOIS/DNS/SSL) against an existing
     incident's URL and merges the results into investigation_data.
@@ -161,7 +165,11 @@ VALID_ENTITY_LABELS = {"Domain", "Email", "Phone", "Wallet", "TelegramHandle"}
 
 
 @router.get("/graph/{entity_type}/{entity_value}", response_model=GraphConnectionsResponse)
-def get_graph_connections(entity_type: str, entity_value: str):
+def get_graph_connections(
+    entity_type: str,
+    entity_value: str,
+    officer: User = Depends(get_current_police),
+):
     """
     Threat Intelligence Graph query: "what else is connected to this
     domain/email/phone/wallet/telegram handle, through shared incidents?"

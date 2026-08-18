@@ -43,6 +43,7 @@ def list_incidents(
     threat_level: ThreatLevel | None = None,
     incident_type: IncidentType | None = None,
     search: str | None = Query(None, description="Case-insensitive substring match on raw_content"),
+    officer: User = Depends(get_current_police),
 ):
     """
     Live threat feed, newest first. Supports filtering by threat level,
@@ -77,7 +78,11 @@ def list_incidents(
 
 
 @router.get("/stats", response_model=StatsResponse)
-def get_stats(db: Session = Depends(get_db), days: int = Query(14, ge=1, le=90)):
+def get_stats(
+    db: Session = Depends(get_db),
+    days: int = Query(14, ge=1, le=90),
+    officer: User = Depends(get_current_police),
+):
     """
     Aggregate numbers for the dashboard's analytics charts: counts by
     threat level, by incident type, a daily trend line, and the average
@@ -126,7 +131,11 @@ def get_stats(db: Session = Depends(get_db), days: int = Query(14, ge=1, le=90))
 
 
 @router.get("/{incident_id}", response_model=IncidentDetail)
-def get_incident(incident_id: uuid.UUID, db: Session = Depends(get_db)):
+def get_incident(
+    incident_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    officer: User = Depends(get_current_police),
+):
     incident = db.query(Incident).filter(Incident.id == incident_id).first()
     if incident is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incident not found")
@@ -179,7 +188,10 @@ def delete_incident(
 
 
 @router.get("/map/points")
-def get_map_points(db: Session = Depends(get_db)):
+def get_map_points(
+    db: Session = Depends(get_db),
+    officer: User = Depends(get_current_police),
+):
     """
     Returns lat/lon points for every URL incident that has been
     investigated (i.e. has geolocation data from its hosting IP). Feeds
