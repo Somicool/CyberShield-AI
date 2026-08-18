@@ -11,7 +11,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
-from app.core.security import decode_access_token
+from app.core.security import MFA_ENROLL_SCOPE, decode_access_token
 from app.db.session import get_db
 from app.models.user import User
 
@@ -32,6 +32,11 @@ def get_current_user(
     if payload is None:
         raise credentials_error
 
+    # An MFA-enrollment token proves the password only. It must never be
+    # accepted as a session token, or the second factor would be optional.
+    if payload.get("scope") == MFA_ENROLL_SCOPE:
+        raise credentials_error
+
     user_id = payload.get("sub")
     if user_id is None:
         raise credentials_error
@@ -40,6 +45,39 @@ def get_current_user(
     if user is None:
         raise credentials_error
 
+    # An account disabled after the token was issued loses access immediately,
+    # rather than staying valid until the token expires.
+    if user.is_active is False:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This account has been disabled. Contact an administrator.",
+        )
+
+    return user
+
+
+def get_enrolling_user(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db),
+) -> User:
+    """
+    Accepts ONLY the short-lived enrollment token issued by /login when a staff
+    account still has to set up two-factor auth. Used by the /mfa/setup and
+    /mfa/enable endpoints so enrollment can finish without a full session.
+    """
+    error = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Enrollment session expired. Sign in again.",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    payload = decode_access_token(token)
+    if payload is None or payload.get("scope") != MFA_ENROLL_SCOPE:
+        raise error
+
+    user = db.query(User).filter(User.id == payload.get("sub")).first()
+    if user is None or user.is_active is False:
+        raise error
     return user
 
 

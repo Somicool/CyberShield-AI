@@ -15,10 +15,21 @@ from app.models.user import UserRole
 
 
 class UserCreate(BaseModel):
+    """
+    Public self-registration. Deliberately has NO `role` field: the endpoint
+    always creates a citizen. Accepting a role here previously let anyone
+    register themselves as police or admin.
+    """
+
     email: EmailStr
     password: str
     full_name: str | None = None
-    role: UserRole = UserRole.citizen
+
+
+class OfficerCreate(UserCreate):
+    """Officer registration — requires the department's registration code."""
+
+    access_code: str
 
 
 class UserLogin(BaseModel):
@@ -38,3 +49,32 @@ class UserOut(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class LoginResponse(BaseModel):
+    """
+    Login result. A normal sign-in returns `access_token`. A staff account that
+    has not enrolled in two-factor auth yet gets `mfa_enrollment_required` plus
+    a short-lived `enrollment_token` instead — never a usable session.
+    """
+
+    access_token: str | None = None
+    token_type: str = "bearer"
+    mfa_enrollment_required: bool = False
+    enrollment_token: str | None = None
+
+
+class MfaSetupOut(BaseModel):
+    """Enrollment payload: render `otpauth_uri` as a QR, show `secret` as fallback."""
+
+    secret: str
+    otpauth_uri: str
+
+
+class MfaCode(BaseModel):
+    code: str
+
+
+class MfaDisable(BaseModel):
+    password: str
+    code: str
