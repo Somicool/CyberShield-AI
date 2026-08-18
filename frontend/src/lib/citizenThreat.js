@@ -62,7 +62,7 @@ export function adviceFor(threatLevel) {
       return [
         'Do not click any links or open attachments.',
         'Never enter your password, OTP, card or bank details.',
-        'Report this to CyberShield so officers can act on it.',
+        'Report this to CyberAid so officers can act on it.',
         'If you already shared money or details, contact your bank immediately and call the cybercrime helpline 1930.',
       ]
     case 'medium':
@@ -70,19 +70,19 @@ export function adviceFor(threatLevel) {
         'Avoid clicking unless you are completely sure it is genuine.',
         'Verify the sender through an official website or phone number you already trust.',
         'Do not share personal or financial information.',
-        'When in doubt, report it to CyberShield.',
+        'When in doubt, report it to CyberAid.',
       ]
     case 'low':
       return [
         'No strong danger signs were found, but always stay cautious.',
         'Never share OTP or passwords, even on sites that look genuine.',
-        'If anything feels off, report it to CyberShield.',
+        'If anything feels off, report it to CyberAid.',
       ]
     default:
       return [
         'Treat it as suspicious until you can verify it.',
         'Do not share personal or financial information.',
-        'Report it to CyberShield if you are unsure.',
+        'Report it to CyberAid if you are unsure.',
       ]
   }
 }

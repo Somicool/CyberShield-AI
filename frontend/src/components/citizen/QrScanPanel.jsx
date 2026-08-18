@@ -101,7 +101,7 @@ export default function QrScanPanel() {
       <p className="mb-3 text-sm text-slate-400">Upload a QR code image and we will read the link inside it and check if it is safe.</p>
 
       <label
-        className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-700 bg-slate-900/40 px-4 py-10 text-center transition hover:border-sky-500/60 hover:bg-slate-900"
+        className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-700 bg-slate-900/72 px-4 py-10 text-center transition hover:border-sky-500/60 hover:bg-slate-900/80"
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => { e.preventDefault(); decodeFile(e.dataTransfer.files?.[0]) }}
       >
@@ -114,19 +114,19 @@ export default function QrScanPanel() {
       <button
         disabled
         title="Camera scanning is coming soon"
-        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 py-3 text-sm text-slate-500"
+        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-800 bg-slate-900/72 py-3 text-sm text-slate-500"
       >
         <Camera size={16} /> Scan with camera (coming soon)
       </button>
 
-      <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+      <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/72 p-4">
         <div className="mb-2 flex items-center gap-2 text-sm text-slate-300"><Link2 size={15} /> Or paste the link from the QR code</div>
         <div className="flex gap-2">
           <input
             value={manual}
             onChange={(e) => setManual(e.target.value)}
             placeholder="https://..."
-            className="flex-1 rounded-lg border border-slate-800 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-sky-500 focus:outline-none"
+            className="flex-1 rounded-lg border border-slate-800 bg-slate-950/78 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-sky-500 focus:outline-none"
           />
           <button
             onClick={() => { setDecoded(manual.trim()); analyze(manual.trim()) }}
@@ -141,7 +141,7 @@ export default function QrScanPanel() {
       {error && <p className="mt-4 rounded-lg border border-red-900 bg-red-950/50 px-3 py-2 text-sm text-red-300">{error}</p>}
 
       {decoded && (
-        <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+        <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/72 p-4">
           <div className="text-xs uppercase tracking-wide text-slate-500">QR code content</div>
           <p className="mt-1 wrap-break-word font-mono text-sm text-slate-200">{decoded}</p>
           {!decodedIsUrl && <p className="mt-2 text-xs text-slate-500">This QR code does not contain a web link, so there is nothing to analyze.</p>}

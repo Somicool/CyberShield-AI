@@ -27,11 +27,11 @@ export default function ScanResult({ result, reportCategory }) {
 
       {/* Numbers */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-center">
+        <div className="rounded-xl border border-slate-800 bg-slate-900/72 p-4 text-center">
           <div className="text-xs uppercase tracking-wide text-slate-500">Risk Score</div>
           <div className="mt-1 font-mono text-2xl font-semibold text-slate-100">{Math.round(result.risk_score)}/100</div>
         </div>
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-center">
+        <div className="rounded-xl border border-slate-800 bg-slate-900/72 p-4 text-center">
           <div className="text-xs uppercase tracking-wide text-slate-500">Confidence</div>
           <div className="mt-1 font-mono text-2xl font-semibold text-slate-100">{confidence != null ? `${confidence}%` : '—'}</div>
         </div>
@@ -39,7 +39,7 @@ export default function ScanResult({ result, reportCategory }) {
 
       {/* AI explanation */}
       {result.explanation && (
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+        <div className="rounded-xl border border-slate-800 bg-slate-900/72 p-4">
           <div className="mb-1 text-sm font-semibold text-slate-200">What this means</div>
           <p className="text-sm leading-relaxed text-slate-300">{result.explanation}</p>
         </div>
@@ -47,7 +47,7 @@ export default function ScanResult({ result, reportCategory }) {
 
       {/* Warning signs */}
       {result.heuristics_triggered?.length > 0 && (
-        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+        <div className="rounded-xl border border-slate-800 bg-slate-900/72 p-4">
           <div className="mb-2 text-sm font-semibold text-slate-200">Warning signs we spotted</div>
           <ul className="space-y-1">
             {result.heuristics_triggered.map((h, i) => (
@@ -58,7 +58,7 @@ export default function ScanResult({ result, reportCategory }) {
       )}
 
       {/* Advice */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+      <div className="rounded-xl border border-slate-800 bg-slate-900/72 p-4">
         <div className="mb-2 text-sm font-semibold text-slate-200">What you should do</div>
         <ul className="space-y-1.5">
           {advice.map((a, i) => (
@@ -75,7 +75,7 @@ export default function ScanResult({ result, reportCategory }) {
           to={`/citizen/report${reportCategory ? `?category=${encodeURIComponent(reportCategory)}` : ''}`}
           className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-red-500"
         >
-          <FileWarning size={16} /> Report this to CyberShield
+          <FileWarning size={16} /> Report this to CyberAid
         </Link>
       )}
     </div>

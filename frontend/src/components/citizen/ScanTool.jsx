@@ -66,14 +66,14 @@ export default function ScanTool({
             onChange={(e) => setContent(e.target.value)}
             placeholder={placeholder}
             rows={7}
-            className="w-full resize-y rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-slate-200 placeholder:text-slate-600 focus:border-sky-500 focus:outline-none"
+            className="w-full resize-y rounded-xl border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-200 placeholder:text-slate-600 focus:border-sky-500 focus:outline-none"
           />
         ) : (
           <input
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder={placeholder}
-            className="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-3.5 text-sm text-slate-200 placeholder:text-slate-600 focus:border-sky-500 focus:outline-none"
+            className="w-full rounded-xl border border-slate-800 bg-slate-900/80 px-4 py-3.5 text-sm text-slate-200 placeholder:text-slate-600 focus:border-sky-500 focus:outline-none"
           />
         )}
 

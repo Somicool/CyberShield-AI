@@ -36,8 +36,8 @@ export default function CitizenSignup() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-slate-950 to-slate-900 px-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8 space-y-5">
+    <div className="portal-citizen min-h-screen flex items-center justify-center px-4">
+      <form onSubmit={handleSubmit} className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/80 p-8 backdrop-blur-md space-y-5">
         <Link to="/citizen/login" className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300">
           <ArrowLeft size={13} /> Back to sign in
         </Link>
@@ -48,7 +48,7 @@ export default function CitizenSignup() {
           </span>
           <div>
             <h1 className="text-xl font-semibold text-white">Create your account</h1>
-            <p className="text-sm text-slate-400">Join CyberShield to report and check threats</p>
+            <p className="text-sm text-slate-400">Join CyberAid to report and check threats</p>
           </div>
         </div>
 
@@ -62,7 +62,7 @@ export default function CitizenSignup() {
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2.5 text-white focus:outline-none focus:border-sky-500"
+            className="w-full rounded-lg bg-slate-800/75 border border-slate-700 px-3 py-2.5 text-white focus:outline-none focus:border-sky-500"
           />
         </div>
 
@@ -73,7 +73,7 @@ export default function CitizenSignup() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2.5 text-white focus:outline-none focus:border-sky-500"
+            className="w-full rounded-lg bg-slate-800/75 border border-slate-700 px-3 py-2.5 text-white focus:outline-none focus:border-sky-500"
           />
         </div>
 
@@ -84,7 +84,7 @@ export default function CitizenSignup() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2.5 text-white focus:outline-none focus:border-sky-500"
+            className="w-full rounded-lg bg-slate-800/75 border border-slate-700 px-3 py-2.5 text-white focus:outline-none focus:border-sky-500"
           />
         </div>
 
