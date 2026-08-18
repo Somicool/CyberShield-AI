@@ -30,15 +30,15 @@ export default function IntelDigest({ insights = [] }) {
             <div key={ins.id} className="px-4 py-2.5">
               <div className="flex items-center gap-2">
                 <SeverityDot level={ins.severity} />
-                <span className="min-w-0 flex-1 truncate text-[12.5px] font-medium text-zinc-200">
+                <span className="min-w-0 flex-1 truncate text-[14px] font-medium text-zinc-200">
                   {ins.title}
                 </span>
-                <span className={`shrink-0 text-[10px] uppercase tracking-wide ${SEV_LABEL[ins.severity] || 'text-zinc-500'}`}>
+                <span className={`shrink-0 text-[11.5px] uppercase tracking-wide ${SEV_LABEL[ins.severity] || 'text-zinc-500'}`}>
                   {ins.severity}
                 </span>
-                <span className="shrink-0 text-[10.5px] text-zinc-600">{relativeTime(ins.timestamp)}</span>
+                <span className="shrink-0 text-[12px] text-zinc-600">{relativeTime(ins.timestamp)}</span>
               </div>
-              <p className="mt-1 truncate pl-3.5 text-[11.5px] text-zinc-500" title={ins.detail}>
+              <p className="mt-1 truncate pl-3.5 text-[13px] text-zinc-500" title={ins.detail}>
                 {ins.detail}
               </p>
             </div>

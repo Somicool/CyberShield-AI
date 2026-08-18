@@ -25,9 +25,9 @@ export default function QuickActions({ topCaseId }) {
         <Link
           key={label}
           to={to}
-          className="inline-flex items-center gap-2 rounded-md border border-white/8 bg-white/2 px-3 py-2 text-[12.5px] text-zinc-300 transition hover:border-amber-400/30 hover:bg-white/5 hover:text-zinc-100"
+          className="inline-flex items-center gap-2 rounded-md border border-white/8 bg-white/2 px-3 py-2 text-[14px] text-zinc-300 transition hover:border-cyan-400/30 hover:bg-white/5 hover:text-zinc-100"
         >
-          <Icon size={14} className="text-amber-300/70" />
+          <Icon size={14} className="text-cyan-300/70" />
           {label}
         </Link>
       ))}

@@ -30,9 +30,9 @@ export default function RecentActivity({ events = [] }) {
               disabled={!e.incidentId}
               className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition enabled:hover:bg-white/3 disabled:cursor-default"
             >
-              <span className="shrink-0 font-mono text-[11px] tabular-nums text-zinc-500">{hhmm(e.at)}</span>
+              <span className="shrink-0 font-mono text-[12.5px] tabular-nums text-zinc-500">{hhmm(e.at)}</span>
               <SeverityDot level={e.level} />
-              <span className="min-w-0 flex-1 truncate text-[12.5px] text-zinc-300">{e.text}</span>
+              <span className="min-w-0 flex-1 truncate text-[14px] text-zinc-300">{e.text}</span>
             </button>
           ))}
         </div>

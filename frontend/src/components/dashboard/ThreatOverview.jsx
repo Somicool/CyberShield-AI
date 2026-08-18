@@ -15,11 +15,11 @@ function Bar({ label, count, total, barClass }) {
   const pct = total > 0 ? Math.round((count / total) * 100) : 0
   return (
     <div className="grid grid-cols-[52px_1fr_46px] items-center gap-2.5">
-      <span className="text-[11.5px] text-zinc-400">{label}</span>
+      <span className="text-[13px] text-zinc-400">{label}</span>
       <span className="h-1.5 overflow-hidden rounded-full bg-white/6">
         <span className={`block h-full rounded-full ${barClass}`} style={{ width: `${pct}%` }} />
       </span>
-      <span className="text-right text-[11px] tabular-nums text-zinc-500">
+      <span className="text-right text-[12.5px] tabular-nums text-zinc-500">
         {count}
         <span className="text-zinc-600"> · {pct}%</span>
       </span>
@@ -60,10 +60,10 @@ export default function ThreatOverview({ stats }) {
       />
       <div className="grid gap-5 px-4 py-3.5 sm:grid-cols-2">
         <div>
-          <div className="mb-2.5 text-[10.5px] uppercase tracking-[0.09em] text-zinc-600">By Type</div>
+          <div className="mb-2.5 text-[12px] uppercase tracking-[0.09em] text-zinc-600">By Type</div>
           <div className="space-y-2">
             {typeRows.length === 0 ? (
-              <p className="text-[12px] text-zinc-500">No data yet.</p>
+              <p className="text-[13.5px] text-zinc-500">No data yet.</p>
             ) : (
               typeRows.map((r) => (
                 <Bar key={r.key} label={r.label} count={r.count} total={typeTotal} barClass="bg-amber-300/60" />
@@ -73,7 +73,7 @@ export default function ThreatOverview({ stats }) {
         </div>
 
         <div>
-          <div className="mb-2.5 text-[10.5px] uppercase tracking-[0.09em] text-zinc-600">By Severity</div>
+          <div className="mb-2.5 text-[12px] uppercase tracking-[0.09em] text-zinc-600">By Severity</div>
           <div className="space-y-2">
             {sevRows.map((r) => (
               <Bar key={r.key} label={r.label} count={r.count} total={sevTotal} barClass={SEVERITY_BAR[r.key]} />

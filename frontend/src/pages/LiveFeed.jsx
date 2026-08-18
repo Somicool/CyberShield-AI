@@ -204,7 +204,7 @@ export default function LiveFeed() {
   }, [withMeta, priority])
 
   return (
-    <div className="min-h-full bg-[#16181c]">
+    <div className="min-h-full">
       <div className="mx-auto max-w-375 space-y-4 p-6">
         <CommandHeader
           lastUpdated={lastUpdated}
