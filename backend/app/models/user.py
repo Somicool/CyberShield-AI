@@ -11,7 +11,7 @@ import enum
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, String, DateTime, Enum, Boolean
+from sqlalchemy import Column, String, DateTime, Enum, Boolean, Integer
 from sqlalchemy.dialects.postgresql import UUID
 
 from app.db.session import Base
@@ -34,3 +34,16 @@ class User(Base):
     is_active = Column(Boolean, default=True, nullable=False)  # admins can disable accounts
     last_login = Column(DateTime, nullable=True)  # set on successful login
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    # ---- Two-factor authentication -------------------------------------
+    # Base32 TOTP shared secret. Present once enrollment has started; only
+    # trusted after `mfa_enabled` flips, which requires the officer to prove
+    # they can generate a valid code.
+    totp_secret = Column(String, nullable=True)
+    mfa_enabled = Column(Boolean, default=False, nullable=False)
+
+    # ---- Brute-force protection ----------------------------------------
+    # Consecutive failed password attempts; reset to 0 on success. When the
+    # threshold is crossed the account is locked until `locked_until`.
+    failed_login_attempts = Column(Integer, default=0, nullable=False)
+    locked_until = Column(DateTime, nullable=True)

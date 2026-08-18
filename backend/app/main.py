@@ -55,6 +55,12 @@ app.include_router(complaints.router)
 _COLUMN_MIGRATIONS = [
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE",
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS last_login TIMESTAMP",
+    # Two-factor authentication for police / admin sign-in.
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS totp_secret VARCHAR",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS mfa_enabled BOOLEAN NOT NULL DEFAULT FALSE",
+    # Brute-force lockout counters.
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS failed_login_attempts INTEGER NOT NULL DEFAULT 0",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS locked_until TIMESTAMP",
 ]
 
 
