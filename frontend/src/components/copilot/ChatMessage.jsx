@@ -44,7 +44,7 @@ export default function ChatMessage({ message, streaming, canRegenerate, onRegen
         <div className="max-w-[80%] rounded-2xl rounded-tr-sm border border-purple-700/40 bg-purple-600/20 px-4 py-2.5 text-sm text-slate-100">
           {message.content}
         </div>
-        <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-700 bg-slate-800 text-slate-300">
+        <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-700 bg-slate-800/75 text-slate-300">
           <User size={15} />
         </span>
       </div>
@@ -57,7 +57,7 @@ export default function ChatMessage({ message, streaming, canRegenerate, onRegen
         <Bot size={15} />
       </span>
       <div className="min-w-0 max-w-[85%] flex-1">
-        <div className="rounded-2xl rounded-tl-sm border border-slate-800 bg-slate-900/70 px-4 py-3">
+        <div className="rounded-2xl rounded-tl-sm border border-slate-800 bg-slate-900/80 px-4 py-3">
           {message.content ? <Markdown>{message.content}</Markdown> : <TypingDots />}
           {streaming && message.content && (
             <span className="ml-0.5 inline-block h-3.5 w-1.5 animate-pulse bg-purple-400 align-middle" />
@@ -65,12 +65,12 @@ export default function ChatMessage({ message, streaming, canRegenerate, onRegen
         </div>
 
         {!streaming && message.content && (
-          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[12.5px] text-slate-500">
             {message.sources?.length > 0 && (
               <span className="inline-flex flex-wrap items-center gap-1">
                 <Database size={11} />
                 {message.sources.map((s) => (
-                  <span key={s} className="rounded border border-slate-700 bg-slate-800 px-1.5 py-0.5 text-slate-400">
+                  <span key={s} className="rounded border border-slate-700 bg-slate-800/75 px-1.5 py-0.5 text-slate-400">
                     {SOURCE_LABELS[s] || s}
                   </span>
                 ))}

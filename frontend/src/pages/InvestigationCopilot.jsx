@@ -34,7 +34,7 @@ const GENERAL_SUGGESTIONS = [
 ]
 
 /**
- * AI Investigation Copilot — a context-aware assistant over real CyberShield
+ * AI Investigation Copilot — a context-aware assistant over real CyberAid
  * data. Investigation context is assembled from existing APIs and streamed to
  * the shared Gemini backend; the model is instructed to use only that data.
  */
@@ -285,7 +285,7 @@ export default function InvestigationCopilot() {
     const md = messages
       .map((m) => `## ${m.role === 'officer' ? 'Officer' : 'AI Copilot'}${m.ts ? ` (${new Date(m.ts).toLocaleString()})` : ''}\n\n${m.content}`)
       .join('\n\n---\n\n')
-    const blob = new Blob([`# CyberShield AI — Copilot Conversation\n\n${md}`], { type: 'text/markdown' })
+    const blob = new Blob([`# CyberAid — Copilot Conversation\n\n${md}`], { type: 'text/markdown' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
     a.download = `copilot-conversation-${Date.now()}.md`
@@ -316,7 +316,7 @@ export default function InvestigationCopilot() {
             aria-label="Investigation context"
             value={investigationId || ''}
             onChange={(e) => changeInvestigation(e.target.value)}
-            className="max-w-[240px] rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-200 focus:border-purple-600 focus:outline-none"
+            className="max-w-[240px] rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-200 focus:border-purple-600 focus:outline-none"
           >
             <option value="">No investigation</option>
             {incidents.map((i) => (
@@ -325,13 +325,13 @@ export default function InvestigationCopilot() {
               </option>
             ))}
           </select>
-          <button onClick={clearContext} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800">
+          <button onClick={clearContext} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800/75">
             <Eraser size={14} /> Clear Context
           </button>
-          <button onClick={exportConversation} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800">
+          <button onClick={exportConversation} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800/75">
             <Download size={14} /> Export
           </button>
-          <button onClick={() => setContextOpen((o) => !o)} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800">
+          <button onClick={() => setContextOpen((o) => !o)} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800/75">
             <PanelRight size={14} /> Context
           </button>
         </div>
@@ -370,7 +370,7 @@ export default function InvestigationCopilot() {
                   Select an investigation to activate Investigation Mode, then ask a question or use a quick action.
                 </p>
                 <p className="mt-1 text-xs text-slate-600">
-                  The Copilot answers only from real CyberShield data and states when information is unavailable.
+                  The Copilot answers only from real CyberAid data and states when information is unavailable.
                 </p>
               </div>
             ) : (
@@ -392,7 +392,7 @@ export default function InvestigationCopilot() {
                   <button
                     key={s.label}
                     onClick={() => send(s.prompt)}
-                    className="rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-xs text-slate-300 transition hover:border-purple-500/40 hover:bg-slate-800"
+                    className="rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 text-xs text-slate-300 transition hover:border-purple-500/40 hover:bg-slate-800/75"
                   >
                     {s.label}
                   </button>
@@ -400,7 +400,7 @@ export default function InvestigationCopilot() {
                 <button
                   onClick={() => investigationId && navigate(`/dashboard/investigate/${investigationId}`)}
                   disabled={!investigationId}
-                  className="rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-xs text-slate-300 transition hover:border-purple-500/40 hover:bg-slate-800 disabled:opacity-40"
+                  className="rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 text-xs text-slate-300 transition hover:border-purple-500/40 hover:bg-slate-800/75 disabled:opacity-40"
                 >
                   Open Investigation
                 </button>

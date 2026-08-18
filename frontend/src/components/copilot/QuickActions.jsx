@@ -18,7 +18,7 @@ export default function QuickActions({ onAction, disabled }) {
             key={a.id}
             onClick={() => onAction(a.prompt)}
             disabled={disabled}
-            className="rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs text-slate-300 transition hover:border-purple-500/40 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-1.5 text-xs text-slate-300 transition hover:border-purple-500/40 hover:bg-slate-800/75 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {a.label}
           </button>

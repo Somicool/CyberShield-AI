@@ -23,7 +23,7 @@ export default function ConversationSidebar({ conversations, activeId, onNew, on
             <div
               key={c.id}
               className={`group flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm transition ${
-                c.id === activeId ? 'bg-slate-800 text-slate-100' : 'text-slate-400 hover:bg-slate-900'
+                c.id === activeId ? 'bg-slate-800/75 text-slate-100' : 'text-slate-400 hover:bg-slate-900/80'
               }`}
             >
               <button onClick={() => onSelect(c.id)} className="flex min-w-0 flex-1 items-center gap-2 text-left">

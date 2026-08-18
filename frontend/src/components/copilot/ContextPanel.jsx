@@ -37,7 +37,7 @@ export default function ContextPanel({ incident, caseId, meta, sources, relatedC
     <aside className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-slate-800 px-4 py-3">
         <h3 className="text-sm font-semibold text-slate-200">Investigation Context</h3>
-        <button onClick={onCollapse} aria-label="Collapse panel" className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-white">
+        <button onClick={onCollapse} aria-label="Collapse panel" className="rounded p-1 text-slate-400 hover:bg-slate-800/75 hover:text-white">
           <PanelRightClose size={16} />
         </button>
       </div>
@@ -47,7 +47,7 @@ export default function ContextPanel({ incident, caseId, meta, sources, relatedC
           <p className="text-sm text-slate-500">No investigation selected. Choose one from the context selector to activate Investigation Mode.</p>
         ) : (
           <>
-            <div className="space-y-2 rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+            <div className="space-y-2 rounded-xl border border-slate-800 bg-slate-900/72 p-4">
               <Field label="Selected Investigation"><span className="font-mono text-xs text-purple-300">{caseId}</span></Field>
               <Field label="Threat Level"><ThreatBadge level={incident.threat_level} /></Field>
               <Field label="Risk Score"><span className="font-mono">{incident.risk_score?.toFixed(1) ?? '—'}/100</span></Field>
@@ -57,8 +57,8 @@ export default function ContextPanel({ incident, caseId, meta, sources, relatedC
               <Field label="Linked Entities">{linkedCount}</Field>
             </div>
 
-            <div className="space-y-2 rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-              <p className="mb-1 text-[11px] uppercase tracking-wide text-slate-500">Available Sources</p>
+            <div className="space-y-2 rounded-xl border border-slate-800 bg-slate-900/72 p-4">
+              <p className="mb-1 text-[12.5px] uppercase tracking-wide text-slate-500">Available Sources</p>
               {availKeys.map((k) => (
                 <Avail key={k} ok={sources[k]} label={SOURCE_LABELS[k]} />
               ))}
