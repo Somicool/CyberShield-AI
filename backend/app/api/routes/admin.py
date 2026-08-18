@@ -10,6 +10,7 @@ logins, announcements, settings persistence) are intentionally absent and shown
 as "Planned Module" / "Not Available" in the UI.
 """
 
+import logging
 import secrets
 import uuid
 from datetime import datetime, timezone
@@ -142,6 +143,43 @@ def reset_password(user_id: uuid.UUID, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     return {"user_id": str(user.id), "temporary_password": temp}
+
+
+@router.post("/users/{user_id}/reset-mfa")
+def reset_mfa(user_id: uuid.UUID, db: Session = Depends(get_db)):
+    """
+    Clears an officer's two-factor enrollment — the recovery path for a lost or
+    replaced phone. The officer keeps their password and is required to enrol a
+    new authenticator the next time they sign in, so this weakens nothing
+    permanently. Also clears any active lockout.
+    """
+    user = db.query(User).filter(User.id == user_id).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.mfa_enabled = False
+    user.totp_secret = None
+    user.failed_login_attempts = 0
+    user.locked_until = None
+    db.add(user)
+    db.commit()
+
+    logging.getLogger("cybershield.auth").info("mfa reset by administrator for %s", user.email)
+    return {"user_id": str(user.id), "mfa_enabled": False, "unlocked": True}
+
+
+@router.post("/users/{user_id}/unlock")
+def unlock_account(user_id: uuid.UUID, db: Session = Depends(get_db)):
+    """Clears a failed-attempt lockout without touching the password or 2FA."""
+    user = db.query(User).filter(User.id == user_id).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.failed_login_attempts = 0
+    user.locked_until = None
+    db.add(user)
+    db.commit()
+    return {"user_id": str(user.id), "unlocked": True}
 
 
 # ---- system health -------------------------------------------------------
