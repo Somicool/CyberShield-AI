@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import AppBackground from './components/AppBackground'
 import ProtectedRoute from './components/ProtectedRoute'
 import DashboardLayout from './components/DashboardLayout'
 import RoleSelection from './pages/RoleSelection'
@@ -37,6 +38,8 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        {/* One backdrop for the whole app; it picks the per-portal variant. */}
+        <AppBackground />
         <Routes>
           <Route path="/" element={<RoleSelection />} />
           <Route path="/login" element={<Login />} />
