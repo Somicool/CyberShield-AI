@@ -1,4 +1,4 @@
-# CyberShield AI — Build Roadmap
+# CyberAid — Build Roadmap
 
 Originally planned as 10 days solo. **Revised on 2026-07-18: deadline moved up to Jul 22-23, so Days 1-5 (backend) are done and Days 6-10 are compressed into 4 days + 1 buffer day.** Nothing was cut from scope — Day 6+7 (dashboard) is merged into one combined work session since the backend is fully built and tested, making dashboard-building faster than originally estimated.
 
