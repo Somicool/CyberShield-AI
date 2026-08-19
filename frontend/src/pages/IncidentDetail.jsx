@@ -52,7 +52,7 @@ export default function IncidentDetail() {
       <div className="flex items-start justify-between mt-4 mb-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="uppercase text-xs text-slate-500">{incident.incident_type}</span>
+            <span className="uppercase text-xs text-cyan-300">{incident.incident_type}</span>
             <ThreatBadge level={incident.threat_level} />
             <span className="font-mono text-sm text-slate-400">{incident.risk_score?.toFixed(1)}/100</span>
           </div>
@@ -111,7 +111,7 @@ export default function IncidentDetail() {
           {investigation ? (
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="text-slate-500 text-xs mb-1">WHOIS</p>
+                <p className="text-cyan-300 text-xs uppercase tracking-wide mb-1">WHOIS</p>
                 <p className="text-slate-300">
                   Registrar: {investigation.whois.registrar || 'Unknown'}
                   <br />
@@ -119,7 +119,7 @@ export default function IncidentDetail() {
                 </p>
               </div>
               <div>
-                <p className="text-slate-500 text-xs mb-1">SSL Certificate</p>
+                <p className="text-cyan-300 text-xs uppercase tracking-wide mb-1">SSL Certificate</p>
                 <p className="text-slate-300">
                   {investigation.ssl.success ? (
                     <>
@@ -133,7 +133,7 @@ export default function IncidentDetail() {
                 </p>
               </div>
               <div>
-                <p className="text-slate-500 text-xs mb-1">DNS</p>
+                <p className="text-cyan-300 text-xs uppercase tracking-wide mb-1">DNS</p>
                 <p className="text-slate-300">
                   Has MX records: {investigation.dns.has_mx ? 'Yes' : 'No'}
                   <br />
@@ -141,7 +141,7 @@ export default function IncidentDetail() {
                 </p>
               </div>
               <div>
-                <p className="text-slate-500 text-xs mb-1">Red Flags</p>
+                <p className="text-cyan-300 text-xs uppercase tracking-wide mb-1">Red Flags</p>
                 {investigation.red_flags.length > 0 ? (
                   <ul className="text-red-400 text-sm list-disc list-inside">
                     {investigation.red_flags.map((f, i) => (
