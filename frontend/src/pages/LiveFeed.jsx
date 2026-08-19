@@ -1,13 +1,12 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { getStats, listIncidents } from '../api/incidents'
-import { deriveInsights, todayUtcKey } from '../lib/intel'
+import { todayUtcKey } from '../lib/intel'
 import { useCaseWorkflow, getCaseMeta } from '../lib/caseWorkflow'
 import { deriveCaseId, threatRank } from '../lib/caseHelpers'
 import CommandHeader from '../components/dashboard/CommandHeader'
 import OperationalOverview from '../components/dashboard/OperationalOverview'
 import PriorityNow from '../components/dashboard/PriorityNow'
 import ThreatOverview from '../components/dashboard/ThreatOverview'
-import IntelDigest from '../components/dashboard/IntelDigest'
 import RecentActivity from '../components/dashboard/RecentActivity'
 import QuickActions from '../components/dashboard/QuickActions'
 
@@ -92,11 +91,6 @@ export default function LiveFeed() {
           return threatRank(b.incident.threat_level) - threatRank(a.incident.threat_level)
         }),
     [withMeta]
-  )
-
-  const insights = useMemo(
-    () => deriveInsights(recent, stats?.daily_counts || []),
-    [recent, stats]
   )
 
   // ---- Operational Overview metrics (all real) ---------------------------
@@ -221,11 +215,9 @@ export default function LiveFeed() {
           <ThreatOverview stats={stats} />
         </div>
 
-        {/* Emerging patterns + chronology */}
-        <div className="grid gap-4 xl:grid-cols-2">
-          <IntelDigest insights={insights} />
-          <RecentActivity events={activity} />
-        </div>
+        {/* Chronology — the AI Intelligence panel used to share this row; the
+            full intelligence feed lives on the Live Feed page. */}
+        <RecentActivity events={activity} />
 
         <QuickActions topCaseId={priority[0]?.incident.id} />
       </div>
