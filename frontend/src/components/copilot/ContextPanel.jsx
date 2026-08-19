@@ -58,7 +58,7 @@ export default function ContextPanel({ incident, caseId, meta, sources, relatedC
             </div>
 
             <div className="space-y-2 rounded-xl border border-slate-800 bg-slate-900/72 p-4">
-              <p className="mb-1 text-[12.5px] uppercase tracking-wide text-slate-500">Available Sources</p>
+              <p className="mb-1 text-[12.5px] uppercase tracking-wide text-cyan-300/85">Available Sources</p>
               {availKeys.map((k) => (
                 <Avail key={k} ok={sources[k]} label={SOURCE_LABELS[k]} />
               ))}

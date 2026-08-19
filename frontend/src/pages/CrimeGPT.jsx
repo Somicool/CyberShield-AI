@@ -22,7 +22,7 @@ const THREAT_TEXT = {
 function HeaderFact({ label, value, className = '' }) {
   return (
     <div className="min-w-0">
-      <div className="text-[11px] uppercase tracking-[0.08em] text-zinc-500">{label}</div>
+      <div className="text-[11px] uppercase tracking-[0.08em] text-cyan-300/85">{label}</div>
       <div className={`truncate text-[14px] font-medium ${className || 'text-zinc-100'}`}>{value}</div>
     </div>
   )

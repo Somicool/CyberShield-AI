@@ -40,7 +40,7 @@ export default function GraphFilters({ value, onChange, availableTypes, availabl
       {open && (
         <div className="grid gap-4 border-t border-white/5 px-3 py-3 md:grid-cols-2">
           <div>
-            <p className="mb-2 text-[11.5px] uppercase tracking-[0.08em] text-zinc-500">Entity Types</p>
+            <p className="mb-2 text-[11.5px] uppercase tracking-[0.08em] text-cyan-300/85">Entity Types</p>
             <div className="flex flex-wrap gap-1.5">
               {availableTypes.map((t) => {
                 const visible = !value.hiddenTypes.has(t)
@@ -58,7 +58,7 @@ export default function GraphFilters({ value, onChange, availableTypes, availabl
           </div>
 
           <div>
-            <p className="mb-2 text-[11.5px] uppercase tracking-[0.08em] text-zinc-500">Relationship Types</p>
+            <p className="mb-2 text-[11.5px] uppercase tracking-[0.08em] text-cyan-300/85">Relationship Types</p>
             <div className="flex flex-wrap gap-1.5">
               {availableRels.map((r) => {
                 const visible = !value.hiddenRels.has(r)

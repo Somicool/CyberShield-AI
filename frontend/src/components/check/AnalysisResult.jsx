@@ -65,7 +65,7 @@ function confidenceLabel(score) {
 function Metric({ label, value, valueClass = 'text-zinc-100', hint }) {
   return (
     <div className="px-4 py-3">
-      <div className="text-[12px] uppercase tracking-[0.09em] text-zinc-500">{label}</div>
+      <div className="text-[12px] uppercase tracking-[0.09em] text-cyan-300/85">{label}</div>
       <div className={`mt-1 text-[19px] font-semibold leading-none tabular-nums ${valueClass}`}>{value}</div>
       {hint && <div className="mt-1 text-[12px] text-zinc-600">{hint}</div>}
     </div>
@@ -149,7 +149,7 @@ export default function AnalysisResult({
 
       {/* AI explanation */}
       <div className="px-5 py-4">
-        <h4 className="text-[12.5px] uppercase tracking-[0.09em] text-zinc-500">Why was this flagged?</h4>
+        <h4 className="text-[12.5px] uppercase tracking-[0.09em] text-cyan-300/85">Why was this flagged?</h4>
         <p className="mt-2 text-[14.5px] leading-relaxed text-zinc-300">
           {result.explanation || 'No AI explanation is available for this check.'}
         </p>
@@ -158,7 +158,7 @@ export default function AnalysisResult({
       {/* warning signs (existing heuristics only) */}
       {signs.length > 0 && (
         <div className="border-t border-white/6 px-5 py-4">
-          <h4 className="text-[12.5px] uppercase tracking-[0.09em] text-zinc-500">
+          <h4 className="text-[12.5px] uppercase tracking-[0.09em] text-cyan-300/85">
             Key Warning Signs <span className="text-zinc-600">({signs.length})</span>
           </h4>
           <ul className="mt-2.5 grid gap-1.5 sm:grid-cols-2">

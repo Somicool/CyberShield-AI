@@ -28,7 +28,7 @@ export default function GraphLegend() {
       {open && (
         <div className="grid gap-4 border-t border-white/5 px-3 py-3 sm:grid-cols-3">
           <div>
-            <p className="mb-2 text-[11.5px] uppercase tracking-[0.08em] text-zinc-500">Node Types</p>
+            <p className="mb-2 text-[11.5px] uppercase tracking-[0.08em] text-cyan-300/85">Node Types</p>
             <ul className="grid grid-cols-2 gap-1.5">
               {Object.entries(NODE_TYPES).map(([type, meta]) => (
                 <li key={type} className="flex items-center gap-2 text-[12.5px] text-zinc-300">
@@ -44,7 +44,7 @@ export default function GraphLegend() {
             </ul>
           </div>
           <div>
-            <p className="mb-2 text-[11.5px] uppercase tracking-[0.08em] text-zinc-500">Relationships</p>
+            <p className="mb-2 text-[11.5px] uppercase tracking-[0.08em] text-cyan-300/85">Relationships</p>
             <ul className="space-y-1.5">
               {RELATIONSHIPS.map(([rel, desc]) => (
                 <li key={rel} className="text-[12.5px] text-zinc-300">
@@ -55,7 +55,7 @@ export default function GraphLegend() {
             </ul>
           </div>
           <div>
-            <p className="mb-2 text-[11.5px] uppercase tracking-[0.08em] text-zinc-500">Markers</p>
+            <p className="mb-2 text-[11.5px] uppercase tracking-[0.08em] text-cyan-300/85">Markers</p>
             <ul className="space-y-1.5 text-[12.5px] text-zinc-300">
               <li className="flex items-center gap-2">
                 <span className="h-3 w-3 rounded-full border" style={{ borderColor: 'rgba(234,140,72,0.85)' }} />

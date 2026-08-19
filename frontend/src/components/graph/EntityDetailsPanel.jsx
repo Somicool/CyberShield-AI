@@ -9,7 +9,7 @@ const NA = 'Not Available'
 function Stat({ label, children }) {
   return (
     <div className="min-w-0">
-      <div className="text-[11.5px] uppercase tracking-[0.08em] text-zinc-500">{label}</div>
+      <div className="text-[11.5px] uppercase tracking-[0.08em] text-cyan-300/85">{label}</div>
       <div className="mt-0.5 truncate text-[13.5px] text-zinc-200">{children}</div>
     </div>
   )
@@ -118,7 +118,7 @@ export default function EntityDetailsPanel({
 
       <div className="flex-1 space-y-3 overflow-y-auto p-3">
         <div>
-          <div className="text-[11.5px] uppercase tracking-[0.08em] text-zinc-500">Entity</div>
+          <div className="text-[11.5px] uppercase tracking-[0.08em] text-cyan-300/85">Entity</div>
           <div className="mt-0.5 break-all font-mono text-[13px] text-zinc-100">
             {node.type === 'TelegramHandle' ? `@${node.value}` : node.value}
           </div>
@@ -159,7 +159,7 @@ export default function EntityDetailsPanel({
 
         {stats.incidentNeighbors.length > 0 && !isIncident && (
           <div className="border-t border-white/5 pt-3">
-            <div className="mb-1.5 text-[11.5px] uppercase tracking-[0.08em] text-zinc-500">Related Incidents</div>
+            <div className="mb-1.5 text-[11.5px] uppercase tracking-[0.08em] text-cyan-300/85">Related Incidents</div>
             <ul className="space-y-1">
               {stats.incidentNeighbors.slice(0, 6).map((n) => (
                 <li key={n.id}>
@@ -177,7 +177,7 @@ export default function EntityDetailsPanel({
 
         {stats.entityNeighbors.length > 0 && (
           <div className="border-t border-white/5 pt-3">
-            <div className="mb-1.5 text-[11.5px] uppercase tracking-[0.08em] text-zinc-500">Related Entities</div>
+            <div className="mb-1.5 text-[11.5px] uppercase tracking-[0.08em] text-cyan-300/85">Related Entities</div>
             <ul className="space-y-1">
               {stats.entityNeighbors.slice(0, 8).map((n) => (
                 <li key={n.id}>

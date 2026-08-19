@@ -62,7 +62,7 @@ export default function CampaignBriefingPanel({ open, onClose, briefing, loading
                 </div>
                 {briefing?.actions?.length > 0 && (
                   <>
-                    <p className="mt-2 text-[12.5px] uppercase tracking-wide text-slate-500">Recommended Actions</p>
+                    <p className="mt-2 text-[12.5px] uppercase tracking-wide text-cyan-300/85">Recommended Actions</p>
                     <ul className="mt-1.5 space-y-1">
                       {briefing.actions.map((a) => (
                         <li key={a} className="flex items-center gap-2 text-sm text-slate-200">

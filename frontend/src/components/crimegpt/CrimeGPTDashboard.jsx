@@ -31,7 +31,7 @@ const QUICK_ACTIONS = [
 function Metric({ icon: Icon, label, value, sub, valueClass = '' }) {
   return (
     <div className="min-w-0 px-4 py-2.5">
-      <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.08em] text-zinc-500">
+      <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.08em] text-cyan-300/85">
         <Icon size={12} /> {label}
       </div>
       <div className={`mt-0.5 truncate text-[17px] font-semibold tabular-nums ${valueClass || 'text-zinc-100'}`}>
@@ -45,7 +45,7 @@ function Metric({ icon: Icon, label, value, sub, valueClass = '' }) {
 function Row({ label, children }) {
   return (
     <div className="flex gap-3 px-4 py-2">
-      <span className="w-40 shrink-0 text-[12px] uppercase tracking-[0.08em] text-zinc-500">{label}</span>
+      <span className="w-40 shrink-0 text-[12px] uppercase tracking-[0.08em] text-cyan-300/85">{label}</span>
       <span className="min-w-0 flex-1 text-[13.5px] text-zinc-200">{children}</span>
     </div>
   )

@@ -57,7 +57,7 @@ export default function BriefingPanel({ open, onClose, briefing, caseId, threatL
               <ShieldAlert size={15} className="text-amber-400" />
               Recommended Priority: <span className="text-white">{briefing?.priority}</span>
             </div>
-            <p className="mt-2 text-[12.5px] uppercase tracking-wide text-slate-500">Immediate actions recommended</p>
+            <p className="mt-2 text-[12.5px] uppercase tracking-wide text-cyan-300/85">Immediate actions recommended</p>
             <ul className="mt-1.5 space-y-1">
               {briefing?.actions?.map((a) => (
                 <li key={a} className="flex items-center gap-2 text-sm text-slate-200">

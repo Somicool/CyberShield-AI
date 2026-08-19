@@ -11,7 +11,7 @@ function Cell({ label, value, suffix, alert, trend, last }) {
 
   return (
     <div className={`px-4 py-3 ${last ? '' : 'border-white/6 lg:border-r'}`}>
-      <div className="text-[12px] uppercase tracking-[0.09em] text-zinc-500">{label}</div>
+      <div className="text-[12px] uppercase tracking-[0.09em] text-cyan-300/85">{label}</div>
       <div className="mt-1 flex items-baseline gap-1.5">
         <span className={`text-[22px] font-semibold leading-none tabular-nums ${valueClass}`}>{value}</span>
         {suffix && <span className="text-[12.5px] text-zinc-500">{suffix}</span>}

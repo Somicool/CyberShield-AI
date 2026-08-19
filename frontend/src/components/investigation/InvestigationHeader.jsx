@@ -7,7 +7,7 @@ import CasePriorityRibbon from '../cases/CasePriorityRibbon'
 function Meta({ label, children }) {
   return (
     <div className="min-w-0">
-      <div className="text-[11.5px] uppercase tracking-wide text-slate-500">{label}</div>
+      <div className="text-[11.5px] uppercase tracking-wide text-cyan-300/85">{label}</div>
       <div className="truncate text-sm text-slate-200">{children}</div>
     </div>
   )

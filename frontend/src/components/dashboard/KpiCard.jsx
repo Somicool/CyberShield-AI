@@ -42,7 +42,7 @@ export default function KpiCard({ icon: Icon, label, value, accent = 'slate', tr
 
       <div className="mt-3">
         <div className="text-2xl font-semibold tracking-tight text-white tabular-nums">{value}</div>
-        <div className="mt-0.5 text-xs uppercase tracking-wide text-slate-500">{label}</div>
+        <div className="mt-0.5 text-xs uppercase tracking-wide text-cyan-300/85">{label}</div>
       </div>
     </div>
   )

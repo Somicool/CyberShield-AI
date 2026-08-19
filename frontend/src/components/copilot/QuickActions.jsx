@@ -9,7 +9,7 @@ import { QUICK_ACTIONS } from '../../lib/copilotContext'
 export default function QuickActions({ onAction, disabled }) {
   return (
     <div>
-      <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
+      <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-cyan-300/85">
         <Zap size={13} className="text-purple-400" /> Quick Actions
       </div>
       <div className="flex flex-wrap gap-2">

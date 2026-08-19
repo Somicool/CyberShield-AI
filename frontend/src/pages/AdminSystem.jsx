@@ -301,7 +301,7 @@ function SettingCard({ title, rows, planned }) {
 function SecItem({ label, value, ok }) {
   return (
     <div className="rounded-xl border border-slate-800 bg-slate-900/72 p-4">
-      <div className="text-[12.5px] uppercase tracking-wide text-slate-500">{label}</div>
+      <div className="text-[12.5px] uppercase tracking-wide text-cyan-300/85">{label}</div>
       <div className={`mt-1 text-sm ${ok ? 'text-emerald-300' : 'text-slate-200'}`}>{value}</div>
     </div>
   )

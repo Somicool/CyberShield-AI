@@ -15,7 +15,7 @@ const DOT = {
 function Stat({ label, value, className = '' }) {
   return (
     <div className="min-w-0 px-3 py-2">
-      <div className="text-[11.5px] uppercase tracking-[0.08em] text-zinc-500">{label}</div>
+      <div className="text-[11.5px] uppercase tracking-[0.08em] text-cyan-300/85">{label}</div>
       <div className={`mt-0.5 truncate text-[16px] font-semibold tabular-nums ${className || 'text-zinc-100'}`}>
         {value}
       </div>
