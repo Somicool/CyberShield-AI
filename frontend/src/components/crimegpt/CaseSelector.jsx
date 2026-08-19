@@ -175,15 +175,15 @@ export default function CaseSelector({ onOpen }) {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-[13.5px]">
-              <thead className="text-left text-[11.5px] uppercase tracking-[0.08em] text-zinc-500">
+              <thead className="text-left text-[11.5px] uppercase tracking-[0.08em] text-cyan-300">
                 <tr className="border-b border-white/5">
-                  <th className="px-4 py-2 font-medium">Case ID</th>
-                  <th className="px-4 py-2 font-medium">Threat</th>
-                  <th className="px-4 py-2 font-medium">Type</th>
-                  <th className="px-4 py-2 font-medium">Risk</th>
-                  <th className="px-4 py-2 font-medium">Status</th>
-                  <th className="px-4 py-2 font-medium">Updated</th>
-                  <th className="px-4 py-2 text-right font-medium">Action</th>
+                  <th className="text-cyan-300 px-4 py-2 font-medium">Case ID</th>
+                  <th className="text-cyan-300 px-4 py-2 font-medium">Threat</th>
+                  <th className="text-cyan-300 px-4 py-2 font-medium">Type</th>
+                  <th className="text-cyan-300 px-4 py-2 font-medium">Risk</th>
+                  <th className="text-cyan-300 px-4 py-2 font-medium">Status</th>
+                  <th className="text-cyan-300 px-4 py-2 font-medium">Updated</th>
+                  <th className="text-cyan-300 px-4 py-2 text-right font-medium">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -209,7 +209,8 @@ export default function CaseSelector({ onOpen }) {
                       >
                         {i.threat_level || 'unknown'}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-2 text-[12px] uppercase tracking-wide text-zinc-500">
+                      {/* Data value, not a label — kept neutral. */}
+                      <td className="whitespace-nowrap px-4 py-2 text-[12px] uppercase tracking-wide text-zinc-400">
                         {i.incident_type}
                       </td>
                       <td className="whitespace-nowrap px-4 py-2 font-mono tabular-nums text-zinc-200">

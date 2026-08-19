@@ -112,14 +112,14 @@ export default function ThreatFeedTable({ filters, onTotal, onNote }) {
 
       <div className="overflow-x-auto">
         <table className="w-full text-[13.5px]">
-          <thead className="text-left text-[11.5px] uppercase tracking-[0.08em] text-zinc-500">
+          <thead className="text-left text-[11.5px] uppercase tracking-[0.08em] text-cyan-300">
             <tr className="border-b border-white/5">
-              <th className="px-4 py-2 font-medium">Type</th>
-              <th className="px-4 py-2 font-medium">Content / Domain</th>
-              <th className="px-4 py-2 font-medium">Risk</th>
-              <th className="px-4 py-2 font-medium">Threat</th>
-              <th className="px-4 py-2 font-medium">Detected</th>
-              <th className="px-4 py-2 text-right font-medium">Action</th>
+              <th className="text-cyan-300 px-4 py-2 font-medium">Type</th>
+              <th className="text-cyan-300 px-4 py-2 font-medium">Content / Domain</th>
+              <th className="text-cyan-300 px-4 py-2 font-medium">Risk</th>
+              <th className="text-cyan-300 px-4 py-2 font-medium">Threat</th>
+              <th className="text-cyan-300 px-4 py-2 font-medium">Detected</th>
+              <th className="text-cyan-300 px-4 py-2 text-right font-medium">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
@@ -144,7 +144,9 @@ export default function ThreatFeedTable({ filters, onTotal, onNote }) {
                     onClick={() => navigate(`/dashboard/incidents/${item.id}`)}
                     className="cursor-pointer transition hover:bg-white/4"
                   >
-                    <td className="whitespace-nowrap px-4 py-2 text-[12px] uppercase tracking-wide text-zinc-500">
+                    {/* A data value, not a label — kept neutral so cyan stays
+                        reserved for column headers and field labels. */}
+                    <td className="whitespace-nowrap px-4 py-2 text-[12px] uppercase tracking-wide text-zinc-400">
                       {item.incident_type}
                     </td>
                     <td className="max-w-md px-4 py-2">

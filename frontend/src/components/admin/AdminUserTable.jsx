@@ -81,15 +81,15 @@ export default function AdminUserTable({ users = [], loading, onChangeRole, onTo
 
       <div className="overflow-x-auto rounded-xl border border-slate-800">
         <table className="w-full text-sm">
-          <thead className="bg-slate-900/80 text-left text-xs uppercase tracking-wide text-slate-500">
+          <thead className="bg-slate-900/80 text-left text-xs uppercase tracking-wide text-cyan-300">
             <tr>
-              <th className="px-4 py-3 font-medium">Name</th>
-              <th className="px-4 py-3 font-medium">Email</th>
-              <th className="px-4 py-3 font-medium">Role</th>
-              <th className="px-4 py-3 font-medium">Status</th>
-              <th className="px-4 py-3 font-medium">Last Login</th>
-              <th className="px-4 py-3 font-medium">Created</th>
-              <th className="px-4 py-3 font-medium text-right">Actions</th>
+              <th className="text-cyan-300 px-4 py-3 font-medium">Name</th>
+              <th className="text-cyan-300 px-4 py-3 font-medium">Email</th>
+              <th className="text-cyan-300 px-4 py-3 font-medium">Role</th>
+              <th className="text-cyan-300 px-4 py-3 font-medium">Status</th>
+              <th className="text-cyan-300 px-4 py-3 font-medium">Last Login</th>
+              <th className="text-cyan-300 px-4 py-3 font-medium">Created</th>
+              <th className="text-cyan-300 px-4 py-3 font-medium text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">

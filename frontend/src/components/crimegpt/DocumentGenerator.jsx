@@ -183,12 +183,12 @@ export default function DocumentGenerator({ incidentId, caseId, context, crimeCa
         ) : (
           <div className="overflow-hidden rounded-lg border border-slate-800">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-900/72 text-[12.5px] uppercase tracking-wide text-slate-500">
+              <thead className="bg-slate-900/72 text-[12.5px] uppercase tracking-wide text-cyan-300">
                 <tr>
-                  <th className="px-3 py-2">Document</th>
-                  <th className="px-3 py-2">Status</th>
-                  <th className="px-3 py-2">Updated</th>
-                  <th className="px-3 py-2 text-right">Actions</th>
+                  <th className="text-cyan-300 px-3 py-2">Document</th>
+                  <th className="text-cyan-300 px-3 py-2">Status</th>
+                  <th className="text-cyan-300 px-3 py-2">Updated</th>
+                  <th className="text-cyan-300 px-3 py-2 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
