@@ -23,7 +23,10 @@ const DEFAULT_META = {
   updatedAt: null,
   timeline: {}, // { [stepKey]: ISOString }
   notes: '', // officer investigation notes (frontend-persisted)
-  evidence: [], // evidence-vault items (see lib/evidence.js for shape)
+  // Kept so previously-saved case records keep their shape. Nothing writes it
+  // today: the evidence-vault UI was never wired into the redesigned Cases
+  // page and has been removed. Wire a new one to this field when needed.
+  evidence: [],
 }
 
 // Timeline steps a status transition stamps automatically.
